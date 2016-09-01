@@ -1,0 +1,90 @@
+-------------------------------------
+2016/4/23  3:09 - 7:08
+Time for turn: 30 s,   Time for match: 180 s
+Tolerance: 1 s,   Memory: 350 MB
+Openings: start from 1, used 6, available 6
+Rule: five or more stones wins
+Opening CRC: 15c11f04
+Games played: 1440
+-------------------------------------
+
+CARBON
+wins: 172=86+86,   losses: 8=4+4
+time/turn: 4330 ms (max: 25.7 s),  time/game: 88 s
+moves/game: 20,  CRC: f7e178c1,   memory: 349.23 MB
+
+ONIX16
+wins: 168=85+80+3,   losses: 12=3+9
+time/turn: 583 ms (max: 8.0 s),  time/game: 11 s
+moves/game: 20,  CRC: 815956b4,   memory: 165.13 MB
+
+CHIS
+wins: 130=65+64+1,   losses: 50=23+25+2,  1 errors
+time/turn: 1730 ms (max: 29.9 s),  time/game: 39 s
+moves/game: 22,  CRC: 80e11fe6,   memory: 351.24 MB
+
+KANEC09
+wins: 129=64+64+1,   losses: 51=21+25+5,  2 errors
+time/turn: 2923 ms (max: 11.2 s),  time/game: 92 s
+moves/game: 31,  CRC: 6708b09e,   memory: 251.15 MB
+
+ZETOR16
+wins: 121=62+59,   losses: 59=27+30+2
+time/turn: 2935 ms (max: 29.2 s),  time/game: 74 s
+moves/game: 25,  CRC: b8109dd6,   memory: 13.03 MB
+
+JUDE
+wins: 89=44+45,   losses: 91=45+45+1
+time/turn: 1455 ms (max: 29.2 s),  time/game: 37 s
+moves/game: 25,  CRC: 73f7c3eb,   memory: 42.57 MB
+
+EULRING
+wins: 108=57+51,   losses: 72=33+39
+time/turn: 3799 ms (max: 14.3 s),  time/game: 87 s
+moves/game: 23,  CRC: 6f6db047,   memory: 7.05 MB
+
+PECUCHET
+wins: 80=45+35,   losses: 100=45+53+2,  2 errors
+time/turn: 2364 ms (max: 12.2 s),  time/game: 52 s
+moves/game: 22,  CRC: 5bf9da1e,   memory: 203.32 MB
+
+NOESIS
+wins: 69=32+36+1,   losses: 111=58+53
+time/turn: 448 ms (max: 5.0 s),  time/game: 10 s
+moves/game: 23,  CRC: 6bc58455,   memory: 11.84 MB
+
+XOXO16
+wins: 78=35+43,   losses: 102=55+47
+time/turn: 1210 ms (max: 7.2 s),  time/game: 31 s
+moves/game: 26,  CRC: 6acefdd0,   memory: 4.98 MB
+
+IGNITOR
+wins: 64=36+28,   losses: 116=54+62
+time/turn: 2060 ms (max: 30.7 s),  time/game: 56 s
+moves/game: 27,  CRC: eac3f9f4,   memory: 17.71 MB
+
+QMENTAT6
+wins: 63=28+34+1,   losses: 113=62+51
+time/turn: 367 ms (max: 4.7 s),  time/game: 12 s
+moves/game: 33,  CRC: 4509490a,   memory: 4.87 MB
+
+IMRO15
+wins: 45=22+20+3,   losses: 132=65+67
+time/turn: 16 ms (max: 0.5 s),  time/game: 0 s
+moves/game: 34,  CRC: 8596a63f,   memory: 4.74 MB
+
+PUSKVOREC
+wins: 48=25+23,   losses: 132=65+67
+time/turn: 202 ms (max: 1.5 s),  time/game: 3 s
+moves/game: 19,  CRC: e7c4429f,   memory: 7.38 MB
+
+FASTGOMOKU14
+wins: 33=20+12+1,   losses: 142=66+76
+time/turn: 14 ms (max: 0.6 s),  time/game: 0 s
+moves/game: 32,  CRC: 69eef98a,   memory: 4.94 MB
+
+PISQ7
+wins: 37=18+18+1,   losses: 143=72+71
+time/turn: 44 ms (max: 0.6 s),  time/game: 0 s
+moves/game: 22,  CRC: 3296035b,   memory: 3.20 MB
+

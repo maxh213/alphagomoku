@@ -1,0 +1,1283 @@
+______________________________
+NABAMOKU08 x FASTGOMOKU14
+ 3) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 3) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 3) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x1-136(1).psq
+______________________________
+FASTGOMOKU14 x NABAMOKU08
+ 4) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 4) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 4) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\1x0-23(1).psq
+______________________________
+NABAMOKU08 x IGNITOR
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x2-44(1).psq
+______________________________
+IGNITOR x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\2x0-105(1).psq
+______________________________
+NABAMOKU08 x XOXO16
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x3-66(1).psq
+______________________________
+XOXO16 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\3x0-51(1).psq
+______________________________
+NABAMOKU08 x EULRING
+EULRING.zip: Timeout
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x4-205(1).psq
+______________________________
+EULRING x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\4x0-51(1).psq
+______________________________
+NABAMOKU08 x CHIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x5-38(1).psq
+______________________________
+CHIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\5x0-51(1).psq
+______________________________
+NABAMOKU08 x ONIX16
+ 3) ONIX16.zip: Szint: 1 Érték:    0.154 M: 3608444
+ 5) ONIX16.zip: Szint: 1 Érték:    5.487 M: 3710132
+ 7) ONIX16.zip: Szint: 1 Érték:    5.284 M: 3749752
+ 9) ONIX16.zip: Szint: 1 Érték:    5.861 M: 2837404
+11) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+11) ONIX16.zip: :)
+13) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+15) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+17) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+19) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+21) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+23) ONIX16.zip: Szint: 1 Érték:   40.096 M: 2108352
+25) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140636
+27) ONIX16.zip: Szint: 1 Érték:   80.120 M: 2108352
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x6-28(1).psq
+______________________________
+ONIX16 x NABAMOKU08
+ 4) ONIX16.zip: Szint: 1 Érték:    1.474 M: 3690136
+ 6) ONIX16.zip: Szint: 1 Érték:    4.809 M: 3753836
+ 8) ONIX16.zip: Szint: 1 Érték:    3.791 M: 3696984
+10) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+10) ONIX16.zip: :)
+12) ONIX16.zip: Szint: 1 Érték:   40.080 M: 2108352
+14) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+16) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+18) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+20) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+22) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+24) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+26) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140636
+28) ONIX16.zip: Szint: 1 Érték:   80.208 M: 2108352
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\6x0-29(1).psq
+______________________________
+NABAMOKU08 x CARBON
+ 3) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+ 5) CARBON.zip: eval -114, depth 12, nodes 7787663, speed 675
+ 7) CARBON.zip: eval -102, depth 12, nodes 6242290, speed 673
+ 9) CARBON.zip: eval 41, depth 11, nodes 4129335, speed 662
+11) CARBON.zip: eval -71, depth 12, nodes 2525956, speed 654
+13) CARBON.zip: eval 33, depth 12, nodes 4607325, speed 628
+15) CARBON.zip: eval 218, depth 13, nodes 5254849, speed 708
+17) CARBON.zip: eval 84, depth 12, nodes 2354042, speed 657
+19) CARBON.zip: eval 29987, depth 13, nodes 5292867, speed 749
+21) CARBON.zip: eval 29991, depth 11, nodes 1950440, speed 746
+23) CARBON.zip: eval 29993, depth 12, nodes 1372171, speed 690
+25) CARBON.zip: eval 29995, depth 13, nodes 4193875, speed 741
+27) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+29) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x7-30(1).psq
+______________________________
+CARBON x NABAMOKU08
+ 4) CARBON.zip: eval 79, depth 11, nodes 8094484, speed 638
+ 6) CARBON.zip: eval -16, depth 12, nodes 5514072, speed 654
+ 8) CARBON.zip: eval 12, depth 12, nodes 2948800, speed 662
+10) CARBON.zip: eval 162, depth 11, nodes 3711813, speed 708
+12) CARBON.zip: eval 14, depth 12, nodes 5393391, speed 616
+14) CARBON.zip: eval 159, depth 11, nodes 2104417, speed 702
+16) CARBON.zip: eval 29989, depth 11, nodes 8454996, speed 692
+18) CARBON.zip: eval 29991, depth 9, nodes 2265655, speed 727
+20) CARBON.zip: eval 29993, depth 10, nodes 1276901, speed 616
+22) CARBON.zip: eval 29995, depth 11, nodes 4261279, speed 680
+24) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+26) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\7x0-27(1).psq
+______________________________
+NABAMOKU08 x IMRO15
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x8-33(1).psq
+______________________________
+IMRO15 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\8x0-59(1).psq
+______________________________
+NABAMOKU08 x PUSKVOREC
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x9-29(1).psq
+______________________________
+PUSKVOREC x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\9x0-53(1).psq
+______________________________
+NABAMOKU08 x PISQ7
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x10-21(1).psq
+______________________________
+PISQ7 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\10x0-20(1).psq
+______________________________
+NABAMOKU08 x NOESIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x11-57(1).psq
+______________________________
+NOESIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\11x0-94(1).psq
+______________________________
+NABAMOKU08 x QMENTAT6
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x12-56(1).psq
+______________________________
+QMENTAT6 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\12x0-53(1).psq
+______________________________
+NABAMOKU08 x PECUCHET
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x13-34(1).psq
+______________________________
+PECUCHET x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\13x0-19(1).psq
+______________________________
+NABAMOKU08 x JUDE
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x14-20(1).psq
+______________________________
+JUDE x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\14x0-45(1).psq
+______________________________
+NABAMOKU08 x ZETOR16
+ 3) ZETOR16.zip: Level... 1
+ 3) ZETOR16.zip: [11,9], val = 5
+ 3) ZETOR16.zip: Benchmark, nps=11173
+ 3) ZETOR16.zip: Level... 3
+ 3) ZETOR16.zip: [4,4], val = 0
+ 5) ZETOR16.zip: Level... 4
+ 5) ZETOR16.zip: [6,5], val = 2
+ 7) ZETOR16.zip: Level... 3
+ 7) ZETOR16.zip: [5,5], val = 3
+ 9) ZETOR16.zip: Level... 3
+ 9) ZETOR16.zip: [5,4], val = 34
+11) ZETOR16.zip: Level... 3
+11) ZETOR16.zip: [6,4], val = 508
+13) ZETOR16.zip: Level... 3
+13) ZETOR16.zip: [6,6], val = 510
+15) ZETOR16.zip: Level... 3
+15) ZETOR16.zip: [3,3], val = 1023
+17) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x15-18(1).psq
+______________________________
+ZETOR16 x NABAMOKU08
+ 4) ZETOR16.zip: Level... 1
+ 4) ZETOR16.zip: [11,9], val = 5
+ 4) ZETOR16.zip: Benchmark, nps=16580
+ 4) ZETOR16.zip: Level... 4
+ 4) ZETOR16.zip: [5,4], val = 3
+ 6) ZETOR16.zip: Level... 3
+ 6) ZETOR16.zip: [3,4], val = 8
+ 8) ZETOR16.zip: Level... 3
+ 8) ZETOR16.zip: [4,4], val = -1
+10) ZETOR16.zip: Level... 3
+10) ZETOR16.zip: [5,1], val = 1
+12) ZETOR16.zip: Level... 3
+12) ZETOR16.zip: [5,5], val = 498
+14) ZETOR16.zip: Level... 3
+14) ZETOR16.zip: [4,2], val = 500
+16) ZETOR16.zip: Level... 3
+18) ZETOR16.zip: Level... 3
+20) ZETOR16.zip: Level... 3
+20) ZETOR16.zip: [1,4], val = 506
+22) ZETOR16.zip: Level... 3
+22) ZETOR16.zip: [4,3], val = 508
+24) ZETOR16.zip: Level... 3
+24) ZETOR16.zip: [5,2], val = 510
+26) ZETOR16.zip: Level... 3
+26) ZETOR16.zip: [2,5], val = 1023
+28) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\15x0-29(1).psq
+______________________________
+NABAMOKU08 x KANEC09
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x16-64(1).psq
+______________________________
+KANEC09 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\16x0-23(1).psq
+______________________________
+FASTGOMOKU14 x NABAMOKU08
+ 8) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 8) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 8) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\1x0-28(1).psq
+______________________________
+NABAMOKU08 x FASTGOMOKU14
+ 7) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 7) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 7) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x1-100(1).psq
+______________________________
+IGNITOR x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\2x0-99(1).psq
+______________________________
+NABAMOKU08 x IGNITOR
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x2-39(1).psq
+______________________________
+EULRING x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\4x0-23(1).psq
+______________________________
+XOXO16 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\3x0-63(1).psq
+______________________________
+NABAMOKU08 x EULRING
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x4-22(1).psq
+______________________________
+CHIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\5x0-33(1).psq
+______________________________
+ONIX16 x NABAMOKU08
+ 8) ONIX16.zip: Szint: 1 Érték:   -0.603 M: 3753312
+10) ONIX16.zip: Szint: 1 Érték:   -2.869 M: 4730668
+12) ONIX16.zip: Szint: 1 Érték:   -3.095 M: 3880308
+14) ONIX16.zip: Szint: 1 Érték:    2.421 M: 2650440
+16) ONIX16.zip: Szint: 1 Érték:    4.290 M: 3360836
+18) ONIX16.zip: Szint: 1 Érték:    5.924 M: 3997768
+20) ONIX16.zip: Szint: 1 Érték:   40.464 M: 2108540
+22) ONIX16.zip: Szint: 1 Érték:   16.038 M: 2904980
+24) ONIX16.zip: Szint: 1 Érték:   27.214 M: 2853484
+26) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+26) ONIX16.zip: :)
+28) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+30) ONIX16.zip: Szint: 1 Érték:   40.200 M: 2108540
+32) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+34) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140824
+36) ONIX16.zip: Szint: 1 Érték:   80.576 M: 2108540
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\6x0-37(1).psq
+______________________________
+NABAMOKU08 x XOXO16
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x3-41(1).psq
+______________________________
+NABAMOKU08 x ONIX16
+ 7) ONIX16.zip: Szint: 1 Érték:    2.369 M: 3525896
+ 9) ONIX16.zip: Szint: 1 Érték:    0.636 M: 3808704
+11) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+11) ONIX16.zip: :)
+13) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+15) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+17) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+19) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+21) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+23) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+25) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140984
+27) ONIX16.zip: Szint: 1 Érték:   80.776 M: 2108540
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x6-28(2).psq
+______________________________
+CARBON x NABAMOKU08
+ 8) CARBON.zip: eval 85, depth 9, nodes 3128993, speed 569
+10) CARBON.zip: eval 82, depth 11, nodes 6027909, speed 576
+12) CARBON.zip: eval 177, depth 9, nodes 3195656, speed 610
+14) CARBON.zip: eval 29989, depth 10, nodes 1555204, speed 527
+16) CARBON.zip: eval 29991, depth 10, nodes 1866240, speed 527
+18) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+20) CARBON.zip: eval 29995, depth 10, nodes 3021210, speed 544
+22) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+24) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\7x0-25(1).psq
+______________________________
+NABAMOKU08 x CHIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x5-24(1).psq
+______________________________
+PUSKVOREC x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\9x0-29(1).psq
+______________________________
+IMRO15 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\8x0-63(1).psq
+______________________________
+PISQ7 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\10x0-30(1).psq
+______________________________
+NABAMOKU08 x PISQ7
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x10-27(1).psq
+______________________________
+NABAMOKU08 x CARBON
+ 7) CARBON.zip: eval 88, depth 9, nodes 3395000, speed 602
+ 9) CARBON.zip: eval -62, depth 10, nodes 3941104, speed 527
+11) CARBON.zip: eval -69, depth 10, nodes 3681257, speed 523
+13) CARBON.zip: eval 108, depth 9, nodes 10514079, speed 594
+15) CARBON.zip: eval 125, depth 9, nodes 5043738, speed 608
+17) CARBON.zip: eval -19, depth 10, nodes 1473975, speed 505
+19) CARBON.zip: eval 29987, depth 10, nodes 2017546, speed 504
+21) CARBON.zip: eval 29993, depth 9, nodes 2190179, speed 632
+23) CARBON.zip: eval 29995, depth 11, nodes 4264731, speed 622
+25) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+27) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x7-28(1).psq
+______________________________
+NABAMOKU08 x IMRO15
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x8-37(1).psq
+______________________________
+NABAMOKU08 x PUSKVOREC
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x9-48(1).psq
+______________________________
+NOESIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\11x0-23(1).psq
+______________________________
+PECUCHET x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\13x0-27(1).psq
+______________________________
+QMENTAT6 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\12x0-39(1).psq
+______________________________
+NABAMOKU08 x NOESIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x11-20(1).psq
+______________________________
+NABAMOKU08 x PECUCHET
+PECUCHET.zip has not returned coordinates x,y
+Exception EAccessViolation in module pbrain-Pecuchet.exe at 0001A950.
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x13-11(1).psq
+______________________________
+JUDE x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\14x0-33(1).psq
+______________________________
+NABAMOKU08 x JUDE
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x14-22(1).psq
+______________________________
+ZETOR16 x NABAMOKU08
+ 8) ZETOR16.zip: Level... 1
+ 8) ZETOR16.zip: [11,9], val = 5
+ 8) ZETOR16.zip: Benchmark, nps=10936
+ 8) ZETOR16.zip: Level... 3
+ 8) ZETOR16.zip: [6,8], val = 1
+10) ZETOR16.zip: Level... 3
+10) ZETOR16.zip: [8,8], val = 5
+12) ZETOR16.zip: Level... 3
+12) ZETOR16.zip: Level... 2
+12) ZETOR16.zip: [7,8], val = 504
+14) ZETOR16.zip: Level... 3
+14) ZETOR16.zip: [6,10], val = 506
+16) ZETOR16.zip: Level... 3
+16) ZETOR16.zip: [7,11], val = 508
+18) ZETOR16.zip: Level... 3
+20) ZETOR16.zip: Level... 3
+22) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\15x0-23(1).psq
+______________________________
+KANEC09 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\16x0-31(1).psq
+______________________________
+NABAMOKU08 x QMENTAT6
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x12-68(1).psq
+______________________________
+NABAMOKU08 x FASTGOMOKU14
+ 3) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 3) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 3) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x1-23(1).psq
+______________________________
+NABAMOKU08 x ZETOR16
+ 7) ZETOR16.zip: Level... 1
+ 7) ZETOR16.zip: [11,9], val = 5
+ 7) ZETOR16.zip: Benchmark, nps=8290
+ 7) ZETOR16.zip: Level... 3
+ 7) ZETOR16.zip: [7,4], val = 4
+ 9) ZETOR16.zip: Level... 3
+ 9) ZETOR16.zip: [7,5], val = -1
+11) ZETOR16.zip: Level... 3
+11) ZETOR16.zip: [8,2], val = -5
+13) ZETOR16.zip: Level... 3
+13) ZETOR16.zip: [6,6], val = 2
+15) ZETOR16.zip: Level... 3
+15) ZETOR16.zip: [9,5], val = 3
+17) ZETOR16.zip: Level... 3
+17) ZETOR16.zip: [5,3], val = 2
+19) ZETOR16.zip: Level... 3
+19) ZETOR16.zip: [4,2], val = 39
+21) ZETOR16.zip: Level... 3
+21) ZETOR16.zip: [4,6], val = 9
+23) ZETOR16.zip: Level... 3
+23) ZETOR16.zip: [7,6], val = 500
+25) ZETOR16.zip: Level... 3
+27) ZETOR16.zip: Level... 3
+27) ZETOR16.zip: [7,7], val = 504
+29) ZETOR16.zip: Level... 3
+29) ZETOR16.zip: [8,6], val = 506
+31) ZETOR16.zip: Level... 3
+31) ZETOR16.zip: [8,7], val = 508
+33) ZETOR16.zip: Level... 3
+33) ZETOR16.zip: [9,7], val = 510
+35) ZETOR16.zip: Level... 3
+35) ZETOR16.zip: [10,7], val = 1023
+37) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x15-38(1).psq
+______________________________
+NABAMOKU08 x XOXO16
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x3-31(1).psq
+______________________________
+NABAMOKU08 x IGNITOR
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x2-41(1).psq
+______________________________
+FASTGOMOKU14 x NABAMOKU08
+ 4) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 4) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 4) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\1x0-88(1).psq
+______________________________
+NABAMOKU08 x EULRING
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x4-28(1).psq
+______________________________
+NABAMOKU08 x KANEC09
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x16-120(1).psq
+______________________________
+XOXO16 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\3x0-79(1).psq
+______________________________
+IGNITOR x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\2x0-68(1).psq
+______________________________
+EULRING x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\4x0-25(1).psq
+______________________________
+NABAMOKU08 x CHIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x5-32(1).psq
+______________________________
+NABAMOKU08 x ONIX16
+ 3) ONIX16.zip: Szint: 1 Érték:   -2.349 M: 3725076
+ 5) ONIX16.zip: Szint: 1 Érték:    0.264 M: 3812608
+ 7) ONIX16.zip: Szint: 1 Érték:    2.007 M: 3743836
+ 9) ONIX16.zip: Szint: 1 Érték:    5.555 M: 3702732
+11) ONIX16.zip: Szint: 1 Érték:    6.661 M: 3663208
+13) ONIX16.zip: Szint: 1 Érték:    9.020 M: 3579880
+15) ONIX16.zip: Szint: 1 Érték:   10.736 M: 2815864
+17) ONIX16.zip: Szint: 1 Érték:   11.885 M: 3573752
+19) ONIX16.zip: Szint: 1 Érték:   40.240 M: 2108484
+21) ONIX16.zip: Szint: 1 Érték:   40.576 M: 2108484
+23) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+23) ONIX16.zip: :)
+25) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+27) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+29) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+31) ONIX16.zip: Szint: 1 Érték:   40.064 M: 2108484
+33) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2142228
+35) ONIX16.zip: Szint: 1 Érték:   80.512 M: 2108484
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x6-36(1).psq
+______________________________
+NABAMOKU08 x IMRO15
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x8-36(1).psq
+______________________________
+CHIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\5x0-41(1).psq
+______________________________
+ONIX16 x NABAMOKU08
+ 4) ONIX16.zip: Szint: 1 Érték:    3.381 M: 3664752
+ 6) ONIX16.zip: Szint: 1 Érték:    4.285 M: 3693160
+ 8) ONIX16.zip: Szint: 1 Érték:   10.555 M: 2812128
+10) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+10) ONIX16.zip: :)
+12) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+14) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+16) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+18) ONIX16.zip: Szint: 1 Érték:   40.272 M: 2108484
+20) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+22) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108572
+24) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140908
+26) ONIX16.zip: Szint: 1 Érték:   80.104 M: 2108484
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\6x0-27(1).psq
+______________________________
+NABAMOKU08 x CARBON
+ 7) CARBON.zip: eval -109, depth 12, nodes 5516121, speed 640
+ 9) CARBON.zip: eval 31, depth 11, nodes 5024805, speed 590
+11) CARBON.zip: eval 31, depth 11, nodes 4035715, speed 576
+13) CARBON.zip: eval 74, depth 11, nodes 6123808, speed 575
+15) CARBON.zip: eval 91, depth 11, nodes 5208779, speed 626
+17) CARBON.zip: eval -46, depth 10, nodes 5400070, speed 612
+19) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+21) CARBON.zip: eval 160, depth 9, nodes 6360077, speed 627
+23) CARBON.zip: eval 224, depth 9, nodes 4718988, speed 644
+25) CARBON.zip: eval 29987, depth 10, nodes 1265525, speed 521
+27) CARBON.zip: eval 29989, depth 13, nodes 1879795, speed 597
+29) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+31) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+33) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+35) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x7-36(1).psq
+______________________________
+NABAMOKU08 x PUSKVOREC
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x9-17(1).psq
+______________________________
+IMRO15 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\8x0-52(1).psq
+______________________________
+NABAMOKU08 x NOESIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x11-28(1).psq
+______________________________
+PUSKVOREC x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\9x0-41(1).psq
+______________________________
+NABAMOKU08 x PISQ7
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x10-85(1).psq
+______________________________
+PISQ7 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\10x0-24(1).psq
+______________________________
+CARBON x NABAMOKU08
+ 4) CARBON.zip: eval -88, depth 12, nodes 11558204, speed 778
+ 6) CARBON.zip: eval -61, depth 12, nodes 4391552, speed 618
+ 8) CARBON.zip: eval 90, depth 11, nodes 3486472, speed 622
+10) CARBON.zip: eval 83, depth 11, nodes 6907646, speed 625
+12) CARBON.zip: eval 85, depth 11, nodes 6494550, speed 605
+14) CARBON.zip: eval -48, depth 10, nodes 1731305, speed 582
+16) CARBON.zip: eval 95, depth 11, nodes 2317934, speed 571
+18) CARBON.zip: eval 39, depth 0, nodes 7701556, speed 620
+20) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+22) CARBON.zip: eval 15, depth 10, nodes 1471754, speed 616
+24) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+26) CARBON.zip: eval 29985, depth 12, nodes 2523600, speed 585
+28) CARBON.zip: eval 29987, depth 12, nodes 1406746, speed 583
+30) CARBON.zip: eval 29989, depth 11, nodes 1822130, speed 690
+32) CARBON.zip: eval 29995, depth 12, nodes 906008, speed 606
+34) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+36) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\7x0-37(1).psq
+______________________________
+NOESIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\11x0-137(1).psq
+______________________________
+NABAMOKU08 x JUDE
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x14-38(1).psq
+______________________________
+NABAMOKU08 x PECUCHET
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x13-46(1).psq
+______________________________
+NABAMOKU08 x QMENTAT6
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x12-236(1).psq
+______________________________
+NABAMOKU08 x ZETOR16
+ 3) ZETOR16.zip: Level... 1
+ 3) ZETOR16.zip: [11,9], val = 5
+ 3) ZETOR16.zip: Benchmark, nps=11173
+ 3) ZETOR16.zip: Level... 3
+ 3) ZETOR16.zip: [7,4], val = 0
+ 5) ZETOR16.zip: Level... 3
+ 5) ZETOR16.zip: [8,3], val = 1
+ 7) ZETOR16.zip: Level... 3
+ 7) ZETOR16.zip: [5,6], val = 4
+ 9) ZETOR16.zip: Level... 3
+ 9) ZETOR16.zip: [6,2], val = -4
+11) ZETOR16.zip: Level... 3
+11) ZETOR16.zip: [8,1], val = 3
+13) ZETOR16.zip: Level... 3
+13) ZETOR16.zip: [7,6], val = -1
+15) ZETOR16.zip: Level... 3
+15) ZETOR16.zip: [7,2], val = -1
+17) ZETOR16.zip: Level... 3
+17) ZETOR16.zip: [6,6], val = 0
+19) ZETOR16.zip: Level... 3
+21) ZETOR16.zip: Level... 3
+21) ZETOR16.zip: [4,4], val = 502
+23) ZETOR16.zip: Level... 3
+25) ZETOR16.zip: Level... 3
+27) ZETOR16.zip: Level... 3
+29) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x15-30(1).psq
+______________________________
+PECUCHET x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\13x0-38(1).psq
+______________________________
+JUDE x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\14x0-43(1).psq
+______________________________
+ZETOR16 x NABAMOKU08
+ 4) ZETOR16.zip: Level... 1
+ 4) ZETOR16.zip: [11,9], val = 5
+ 4) ZETOR16.zip: Benchmark, nps=6589
+ 4) ZETOR16.zip: Level... 3
+ 4) ZETOR16.zip: [6,3], val = 5
+ 6) ZETOR16.zip: Level... 3
+ 6) ZETOR16.zip: [6,4], val = 15
+ 8) ZETOR16.zip: Level... 3
+ 8) ZETOR16.zip: [6,5], val = 11
+10) ZETOR16.zip: Level... 3
+10) ZETOR16.zip: [7,2], val = 27
+12) ZETOR16.zip: Level... 3
+12) ZETOR16.zip: [5,3], val = 32
+14) ZETOR16.zip: Level... 3
+14) ZETOR16.zip: [10,4], val = 32
+16) ZETOR16.zip: Level... 3
+16) ZETOR16.zip: [4,3], val = 508
+18) ZETOR16.zip: Level... 3
+18) ZETOR16.zip: [7,3], val = 1023
+20) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\15x0-21(1).psq
+______________________________
+QMENTAT6 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\12x0-89(1).psq
+______________________________
+FASTGOMOKU14 x NABAMOKU08
+ 4) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 4) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 4) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\1x0-44(1).psq
+______________________________
+IGNITOR x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\2x0-28(1).psq
+______________________________
+NABAMOKU08 x KANEC09
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x16-42(1).psq
+______________________________
+NABAMOKU08 x FASTGOMOKU14
+ 3) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 3) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 3) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x1-76(1).psq
+______________________________
+XOXO16 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\3x0-121(1).psq
+______________________________
+NABAMOKU08 x IGNITOR
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x2-122(1).psq
+______________________________
+EULRING x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\4x0-33(1).psq
+______________________________
+NABAMOKU08 x XOXO16
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x3-76(1).psq
+______________________________
+KANEC09 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\16x0-67(1).psq
+______________________________
+CHIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\5x0-49(1).psq
+______________________________
+NABAMOKU08 x EULRING
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x4-24(1).psq
+______________________________
+NABAMOKU08 x CHIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x5-46(1).psq
+______________________________
+ONIX16 x NABAMOKU08
+ 4) ONIX16.zip: Szint: 1 Érték:    2.458 M: 3767076
+ 6) ONIX16.zip: Szint: 1 Érték:    3.185 M: 3650600
+ 8) ONIX16.zip: Szint: 1 Érték:    7.793 M: 3661888
+10) ONIX16.zip: Szint: 1 Érték:    6.752 M: 3669644
+12) ONIX16.zip: Szint: 1 Érték:    6.996 M: 3089740
+14) ONIX16.zip: Szint: 1 Érték:    7.002 M: 3673468
+16) ONIX16.zip: Szint: 1 Érték:    9.063 M: 3587676
+18) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+18) ONIX16.zip: :)
+20) ONIX16.zip: Szint: 1 Érték:   40.192 M: 2108352
+22) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+24) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+26) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+28) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+30) ONIX16.zip: Szint: 1 Érték:   40.432 M: 2108352
+32) ONIX16.zip: Szint: 1 Érték:   40.912 M: 2108352
+34) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+36) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140876
+38) ONIX16.zip: Szint: 1 Érték:   80.920 M: 2108352
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\6x0-39(1).psq
+______________________________
+NABAMOKU08 x ONIX16
+ 3) ONIX16.zip: Szint: 1 Érték:    1.172 M: 3619664
+ 5) ONIX16.zip: Szint: 1 Érték:    1.853 M: 3898724
+ 7) ONIX16.zip: Szint: 1 Érték:    2.524 M: 3989368
+ 9) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+ 9) ONIX16.zip: :)
+11) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+13) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+15) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+17) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140636
+19) ONIX16.zip: Szint: 1 Érték:   80.392 M: 2108352
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x6-20(1).psq
+______________________________
+PUSKVOREC x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\9x0-36(1).psq
+______________________________
+IMRO15 x NABAMOKU08
+NABAMOKU08.zip: Timeout
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\8x0-339(1).psq
+______________________________
+NABAMOKU08 x PUSKVOREC
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x9-26(1).psq
+______________________________
+CARBON x NABAMOKU08
+ 4) CARBON.zip: eval 79, depth 11, nodes 3315261, speed 551
+ 6) CARBON.zip: eval 115, depth 11, nodes 3350216, speed 581
+ 8) CARBON.zip: eval 133, depth 13, nodes 6430763, speed 609
+10) CARBON.zip: eval -1, depth 12, nodes 4928774, speed 566
+12) CARBON.zip: eval 135, depth 11, nodes 3433438, speed 610
+14) CARBON.zip: eval 116, depth 11, nodes 8079838, speed 626
+16) CARBON.zip: eval -26, depth 10, nodes 3175401, speed 536
+18) CARBON.zip: eval 3, depth 10, nodes 1448972, speed 529
+20) CARBON.zip: eval 131, depth 9, nodes 3681840, speed 583
+22) CARBON.zip: eval 152, depth 9, nodes 3358935, speed 592
+24) CARBON.zip: eval 157, depth 9, nodes 2311274, speed 581
+26) CARBON.zip: eval 174, depth 9, nodes 1530568, speed 575
+28) CARBON.zip: eval 155, depth 9, nodes 1111905, speed 561
+30) CARBON.zip: eval 112, depth 11, nodes 3775957, speed 585
+32) CARBON.zip: eval -28, depth 10, nodes 741992, speed 535
+34) CARBON.zip: eval 88, depth 9, nodes 1303666, speed 601
+36) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+38) CARBON.zip: eval 93, depth 9, nodes 4071128, speed 559
+40) CARBON.zip: eval 109, depth 9, nodes 2235749, speed 535
+42) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+44) CARBON.zip: eval 202, depth 9, nodes 1305962, speed 567
+46) CARBON.zip: eval 379, depth 11, nodes 2009726, speed 583
+48) CARBON.zip: eval 379, depth 9, nodes 623736, speed 575
+50) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+52) CARBON.zip: eval 29989, depth 10, nodes 662363, speed 488
+54) CARBON.zip: eval 29991, depth 9, nodes 1323339, speed 585
+56) CARBON.zip: eval 29993, depth 9, nodes 510536, speed 620
+58) CARBON.zip: eval 29995, depth 10, nodes 401845, speed 482
+60) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+62) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\7x0-63(1).psq
+______________________________
+PISQ7 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\10x0-79(1).psq
+______________________________
+NABAMOKU08 x IMRO15
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x8-85(1).psq
+______________________________
+NABAMOKU08 x CARBON
+ 3) CARBON.zip: eval 102, depth 11, nodes 6762429, speed 588
+ 5) CARBON.zip: eval 4, depth 12, nodes 3646061, speed 557
+ 7) CARBON.zip: eval 161, depth 11, nodes 7579380, speed 610
+ 9) CARBON.zip: eval 202, depth 9, nodes 2221068, speed 606
+11) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+13) CARBON.zip: eval 29987, depth 12, nodes 2413497, speed 508
+15) CARBON.zip: eval 29995, depth 10, nodes 2624333, speed 478
+17) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+19) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x7-20(1).psq
+______________________________
+NABAMOKU08 x PISQ7
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x10-29(1).psq
+______________________________
+NOESIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\11x0-74(1).psq
+______________________________
+NABAMOKU08 x NOESIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x11-20(2).psq
+______________________________
+JUDE x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\14x0-28(1).psq
+______________________________
+QMENTAT6 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\12x0-36(1).psq
+______________________________
+NABAMOKU08 x JUDE
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x14-28(1).psq
+______________________________
+PECUCHET x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\13x0-64(1).psq
+______________________________
+ZETOR16 x NABAMOKU08
+ 4) ZETOR16.zip: Level... 1
+ 4) ZETOR16.zip: [11,9], val = 5
+ 4) ZETOR16.zip: Benchmark, nps=8290
+ 4) ZETOR16.zip: Level... 3
+ 4) ZETOR16.zip: [4,4], val = 1
+ 6) ZETOR16.zip: Level... 3
+ 6) ZETOR16.zip: [5,3], val = 3
+ 8) ZETOR16.zip: Level... 3
+ 8) ZETOR16.zip: [2,3], val = 5
+10) ZETOR16.zip: Level... 3
+10) ZETOR16.zip: [4,5], val = 17
+12) ZETOR16.zip: Level... 3
+12) ZETOR16.zip: [3,4], val = 8
+14) ZETOR16.zip: Level... 3
+14) ZETOR16.zip: [5,2], val = 500
+16) ZETOR16.zip: Level... 3
+16) ZETOR16.zip: [5,6], val = 500
+18) ZETOR16.zip: Level... 3
+18) ZETOR16.zip: [6,5], val = 7
+20) ZETOR16.zip: Level... 3
+22) ZETOR16.zip: Level... 3
+22) ZETOR16.zip: [7,4], val = 508
+24) ZETOR16.zip: Level... 3
+26) ZETOR16.zip: Level... 3
+26) ZETOR16.zip: [4,7], val = 1023
+28) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\15x0-29(2).psq
+______________________________
+NABAMOKU08 x PECUCHET
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x13-24(1).psq
+______________________________
+NABAMOKU08 x ZETOR16
+ 3) ZETOR16.zip: Level... 1
+ 3) ZETOR16.zip: [11,9], val = 5
+ 3) ZETOR16.zip: Benchmark, nps=8290
+ 3) ZETOR16.zip: Level... 3
+ 3) ZETOR16.zip: [6,3], val = 4
+ 5) ZETOR16.zip: Level... 3
+ 5) ZETOR16.zip: [6,4], val = 3
+ 7) ZETOR16.zip: Level... 3
+ 7) ZETOR16.zip: [5,4], val = 7
+ 9) ZETOR16.zip: Level... 3
+ 9) ZETOR16.zip: [6,1], val = 504
+11) ZETOR16.zip: Level... 3
+11) ZETOR16.zip: [7,2], val = 506
+13) ZETOR16.zip: Level... 3
+13) ZETOR16.zip: [7,4], val = 508
+15) ZETOR16.zip: Level... 3
+17) ZETOR16.zip: Level... 3
+17) ZETOR16.zip: [7,1], val = 1023
+19) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x15-20(1).psq
+______________________________
+KANEC09 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\16x0-27(1).psq
+______________________________
+NABAMOKU08 x QMENTAT6
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x12-75(1).psq
+______________________________
+NABAMOKU08 x XOXO16
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x3-26(1).psq
+______________________________
+NABAMOKU08 x FASTGOMOKU14
+ 3) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 3) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 3) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x1-81(1).psq
+______________________________
+XOXO16 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\3x0-24(1).psq
+______________________________
+FASTGOMOKU14 x NABAMOKU08
+ 4) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+ 4) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+ 4) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\1x0-72(1).psq
+______________________________
+NABAMOKU08 x IGNITOR
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x2-98(1).psq
+______________________________
+NABAMOKU08 x EULRING
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x4-30(1).psq
+______________________________
+NABAMOKU08 x KANEC09
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x16-111(1).psq
+______________________________
+NABAMOKU08 x CHIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x5-34(1).psq
+______________________________
+NABAMOKU08 x ONIX16
+ 3) ONIX16.zip: Szint: 1 Érték:   -0.352 M: 3758900
+ 5) ONIX16.zip: Szint: 1 Érték:    1.958 M: 3713308
+ 7) ONIX16.zip: Szint: 1 Érték:    3.729 M: 3809656
+ 9) ONIX16.zip: Szint: 1 Érték:    5.456 M: 3598460
+11) ONIX16.zip: Szint: 1 Érték:    4.972 M: 3617628
+13) ONIX16.zip: Szint: 1 Érték:    4.890 M: 3704808
+15) ONIX16.zip: Szint: 1 Érték:    4.048 M: 3810364
+17) ONIX16.zip: Szint: 1 Érték:    3.124 M: 4006336
+19) ONIX16.zip: Szint: 1 Érték:    2.112 M: 3850188
+21) ONIX16.zip: Szint: 1 Érték:    7.661 M: 3700192
+23) ONIX16.zip: Szint: 1 Érték:    8.328 M: 4020616
+25) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+25) ONIX16.zip: :)
+27) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+29) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+31) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+33) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+35) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+37) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140636
+39) ONIX16.zip: Szint: 1 Érték:   80.264 M: 2108352
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x6-40(1).psq
+______________________________
+IGNITOR x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\2x0-35(1).psq
+______________________________
+CHIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\5x0-51(2).psq
+______________________________
+ONIX16 x NABAMOKU08
+ 4) ONIX16.zip: Szint: 1 Érték:    3.372 M: 3598184
+ 6) ONIX16.zip: Szint: 1 Érték:    2.959 M: 3892416
+ 8) ONIX16.zip: Szint: 1 Érték:    3.349 M: 3866496
+10) ONIX16.zip: Szint: 1 Érték:    7.711 M: 3673300
+12) ONIX16.zip: Szint: 1 Érték:    7.898 M: 2597388
+14) ONIX16.zip: Szint: 1 Érték:    7.990 M: 3730616
+16) ONIX16.zip: Szint: 1 Érték:    6.952 M: 2775380
+18) ONIX16.zip: Szint: 1 Érték:    7.084 M: 4034948
+20) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+20) ONIX16.zip: :)
+22) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+24) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+26) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+28) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+30) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+32) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+34) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108440
+36) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140636
+38) ONIX16.zip: Szint: 1 Érték:   80.144 M: 2108352
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\6x0-39(2).psq
+______________________________
+NABAMOKU08 x PUSKVOREC
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x9-29(2).psq
+______________________________
+NABAMOKU08 x CARBON
+ 3) CARBON.zip: eval 43, depth 11, nodes 4565406, speed 618
+ 5) CARBON.zip: eval -50, depth 12, nodes 3462667, speed 620
+ 7) CARBON.zip: eval 1, depth 12, nodes 2388592, speed 628
+ 9) CARBON.zip: eval 17, depth 12, nodes 3856390, speed 586
+11) CARBON.zip: eval 29987, depth 12, nodes 2443132, speed 580
+13) CARBON.zip: eval 29989, depth 14, nodes 3513503, speed 540
+15) CARBON.zip: eval 29991, depth 12, nodes 2097366, speed 573
+17) CARBON.zip: eval 29993, depth 11, nodes 8046549, speed 620
+19) CARBON.zip: eval 29995, depth 10, nodes 1202512, speed 519
+21) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+23) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x7-24(1).psq
+______________________________
+PUSKVOREC x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\9x0-17(1).psq
+______________________________
+EULRING x NABAMOKU08
+EULRING.zip: Timeout
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\4x0-154(1).psq
+______________________________
+NABAMOKU08 x IMRO15
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x8-139(1).psq
+______________________________
+NABAMOKU08 x NOESIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x11-33(1).psq
+______________________________
+CARBON x NABAMOKU08
+ 4) CARBON.zip: eval 89, depth 11, nodes 3938633, speed 616
+ 6) CARBON.zip: eval 112, depth 11, nodes 2774098, speed 625
+ 8) CARBON.zip: eval 52, depth 12, nodes 9470718, speed 617
+10) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+12) CARBON.zip: eval 244, depth 11, nodes 6471385, speed 649
+14) CARBON.zip: eval 107, depth 10, nodes 2621106, speed 548
+16) CARBON.zip: eval 29989, depth 9, nodes 2007257, speed 640
+18) CARBON.zip: eval 29991, depth 10, nodes 2993378, speed 557
+20) CARBON.zip: eval 29993, depth 11, nodes 5034414, speed 652
+22) CARBON.zip: eval 29995, depth 10, nodes 1178676, speed 560
+24) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+26) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\7x0-27(2).psq
+______________________________
+IMRO15 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\8x0-90(1).psq
+______________________________
+NABAMOKU08 x PISQ7
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x10-134(1).psq
+______________________________
+NOESIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\11x0-46(1).psq
+______________________________
+NABAMOKU08 x QMENTAT6
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x12-65(1).psq
+______________________________
+NABAMOKU08 x JUDE
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x14-36(1).psq
+______________________________
+PISQ7 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\10x0-48(1).psq
+______________________________
+NABAMOKU08 x PECUCHET
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x13-37(1).psq
+______________________________
+JUDE x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\14x0-31(1).psq
+______________________________
+QMENTAT6 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\12x0-65(1).psq
+______________________________
+PECUCHET x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\13x0-42(1).psq
+______________________________
+FASTGOMOKU14 x NABAMOKU08
+42) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+42) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+42) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\1x0-68(1).psq
+______________________________
+NABAMOKU08 x ZETOR16
+ 3) ZETOR16.zip: Level... 1
+ 3) ZETOR16.zip: [11,9], val = 5
+ 3) ZETOR16.zip: Benchmark, nps=11173
+ 3) ZETOR16.zip: Level... 3
+ 3) ZETOR16.zip: [2,4], val = 0
+ 5) ZETOR16.zip: Level... 3
+ 5) ZETOR16.zip: [2,3], val = 2
+ 7) ZETOR16.zip: Level... 4
+ 7) ZETOR16.zip: [3,4], val = 3
+ 9) ZETOR16.zip: Level... 3
+ 9) ZETOR16.zip: [5,6], val = 13
+11) ZETOR16.zip: Level... 3
+11) ZETOR16.zip: [4,6], val = 16
+13) ZETOR16.zip: Level... 3
+13) ZETOR16.zip: [3,5], val = 13
+15) ZETOR16.zip: Level... 3
+15) ZETOR16.zip: [3,6], val = 11
+17) ZETOR16.zip: Level... 3
+17) ZETOR16.zip: [4,8], val = 18
+19) ZETOR16.zip: Level... 3
+19) ZETOR16.zip: [4,7], val = 18
+21) ZETOR16.zip: Level... 3
+21) ZETOR16.zip: [7,7], val = 20
+23) ZETOR16.zip: Level... 3
+23) ZETOR16.zip: [4,9], val = 14
+25) ZETOR16.zip: Level... 3
+25) ZETOR16.zip: [2,8], val = 11
+27) ZETOR16.zip: Level... 3
+27) ZETOR16.zip: [1,3], val = 11
+29) ZETOR16.zip: Level... 3
+29) ZETOR16.zip: [7,10], val = 6
+31) ZETOR16.zip: Level... 3
+31) ZETOR16.zip: [7,9], val = 510
+33) ZETOR16.zip: Level... 3
+35) ZETOR16.zip: Level... 3
+37) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x15-38(2).psq
+______________________________
+IGNITOR x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\2x0-99(2).psq
+______________________________
+NABAMOKU08 x FASTGOMOKU14
+41) FASTGOMOKU14.zip: #201: ### Welcome to use the ax_Brain for Gomoku game! ###
+41) FASTGOMOKU14.zip: #202: For Command list Please type in "command"
+41) FASTGOMOKU14.zip: #203: For more information please visit: "http://gomocup.org/".
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x1-130(1).psq
+______________________________
+NABAMOKU08 x KANEC09
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x16-67(1).psq
+______________________________
+ZETOR16 x NABAMOKU08
+ 4) ZETOR16.zip: Level... 1
+ 4) ZETOR16.zip: [11,9], val = 5
+ 4) ZETOR16.zip: Benchmark, nps=11173
+ 4) ZETOR16.zip: Level... 3
+ 4) ZETOR16.zip: [3,4], val = 2
+ 6) ZETOR16.zip: Level... 3
+ 6) ZETOR16.zip: [3,5], val = 5
+ 8) ZETOR16.zip: Level... 3
+ 8) ZETOR16.zip: [4,2], val = 6
+10) ZETOR16.zip: Level... 3
+10) ZETOR16.zip: [5,3], val = 4
+12) ZETOR16.zip: Level... 3
+12) ZETOR16.zip: [6,5], val = 2
+14) ZETOR16.zip: Level... 3
+16) ZETOR16.zip: Level... 3
+16) ZETOR16.zip: [4,1], val = 9
+18) ZETOR16.zip: Level... 3
+18) ZETOR16.zip: [2,3], val = 11
+20) ZETOR16.zip: Level... 3
+20) ZETOR16.zip: [3,6], val = 18
+22) ZETOR16.zip: Level... 3
+22) ZETOR16.zip: [7,5], val = 20
+24) ZETOR16.zip: Level... 3
+24) ZETOR16.zip: [6,6], val = 28
+26) ZETOR16.zip: Level... 3
+26) ZETOR16.zip: Level... 2
+26) ZETOR16.zip: [6,4], val = 500
+28) ZETOR16.zip: Level... 3
+30) ZETOR16.zip: Level... 3
+30) ZETOR16.zip: Level... 2
+30) ZETOR16.zip: [5,6], val = 506
+32) ZETOR16.zip: Level... 3
+32) ZETOR16.zip: Level... 2
+32) ZETOR16.zip: [8,3], val = 1013
+34) ZETOR16.zip: Level... 3
+34) ZETOR16.zip: [8,5], val = 1015
+36) ZETOR16.zip: Level... 3
+36) ZETOR16.zip: [10,5], val = 1017
+38) ZETOR16.zip: Level... 3
+38) ZETOR16.zip: [6,3], val = 1019
+40) ZETOR16.zip: Level... 3
+40) ZETOR16.zip: [9,3], val = 1021
+42) ZETOR16.zip: Level... 3
+44) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\15x0-45(1).psq
+______________________________
+NABAMOKU08 x IGNITOR
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x2-84(1).psq
+______________________________
+XOXO16 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\3x0-101(1).psq
+______________________________
+EULRING x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\4x0-69(1).psq
+______________________________
+NABAMOKU08 x XOXO16
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x3-64(1).psq
+______________________________
+CHIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\5x0-131(1).psq
+______________________________
+ONIX16 x NABAMOKU08
+42) ONIX16.zip: Szint: 1 Érték:   40.088 M: 2108532
+44) ONIX16.zip: Szint: 1 Érték:    2.623 M: 3878712
+46) ONIX16.zip: Szint: 1 Érték:   40.064 M: 2108540
+48) ONIX16.zip: Szint: 1 Érték:    7.744 M: 3532632
+50) ONIX16.zip: Szint: 1 Érték:    7.062 M: 3662108
+52) ONIX16.zip: Szint: 1 Érték:    6.611 M: 3852664
+54) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+54) ONIX16.zip: :)
+56) ONIX16.zip: Szint: 1 Érték:   40.072 M: 2108540
+58) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2140824
+60) ONIX16.zip: Szint: 1 Érték:   80.560 M: 2108540
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\6x0-61(1).psq
+______________________________
+NABAMOKU08 x EULRING
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x4-66(1).psq
+______________________________
+KANEC09 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\16x0-85(1).psq
+______________________________
+NABAMOKU08 x CHIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x5-62(1).psq
+______________________________
+NABAMOKU08 x ONIX16
+41) ONIX16.zip: Szint: 1 Érték:   -0.434 M: 3612928
+43) ONIX16.zip: Szint: 1 Érték:   40.224 M: 2108540
+45) ONIX16.zip: Szint: 1 Érték:    7.326 M: 3668316
+47) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+47) ONIX16.zip: :)
+49) ONIX16.zip: Szint: 1 Érték:   40.304 M: 2108540
+51) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+53) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+55) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+57) ONIX16.zip: Szint: 1 Érték:   40.384 M: 2108540
+59) ONIX16.zip: Szint: 1 Érték:  150.000 M: 2108628
+61) ONIX16.zip: Szint: 1 Érték:  199.650 M: 2141084
+63) ONIX16.zip: Szint: 1 Érték:   80.416 M: 2108540
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x6-64(1).psq
+______________________________
+PISQ7 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\10x0-59(1).psq
+______________________________
+CARBON x NABAMOKU08
+42) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+44) CARBON.zip: eval 102, depth 9, nodes 8662033, speed 635
+46) CARBON.zip: eval 92, depth 9, nodes 5801565, speed 638
+48) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+50) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+52) CARBON.zip: eval 43, depth 8, nodes 1803255, speed 501
+54) CARBON.zip: eval 235, depth 9, nodes 8843926, speed 613
+56) CARBON.zip: eval 29987, depth 11, nodes 3289923, speed 580
+58) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+60) CARBON.zip: eval 29993, depth 9, nodes 2266585, speed 638
+62) CARBON.zip: eval 29995, depth 9, nodes 3875255, speed 663
+64) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+66) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\7x0-67(1).psq
+______________________________
+IMRO15 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\8x0-134(1).psq
+______________________________
+PUSKVOREC x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\9x0-151(1).psq
+______________________________
+NABAMOKU08 x PISQ7
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x10-101(1).psq
+______________________________
+NABAMOKU08 x IMRO15
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x8-86(1).psq
+______________________________
+NABAMOKU08 x CARBON
+41) CARBON.zip: eval -60, depth 8, nodes 2876604, speed 649
+43) CARBON.zip: eval 129, depth 9, nodes 8388007, speed 588
+45) CARBON.zip: eval 56, depth 8, nodes 2546902, speed 576
+47) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+49) CARBON.zip: eval 29983, depth 9, nodes 4985991, speed 588
+51) CARBON.zip: eval 29987, depth 12, nodes 3013888, speed 522
+53) CARBON.zip: eval 29991, depth 11, nodes 7415655, speed 579
+55) CARBON.zip: eval 0, depth 3, nodes 1, speed 0
+57) CARBON.zip: eval 29995, depth 10, nodes 1862024, speed 537
+59) CARBON.zip: eval 0, depth 2, nodes 0, speed 0
+61) CARBON.zip: eval 29999, depth 2, nodes 0, speed 0
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x7-62(1).psq
+______________________________
+NOESIS x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\11x0-96(1).psq
+______________________________
+NABAMOKU08 x PUSKVOREC
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x9-70(1).psq
+______________________________
+QMENTAT6 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\12x0-84(1).psq
+______________________________
+PECUCHET x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\13x0-75(1).psq
+______________________________
+NABAMOKU08 x NOESIS
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x11-81(1).psq
+______________________________
+JUDE x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\14x0-74(1).psq
+______________________________
+NABAMOKU08 x PECUCHET
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x13-78(1).psq
+______________________________
+NABAMOKU08 x QMENTAT6
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x12-148(1).psq
+______________________________
+ZETOR16 x NABAMOKU08
+42) ZETOR16.zip: Level... 1
+42) ZETOR16.zip: [11,9], val = 5
+42) ZETOR16.zip: Benchmark, nps=8290
+42) ZETOR16.zip: Level... 3
+44) ZETOR16.zip: Level... 3
+44) ZETOR16.zip: [4,12], val = 7
+46) ZETOR16.zip: Level... 3
+46) ZETOR16.zip: [2,11], val = 7
+48) ZETOR16.zip: Level... 3
+50) ZETOR16.zip: Level... 3
+52) ZETOR16.zip: Level... 3
+52) ZETOR16.zip: [10,9], val = 5
+54) ZETOR16.zip: Level... 3
+54) ZETOR16.zip: [1,16], val = 5
+56) ZETOR16.zip: Level... 3
+56) ZETOR16.zip: [11,13], val = 1
+58) ZETOR16.zip: Level... 3
+58) ZETOR16.zip: [10,13], val = -1
+60) ZETOR16.zip: Level... 3
+60) ZETOR16.zip: [10,15], val = 1
+62) ZETOR16.zip: Level... 3
+64) ZETOR16.zip: Level... 3
+66) ZETOR16.zip: Level... 3
+66) ZETOR16.zip: [11,14], val = 7
+68) ZETOR16.zip: Level... 3
+68) ZETOR16.zip: [13,12], val = 504
+70) ZETOR16.zip: Level... 3
+70) ZETOR16.zip: [12,11], val = 508
+72) ZETOR16.zip: Level... 3
+74) ZETOR16.zip: Level... 3
+74) ZETOR16.zip: [11,10], val = 1023
+76) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\15x0-77(1).psq
+______________________________
+NABAMOKU08 x JUDE
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x14-78(1).psq
+______________________________
+KANEC09 x NABAMOKU08
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\16x0-79(1).psq
+______________________________
+NABAMOKU08 x ZETOR16
+41) ZETOR16.zip: Level... 1
+41) ZETOR16.zip: [11,9], val = 5
+41) ZETOR16.zip: Benchmark, nps=8290
+41) ZETOR16.zip: Level... 3
+41) ZETOR16.zip: [3,13], val = 0
+43) ZETOR16.zip: Level... 3
+45) ZETOR16.zip: Level... 3
+47) ZETOR16.zip: Level... 3
+49) ZETOR16.zip: Level... 3
+49) ZETOR16.zip: [10,13], val = 29
+51) ZETOR16.zip: Level... 3
+53) ZETOR16.zip: Level... 3
+53) ZETOR16.zip: Level... 2
+53) ZETOR16.zip: [11,15], val = 504
+55) ZETOR16.zip: Level... 3
+55) ZETOR16.zip: [10,14], val = 1011
+57) ZETOR16.zip: Level... 3
+57) ZETOR16.zip: [6,12], val = 1013
+59) ZETOR16.zip: Level... 3
+59) ZETOR16.zip: [2,12], val = 1015
+61) ZETOR16.zip: Level... 3
+61) ZETOR16.zip: [10,16], val = 1017
+63) ZETOR16.zip: Level... 3
+65) ZETOR16.zip: Level... 3
+67) ZETOR16.zip: Level... 3
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x15-68(1).psq
+______________________________
+NABAMOKU08 x KANEC09
+KANEC09.zip: Timeout
+-> E:\Programming\CPP\Gomocup\Organization\2016\Record\freestyle2_nabamoku\0x16-251(1).psq
