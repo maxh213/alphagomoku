@@ -52,25 +52,31 @@ def printBoard (board):
 		print()
 	print ()
 
+def getMoves(path):
+	with open(path) as f:
+		ls = f.readlines()
 
-with open ( argv[1] ) as f:
-	ls = f.readlines()
+	ls = ls[1:-3]
+	ls = [l.strip() for l in ls]
+	ls = [l.split(',')[:2] for l in ls]
+	return [(int (m[0]) - 1,int (m[1]) - 1) for m in ls]
 
-ls = ls[1:-3]
-ls = [l.strip() for l in ls]
-ls = [l.split(',')[:2] for l in ls]
-moves = [(int (m[0]) - 1,int (m[1]) - 1) for m in ls]
-print (moves)
+def simulateBoard(moves, shouldPrint=False):
+	board = [[0 for j in range(BOARD_SIZE)]for i in range(BOARD_SIZE)]
+	p = 1
+	for x,y in moves:
+		if board[x][y] != 0 and shouldPrint:
+			print ('Warn: board move invalid')
+		board[x][y] = p
+		winner = decideWinner(board)
+		if winner != 0:
+			if shouldPrint:
+				print ("Winner found: " + convertPlayerChar(winner))
+			return winner
+		p = -p
+		if shouldPrint:
+			printBoard(board)
 
-board = [[0 for j in range(BOARD_SIZE)]for i in range(BOARD_SIZE)]
-p = 1
-for x,y in moves:
-	if board[x][y] != 0:
-		print ('Warn: board move invalid')
-	board[x][y] = p
-	winner = decideWinner(board)
-	if winner != 0:
-		print ("Winner found: " + convertPlayerChar(winner))
-		break
-	p = -p
-	printBoard(board)
+moves = getMoves(argv[1])
+print(convertPlayerChar(simulateBoard(moves)))
+
