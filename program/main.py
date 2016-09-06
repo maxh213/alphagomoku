@@ -1,10 +1,6 @@
 #! /usr/bin/env python3
+import board as brd
 from sys import argv
-
-# The size of the board.
-BOARD_SIZE = 20
-# The number of pieces that are required to be in a row.
-COUNT_NEEDED = 5
 
 # Char that represents player 1
 CHAR_PLAYER_1 = 'X'
@@ -12,29 +8,6 @@ CHAR_PLAYER_1 = 'X'
 CHAR_PLAYER_2 = 'Y'
 # Char that represents unclaimed territory
 CHAR_NEUTRAL = '-'
-
-def decideWinnerLine (board, x, y, dx, dy):
-	if x >= BOARD_SIZE - COUNT_NEEDED * dx:
-		return 0
-	if y >= BOARD_SIZE - COUNT_NEEDED * dy:
-		return 0
-
-	start = board[x][y]
-	for i in range(COUNT_NEEDED):
-		if board[x][y] != start:
-			return 0
-		x+=dx
-		y+=dy
-	return start
-
-def decideWinner (board):
-	for y in range(BOARD_SIZE):
-		for x in range(BOARD_SIZE):
-			for step in [(1,0),(0,1),(1,1)]:
-				winner = decideWinnerLine(board, x, y, step[0], step[1])
-				if winner != 0:
-					return winner
-	return 0
 
 def convertPlayerChar(player):
 	if player == -1:
@@ -45,14 +18,7 @@ def convertPlayerChar(player):
 		return CHAR_PLAYER_2
 	return None
 
-def printBoard (board):
-	for row in board:
-		for coord in row:
-			print(convertPlayerChar(coord)+ ".", end="")
-		print()
-	print ()
-
-def getMoves(path):
+def parseTrainingFile(path):
 	with open(path) as f:
 		ls = f.readlines()
 
@@ -62,21 +28,21 @@ def getMoves(path):
 	return [(int (m[0]) - 1,int (m[1]) - 1) for m in ls]
 
 def simulateBoard(moves, shouldPrint=False):
-	board = [[0 for j in range(BOARD_SIZE)]for i in range(BOARD_SIZE)]
+	board = [[0 for j in range(brd.BOARD_SIZE)]for i in range(brd.BOARD_SIZE)]
 	p = 1
 	for x,y in moves:
 		if board[x][y] != 0 and shouldPrint:
 			print ('Warn: board move invalid')
 		board[x][y] = p
-		winner = decideWinner(board)
+		winner = brd.decideWinner(board)
 		if winner != 0:
 			if shouldPrint:
 				print ("Winner found: " + convertPlayerChar(winner))
 			return winner
 		p = -p
 		if shouldPrint:
-			printBoard(board)
+			brd.printBoard(board)
 
-moves = getMoves(argv[1])
+moves = parseTrainingFile(argv[1])
 print(convertPlayerChar(simulateBoard(moves)))
 
