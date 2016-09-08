@@ -1,6 +1,5 @@
-# The size of the board.
 BOARD_SIZE = 20
-# The number of pieces that are required to be in a row.
+# The number of pieces that are required to be in a row to win.
 COUNT_NEEDED = 5
 
 def printBoard (board):

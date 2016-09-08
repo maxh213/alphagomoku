@@ -2,9 +2,8 @@
 import board as brd
 from sys import argv
 
-# Char that represents player 1
+
 CHAR_PLAYER_1 = 'X'
-# Char that represents player 2
 CHAR_PLAYER_2 = 'Y'
 # Char that represents unclaimed territory
 CHAR_NEUTRAL = '-'
