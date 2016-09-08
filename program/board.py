@@ -2,9 +2,7 @@ BOARD_SIZE = 20
 # The number of pieces that are required to be in a row to win.
 COUNT_NEEDED = 5
 
-# Char that represents player 1
 CHAR_PLAYER_1 = 'X'
-# Char that represents player 2
 CHAR_PLAYER_2 = 'Y'
 # Char that represents unclaimed territory
 CHAR_NEUTRAL = '-'
