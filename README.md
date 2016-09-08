@@ -1,5 +1,5 @@
 # Alpha Gomoku Group Project
-#### Written and maintained by Matthew Boakes, Harry Clarke, Radu Grigore, Max Harris, and Jamie Pont.
+#### Written and maintained by Matthew Boakes, Harry Clarke, Matthew Clayton, Max Harris, and Jamie Pont.
 
 ### Introduction
 
