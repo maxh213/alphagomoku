@@ -29,13 +29,13 @@ def simulate(moves, shouldPrint=False):
 	for x,y in moves:
 		assert board[x][y] == 0
 		board[x][y] = p
+		all_boards.append(deepcopy(board))
+		if shouldPrint:
+			brd.printBoard(board)
 		winner = brd.decideWinner(board)
 		if winner != 0:
 			return (winner, all_boards)
 		p = -p
-		all_boards.append(deepcopy(board))
-		if shouldPrint:
-			brd.printBoard(board)
 	assert False
 
 
