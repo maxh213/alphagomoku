@@ -14,15 +14,6 @@ should be used"""
 def convertPlayerChar(player):
 	assert -1 <= player <= 1, "Invalid board cell contents"
 	return PLAYER_CODES[player + 1]
-	
-	"""if player == -1:
-		return CHAR_PLAYER_1
-	if player == 0:
-		return CHAR_NEUTRAL
-	if player == 1:
-		return CHAR_PLAYER_2
-	return None"""
-
 
 def printBoard (board):
 	for row in board:
