@@ -6,16 +6,22 @@ CHAR_PLAYER_1 = 'X'
 CHAR_PLAYER_2 = 'Y'
 # Char that represents unclaimed territory
 CHAR_NEUTRAL = '-'
+PLAYER_CODES = [CHAR_PLAYER_1, CHAR_NEUTRAL, CHAR_PLAYER_2]
 
 
+"""Access the PLAYER_CODES array to determine which code
+should be used"""
 def convertPlayerChar(player):
-	if player == -1:
+	assert -1 <= player <= 1, "Invalid board cell contents"
+	return PLAYER_CODES[player + 1]
+	
+	"""if player == -1:
 		return CHAR_PLAYER_1
 	if player == 0:
 		return CHAR_NEUTRAL
 	if player == 1:
 		return CHAR_PLAYER_2
-	return None
+	return None"""
 
 
 def printBoard (board):
