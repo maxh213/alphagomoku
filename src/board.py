@@ -1,3 +1,5 @@
+from sys import stdout
+
 BOARD_SIZE = 20
 # The number of pieces that are required to be in a row to win.
 COUNT_NEEDED = 5
@@ -11,18 +13,18 @@ PLAYER_CODES = [CHAR_PLAYER_1, CHAR_NEUTRAL, CHAR_PLAYER_2]
 
 """Access the PLAYER_CODES array to determine which code
 should be used"""
-def convertPlayerChar(player):
+def convert_player_char(player):
 	assert -1 <= player <= 1, "Invalid board cell contents"
 	return PLAYER_CODES[player + 1]
 
-def printBoard (board):
+def print_board(board):
 	for row in board:
 		for coord in row:
-			print(convertPlayerChar(coord), end="")#+ ".", end="")
+			stdout.write(convert_player_char(coord))
 		print()
-	print ()
+	print()
 
-def decideWinnerLine (board, x, y, dx, dy):
+def decide_winner_line(board, x, y, dx, dy):
 	# Coords at end of vector.
 	restingX = x + COUNT_NEEDED * dx
 	restingY = y + COUNT_NEEDED * dy
@@ -46,11 +48,11 @@ def decideWinnerLine (board, x, y, dx, dy):
 		y+=dy
 	return start
 
-def decideWinner (board):
+def decide_winner (board):
 	for y in range(BOARD_SIZE):
 		for x in range(BOARD_SIZE):
 			for step in [(1,0),(0,1),(1,1),(1,-1)]:
-				winner = decideWinnerLine(board, x, y, step[0], step[1])
+				winner = decide_winner_line(board, x, y, step[0], step[1])
 				if winner != 0:
 					return winner
 	return 0
