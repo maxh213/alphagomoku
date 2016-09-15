@@ -36,7 +36,7 @@ def simulate(moves, shouldPrint=False):
 		if winner != 0:
 			return (winner, all_boards)
 		p = -p
-	assert False
+	raise ValueError('Winner still not determined after all moves have been made.')
 
 
 def main():

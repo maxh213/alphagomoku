@@ -23,12 +23,19 @@ def printBoard (board):
 	print ()
 
 def decideWinnerLine (board, x, y, dx, dy):
-	assert dx >= 0
-	if x >= BOARD_SIZE - COUNT_NEEDED * dx:
+	# Coords at end of vector.
+	restingX = x + COUNT_NEEDED * dx
+	restingY = y + COUNT_NEEDED * dy
+
+	# Check line doesn't leave the board from the left or the top.
+	if x < 0 or restingX < 0:
 		return 0
-	if y >= BOARD_SIZE - COUNT_NEEDED * dy:
+	if y < 0 or restingY < 0:
 		return 0
-	if y < COUNT_NEEDED * dy:
+	# Check line doesn't leave the board from the right or the bottom.
+	if x > BOARD_SIZE or restingX > BOARD_SIZE:
+		return 0
+	if y > BOARD_SIZE or restingY > BOARD_SIZE:
 		return 0
 
 	start = board[x][y]
