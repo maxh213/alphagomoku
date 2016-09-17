@@ -1,0 +1,7 @@
+Format of the board:
+
+Title ("Piskvorky" - hard coded. Never changes.) BoardWidth x BoardHeight, Player1 Difficulty:Player2 Difficulty, Starting Player
+Row Coordinate, Column Coordinate, time taken to make move (ms)
+Name of Player 1
+Name of Player 2
+Error Code
