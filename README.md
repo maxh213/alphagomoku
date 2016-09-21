@@ -16,4 +16,3 @@ The AlphaGomoku project aims to bring the concept behind Deep Mind's AlphaGo ("M
 * After Christmas
  * Fine tune/finish project
 
-matt c waz here
