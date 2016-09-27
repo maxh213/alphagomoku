@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
-import board as brd
 import os.path
 from copy import deepcopy
 from sys import argv
+
+from board import board as brd
 
 
 def expand_dirs(path, arr=None):
