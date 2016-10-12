@@ -3,13 +3,25 @@ import numpy as np
 from processTrainingData import processTrainingData
 from getTrainingDataFiles import getFiles
 
+SIZE_OF_BOARD = 15
+
 def tensorMain():
-	file1, file2, *rest = getFiles()
-	print(file1)
-	trainingData = processTrainingData(rest)
-	print(trainingData)
-	#print(trainingData) 
-	#print(processTrainingData(["../resources/training/freestyle/freestyle1/0x2-28(1).psq"]))
+	files = getFiles()
+	files = files[:20] #for dev purposes just use the first however many
+	trainingData = processTrainingData(files)
+	#print(trainingData)
+
+	#Init NN variables
+	##trainingGamePlaceholder = tf.placeholder("
+	#this gets a list of random numbers between 0 - 1
+	##randomStartingWeights = np.random.randint(2, size=SIZE_OF_BOARD)
+
+
+	##LOGIC:
+	#WHEN LEARN OFF THE NEXT MOVE MADE BY THE WINNING PLAYER
+
+	#NEEDS:
+	#THE GOMOKU APP TO FEED IT A LIST OF PLAYABLE MOVES!
 
 if __name__ == '__main__':
         tensorMain()
