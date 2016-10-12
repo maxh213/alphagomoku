@@ -22,6 +22,8 @@ def tensorMain():
 
 	#NEEDS:
 	#THE GOMOKU APP TO FEED IT A LIST OF PLAYABLE MOVES!
+	#Make a method which takes a board at any given state and returns any playable moves as a co-ordinate
+	#(moves which haven't already been played)
 
 if __name__ == '__main__':
         tensorMain()
