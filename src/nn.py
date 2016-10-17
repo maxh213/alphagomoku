@@ -6,7 +6,6 @@ from getTrainingDataFiles import getFiles
 #TODO: get this from the board file 
 BOARD_SIZE = 20
 
-
 '''
 Training data format:
 trainingData[0] = first game
@@ -21,10 +20,14 @@ def getTrainingData():
 
 def tensorMain():
 	trainingData = getTrainingData()
+	#the weights below mean there's a neuron for each place on the board
+	firstLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
+	
 	move = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
 	nextMove = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
 	gameWinner = tf.placeholder("float", 1)
 
+	model = tf.initialize_all_variables()
 	with tf.Session() as session:
 		tfMove = session.run(move, feed_dict={move: trainingData[0][1][0]})
 		tfNextMove = session.run(nextMove, feed_dict={nextMove: trainingData[0][2][0]})
@@ -34,6 +37,9 @@ def tensorMain():
 		print(tfNextMove)
 		print("----")
 		print(tfGameWinner)
+
+		session.run(model)
+		print(session.run(firstLayerWeights))
 		#Next step: Make a loop which will take in all the training data and learn
 
 if __name__ == '__main__':
