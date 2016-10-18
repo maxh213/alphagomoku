@@ -46,7 +46,7 @@ def simulate(moves, should_print=False):
 
 def simulate(moves, should_print=False):
 	board = brd.Board()
-	all_boards = [board.board]
+	all_boards = [deepcopy(board.board)]
 	p = -1
 	for x, y in moves:
 		assert board.board[x][y] == 0
@@ -60,6 +60,7 @@ def simulate(moves, should_print=False):
 		p = -p
 	raise ValueError('Winner still not determined after all moves have been made.')
 
+
 def processTrainingData(paths):
 	trainingData = []
 	for path in paths:
@@ -71,13 +72,14 @@ def processTrainingData(paths):
 				winner, boards = simulate(moves, should_print=False)
 				pathData.extend((b, winner) for b in boards)
 			except ValueError as error:
-				print ("Caught the following error for file: ", filename, " Error: ", error)
+				print("Caught the following error for file: ", filename, " Error: ", error)
 		if pathData == []:
-			#TODO: make it so if the winner is not determined this message changes
+			# TODO: make it so if the winner is not determined this message changes
 			print("Can't read/find file ", path)
 		else:
 			trainingData.append(pathData)
 	return trainingData
+
 
 if __name__ == '__main__':
 	processTrainingData(argv[1:])
