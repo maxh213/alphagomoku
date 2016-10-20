@@ -30,41 +30,78 @@ def getNextMoveOfWinningPlayer(game, currentMoveIndex):
 				if ((game[i][0][j][k] != game[i+1][0][j][k]) and game[i][1] == game[i+1][0][j][k]):
 					return [i+1, j, k]
 
+def transformTrainingOutputForTF(actualTrainingOutput):
+	return [
+	    [actualTrainingOutput, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	]
+
 
 def tensorMain():
 	trainingData = getTrainingData()
-
+	print(trainingData[0][0][0])
 	move = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
-	gameWinner = tf.placeholder("float", 1)
+	'''
+	tensorflow only support comparing inputs and outputs of the same shapes!!
+	So, we are passing it an output the size of the board but the first element in the board will be the actual output and the rest garbage
+	By garbage I mean 0s
+	'''
+	gameWinner = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
 
 	#the weights below mean there's a neuron for each place on the board
-	firstLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
+	firstLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -0.1, 0.1))
 	firstLayerBias = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -0.1, 0.1))
 
 	firstLayerOutput = tf.nn.relu(tf.matmul(move,firstLayerWeights) + firstLayerBias)
 
-	secondLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
-	secondLayerOutput = tf.matmul(firstLayerOutput, secondLayerWeights)
+	#secondLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
+	#secondLayerOutput = tf.matmul(firstLayerOutput, secondLayerWeights)
 	
-	output = tf.nn.softmax(secondLayerOutput)
-	#crossEntropy = -tf.reduce_sum(outputPlaceHolder*tf.log(output))
-	#trainStep = tf.train.GradientDescentOptimizer(0.2).minimize(crossEntropy)
+	output = tf.nn.softmax(firstLayerOutput)
+	crossEntropy = tf.reduce_mean(-tf.reduce_sum(gameWinner * tf.log(output), reduction_indices=[1]))
+	#crossEntropy = -tf.reduce_sum(gameWinner*tf.log(output))
 
-	
+	trainStep = tf.train.GradientDescentOptimizer(0.2).minimize(crossEntropy)
 
 	model = tf.initialize_all_variables()
-	with tf.Session() as session:
-		tfMove = session.run(move, feed_dict={move: trainingData[0][1][0]})
-		tfGameWinner = session.run(gameWinner, feed_dict={gameWinner: [trainingData[0][1][1]]})
-		print(tfMove)
-		print("----")
-		print(tfGameWinner)
+	session = tf.Session()
+	session.run(model)
+	for i in range (len(trainingData)):
+		for j in range (len(trainingData[i])):
+			session.run(trainStep, feed_dict={move: trainingData[i][j][0], gameWinner:transformTrainingOutputForTF(trainingData[i][j][1])})
+			entropy,_ = session.run([crossEntropy, trainStep], feed_dict={move: trainingData[i][j][0], gameWinner:transformTrainingOutputForTF(trainingData[i][j][1])})
+			print("step ",i,",",j, ": entropy ", entropy)
+			
+			#The code below outputs the prediction made by the nn vs the actual training data output
+			print("_------__----___----___--")
+			#the output from tensorflow will always be between 0-1, we will have to cast it to between -1 and 1 later before it goes to the rest of the
+			printableOuput = session.run(output, feed_dict={move: trainingData[i][j][0], gameWinner:transformTrainingOutputForTF(trainingData[i][j][1])})
+			print(printableOuput[0][0])	
+			print("_------__----___----___--")
+			print(transformTrainingOutputForTF(trainingData[i][j][1])[0][0])
+			print("_------__----___----___--")
 
-		session.run(model)
-		weights = session.run(firstLayerWeights)
-		print(weights)
-		#Next step: Make a loop which will take in all the training data and learn
-		print(getNextMoveOfWinningPlayer(trainingData[0], 5))
+	correctPrediction = tf.equal(tf.argmax(output,1), tf.argmax(gameWinner,1))
+	accuracy = tf.reduce_mean(tf.cast(correctPrediction, "float")) 
+	print(session.run(accuracy, feed_dict={move: trainingData[0][40][0], gameWinner:transformTrainingOutputForTF(trainingData[0][40][1])}))
 
 if __name__ == '__main__':
         tensorMain()
