@@ -47,7 +47,7 @@ def simulate(moves: MovesStruct, should_print: bool=False) -> TrainingDataStruct
 	raise ValueError('Winner still not determined after all moves have been made.')
 
 
-def process_training_data(paths: str):
+def process_training_data(paths: List[str]):
 	training_data = []
 	for path in paths:
 		path_data = []
