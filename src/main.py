@@ -50,6 +50,7 @@ def simulate(moves, should_print=False):
 	p = -1
 	for x, y in moves:
 		assert board.board[x][y] == 0
+		board.remove_move(x, y)
 		board.board[x][y] = p
 		all_boards.append(deepcopy(board.board))
 		if should_print:
@@ -67,7 +68,7 @@ def main():
 		for filename in expand_dirs(path):
 			print('processing file', filename)
 			moves = parse_training_file(filename)
-			winner, boards = simulate(moves, should_print=False)
+			winner, boards = simulate(moves, should_print=True)
 			data.extend((b, winner) for b in boards)
 		print(data)
 
