@@ -17,7 +17,7 @@ trainingData[0][1][0][0][0] = first tile on first line of first move of first ga
 def getTrainingData():
 	#TODO: GET ALL THE TRAINING DATA
 	files = get_files()
-	files = files[:1] #for dev purposes just use the first however many
+	#files = files[:1] #for dev purposes just use the first however many
 	return process_training_data(files)
 
 #TODO: this should be in the board class but I can't import it, I tried my best, please someone else do it
