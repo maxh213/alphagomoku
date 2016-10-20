@@ -34,26 +34,41 @@ def getNextMoveOfWinningPlayer(game, currentMoveIndex):
 
 def tensorMain():
 	trainingData = getTrainingData()
-	#the weights below mean there's a neuron for each place on the board
-	firstLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
-	
+
 	move = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
 	nextMove = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
 	gameWinner = tf.placeholder("float", 1)
 
+	#the weights below mean there's a neuron for each place on the board
+	firstLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
+	firstLayerBias = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -0.1, 0.1))
+
+	firstLayerOutput = tf.nn.relu(tf.matmul(move,firstLayerWeights) + firstLayerBias)
+
+	secondLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
+	secondLayerOutput = tf.matmul(firstLayerOutput, secondLayerWeights)
+	
+	#output = tf.nn.softmax(secondLayerOutput)
+	#crossEntropy = -tf.reduce_sum(outputPlaceHolder*tf.log(output))
+	#trainStep = tf.train.GradientDescentOptimizer(0.2).minimize(crossEntropy)
+
+	
+
 	model = tf.initialize_all_variables()
 	with tf.Session() as session:
 		tfMove = session.run(move, feed_dict={move: trainingData[0][1][0]})
-		tfNextMove = session.run(nextMove, feed_dict={nextMove: trainingData[0][2][0]})
+		indexsOfNextWinnerMove = getNextMoveOfWinningPlayer(trainingData[0], 1)
+		tfNextWinningMove = session.run(nextMove, feed_dict={nextMove: trainingData[0][2][0]})
 		tfGameWinner = session.run(gameWinner, feed_dict={gameWinner: [trainingData[0][1][1]]})
 		print(tfMove)
 		print("----")
-		print(tfNextMove)
+		print(tfNextWinningMove)
 		print("----")
 		print(tfGameWinner)
 
 		session.run(model)
-		print(session.run(firstLayerWeights))
+		weights = session.run(firstLayerWeights)
+		print(weights)
 		#Next step: Make a loop which will take in all the training data and learn
 		print(getNextMoveOfWinningPlayer(trainingData[0], 5))
 
