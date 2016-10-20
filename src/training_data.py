@@ -32,14 +32,15 @@ def parse_training_file(path: str) -> MovesStruct:
 
 def simulate(moves: MovesStruct, should_print: bool=False) -> TrainingDataStruct:
 	board = Board()
-	all_boards = [deepcopy(board.get_board())]
+	all_boards = [deepcopy(board.board)]
 	p = -1
 	for x, y in moves:
-		assert board.move(x, y, p)
-		all_boards.append(board.get_board())
+		assert board.board[x][y] == 0
+		board.board[x][y] = p
+		all_boards.append(deepcopy(board.board))
 		if should_print:
 			board.print_board()
-		winner, _ = board.decide_winner()
+		winner = board.decide_winner()
 		if winner != 0:
 			return all_boards, winner
 		p = -p
@@ -73,7 +74,4 @@ def get_files() -> List[str]:
 	return glob.glob("../resources/training/freestyle/freestyle1/*.psq")
 
 if __name__ == '__main__':
-	if len(argv) > 1:
-		process_training_data(argv[1:])
-	else:
-		process_training_data(get_files())
+	process_training_data(argv[1:])

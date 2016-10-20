@@ -2,7 +2,7 @@ from sys import stdout
 
 from copy import deepcopy
 from typing import List
-import player
+from player import convert_player_char
 
 """
 A row consists of a list of players.
@@ -28,11 +28,9 @@ class Board:
 	"""
 
 	def __init__(self):
-		self._board = [[0 for j in range(BOARD_SIZE)] for i in range(BOARD_SIZE)]
-		self._possible_moves = deepcopy(self._board)
-		self._next_player = -1
-		self._winner = 0
-		self._winning_moves = None
+		self.board = [[0 for j in range(BOARD_SIZE)] for i in range(BOARD_SIZE)]
+		self.possibleMoves = deepcopy(self.board)
+		self.next_player = -1
 
 	def _decide_winner_line(self, x, y, dx, dy):
 		# Coords at end of vector.
@@ -41,75 +39,43 @@ class Board:
 
 		# Check line doesn't leave the board from the left or the top.
 		if x < 0 or resting_x < 0:
-			return 0, None
+			return 0
 		if y < 0 or resting_y < 0:
-			return 0, None
+			return 0
 		# Check line doesn't leave the board from the right or the bottom.
 		if x > BOARD_SIZE or resting_x > BOARD_SIZE:
-			return 0, None
+			return 0
 		if y > BOARD_SIZE or resting_y > BOARD_SIZE:
-			return 0, None
+			return 0
 
-		start = self._board[x][y]
-		moves = []
-		for _ in range(COUNT_NEEDED):
-			if self._board[x][y] != start:
-				return 0, None
-			moves.append((x, y))
+		start = self.board[x][y]
+		for i in range(COUNT_NEEDED):
+			if self.board[x][y] != start:
+				return 0
 			x += dx
 			y += dy
-		return start, moves
+		return start
 
 	def print_board(self):
-		for row in self._board:
+		for row in self.board:
 			for coord in row:
-				stdout.write(player.convert_player_char(coord))
+				stdout.write(convert_player_char(coord))
 			print()
 		print()
 
 	def decide_winner(self):
-		return self._winner, self._winning_moves
+		for y in range(BOARD_SIZE):
+			for x in range(BOARD_SIZE):
+				for step in [(1, 0), (0, 1), (1, 1), (1, -1)]:
+					winner = self._decide_winner_line(x, y, step[0], step[1])
+					if winner != 0:
+						return winner
+		return 0
 
-	def _decide_winner(self, x: int, y: int) -> None:
-		"""
-		Decides if there is a winner using the provided coords.
-		If there is a winner, _winner and _winning_moves are set accordingly.
-		:param x: X coord.
-		:param y: Y coord.
-		"""
-		for step in [(1, 0), (0, 1), (1, 1), (1, -1)]:
-			winner, moves = self._decide_winner_line(x, y, step[0], step[1])
-			if winner != 0:
-				self._winner = winner
-				self._winning_moves = moves
-				return winner, moves
-		return 0, None
-
-	def move(self, x: int, y: int, p: int) -> bool:
-		"""
-		:param x: The x coordinate to move to.
-		:param y: The y coordinate to move to.
-		:param p: The player.
-		:return: True if move successful, False if move invalid.
-		"""
-		if self._board[x][y] != 0 or not player.is_valid(p) or p != self._next_player or self._winner != 0:
-			return False
-
-		self._next_player = -p
-		self._board[x][y] = p
-		self._decide_winner(x, y)
-		return True
-
-	def _remove_move(self, x: int, y: int) -> None:
+	def remove_move(self, x: int, y: int) -> None:
 		"""
 		Removes a move from the list of possible moves.
 		"""
-		self._possible_moves[x][y] = "X"
+		self.possibleMoves[x][y] = "X"
 		# del(self.possibleMoves[x][y])
-		print(self._possible_moves)
-
-	def get_board(self) -> BoardStruct:
-		"""
-		:return: A deep copy of the board 2D array.
-		"""
-		return deepcopy(self._board)
+		print(self.possibleMoves)
