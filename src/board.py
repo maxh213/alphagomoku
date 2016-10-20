@@ -1,14 +1,22 @@
 from sys import stdout
 
+from typing import List
+from player import convert_player_char
+
+"""
+A row consists of a list of players.
+"""
+RowStruct = List[int]
+
+"""
+A board consists of a list of rows.
+The board is navigated with [x][y] coordinates.
+"""
+BoardStruct = List[RowStruct]
+
 BOARD_SIZE = 20
 # The number of pieces that are required to be in a row to win.
 COUNT_NEEDED = 5
-
-CHAR_PLAYER_1 = 'X'
-CHAR_PLAYER_2 = 'Y'
-# Char that represents unclaimed territory.
-CHAR_NEUTRAL = '-'
-PLAYER_CODES = [CHAR_PLAYER_1, CHAR_NEUTRAL, CHAR_PLAYER_2]
 
 
 class Board:
@@ -49,7 +57,7 @@ class Board:
 	def print_board(self):
 		for row in self.board:
 			for coord in row:
-				stdout.write(Board.convert_player_char(coord))
+				stdout.write(convert_player_char(coord))
 			print()
 		print()
 
@@ -61,8 +69,3 @@ class Board:
 					if winner != 0:
 						return winner
 		return 0
-
-	@staticmethod
-	def convert_player_char(player):
-		assert -1 <= player <= 1, "Invalid board cell contents"
-		return PLAYER_CODES[player + 1]

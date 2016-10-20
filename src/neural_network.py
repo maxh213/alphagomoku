@@ -3,30 +3,8 @@ from typing import Tuple
 
 import tensorflow as tf
 
-from getTrainingDataFiles import getFiles
-from processTrainingData import processTrainingData
+from training_data import process_training_data, get_files
 
-"""
-The player is represented by an int.
--1:	Player 1
-0:	Not occupied.
-1:	Player 2
-"""
-Player = int
-"""
-A row consists of a list of players.
-"""
-Row = List[Player]
-"""
-A board consists of a list of rows.
-The board is navigated with [x][y] coordinates.
-"""
-Board = List[Row]
-
-"""
-Training data is represented as a list of moves/boards, and the winner for that game.
-"""
-TrainingData = Tuple[List[Board], Player]
 
 '''
 Training data format:
@@ -40,9 +18,9 @@ trainingData[0][1][0][0][0] = first tile on first line of first move of first ga
 
 
 def getTrainingData():
-	files = getFiles()
+	files = get_files()
 	files = files[:1]  # for dev purposes just use the first however many
-	return processTrainingData(files)
+	return process_training_data(files)
 
 
 # TODO: this should be in the board class but I can't import it, I tried my best, please someone else do it
