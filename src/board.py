@@ -1,5 +1,6 @@
 from sys import stdout
 
+from copy import deepcopy
 from typing import List
 from player import convert_player_char
 
@@ -28,6 +29,7 @@ class Board:
 
 	def __init__(self):
 		self.board = [[0 for j in range(BOARD_SIZE)] for i in range(BOARD_SIZE)]
+		self.possibleMoves = deepcopy(self.board)
 		self.next_player = -1
 
 	def _decide_winner_line(self, x, y, dx, dy):
@@ -69,3 +71,11 @@ class Board:
 					if winner != 0:
 						return winner
 		return 0
+
+	def remove_move(self, x: int, y: int) -> None:
+		"""
+		Removes a move from the list of possible moves.
+		"""
+		self.possibleMoves[x][y] = "X"
+		# del(self.possibleMoves[x][y])
+		print(self.possibleMoves)
