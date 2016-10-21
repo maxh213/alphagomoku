@@ -54,6 +54,15 @@ def network():
             batch_output = transformTrainingOutputForTF(training_data[i][j][1])
             #print("Game: %s, Move: %s, Winner: %s" % (i + 1, j + 1, batch_output[0][0]))
             sess.run(train_step, feed_dict={input: batch_input, correct: batch_output})
+            
+            #The code below outputs the prediction made by the nn vs the actual training data output
+            print("*******************************")
+            print("Ouput from network:")
+            printableOuput = sess.run(model, feed_dict={input: batch_input, correct: batch_output})
+            print(printableOuput[0][0]) 
+            print("Output from training data:")
+            print(transformTrainingOutputForTF(training_data[i][j][1])[0][0])
+            print("*******************************")
 
     # Determine accuracy
     correct_predicition = tf.equal(tf.argmax(model, 1), tf.argmax(correct, 1))
