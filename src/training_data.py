@@ -77,5 +77,4 @@ def get_test_files() -> List[str]:
 	return glob.glob("../resources/training/freestyle/freestyle2/*.psq")
 
 if __name__ == '__main__':
-	#process_training_data(argv[1:])
-	process_training_data(get_files())
+	process_training_data(argv[1:])
