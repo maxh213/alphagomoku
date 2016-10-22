@@ -1,7 +1,7 @@
 from sys import stdout
 
-from copy import deepcopy
-from typing import List
+from copy import copy, deepcopy
+from typing import List, Tuple
 import player
 
 """
@@ -14,6 +14,13 @@ A board consists of a list of rows.
 The board is navigated with [x][y] coordinates.
 """
 BoardStruct = List[RowStruct]
+
+"""
+Moves are represented as a tuple of x and y coords.
+"""
+MoveStruct = Tuple[int, int]
+
+MovesStruct = List[MoveStruct]
 
 BOARD_SIZE = 20
 # The number of pieces that are required to be in a row to win.
@@ -34,41 +41,38 @@ class Board:
 		self._winner = 0
 		self._winning_moves = None
 
-	def _decide_winner_line(self, x, y, dx, dy):
-		# Coords at end of vector.
-		resting_x = x + COUNT_NEEDED * dx
-		resting_y = y + COUNT_NEEDED * dy
-
-		# Check line doesn't leave the board from the left or the top.
-		if x < 0 or resting_x < 0:
-			return 0, None
-		if y < 0 or resting_y < 0:
-			return 0, None
-		# Check line doesn't leave the board from the right or the bottom.
-		if x > BOARD_SIZE or resting_x > BOARD_SIZE:
-			return 0, None
-		if y > BOARD_SIZE or resting_y > BOARD_SIZE:
-			return 0, None
-
-		start = self._board[x][y]
-		moves = []
-		for _ in range(COUNT_NEEDED):
-			if self._board[x][y] != start:
-				return 0, None
-			moves.append((x, y))
-			x += dx
-			y += dy
-		return start, moves
-
 	def print_board(self):
-		for row in self._board:
-			for coord in row:
+		coords = range(BOARD_SIZE)
+		for y in reversed(coords):
+			for x in coords:
+				coord = self._board[x][y]
 				stdout.write(player.convert_player_char(coord))
 			print()
 		print()
 
 	def decide_winner(self):
 		return self._winner, self._winning_moves
+
+	def _decide_winner_line(self, x: int, y: int, dx: int, dy: int) -> Tuple[int, MovesStruct]:
+		"""
+		Counts the number of spaces in a line belonging to the player in the given space.
+		So if board[x][y] belongs to player 1, dx = 1, and dy = 0,
+		then this function will search the horizontal line for consecutive player 1 spaces from board[x][y].
+		"""
+		p = self._board[x][y]
+		count = 1
+		moves = []
+		for d in [-1, 1]:
+			tx = x + dx * d
+			ty = y + dy * d
+			while check_coords(tx, ty) and self._board[tx][ty] == p:
+				moves.append((tx, ty))
+				count += 1
+				if count == COUNT_NEEDED:
+					return p, moves
+				tx += dx * d
+				ty += dy * d
+		return 0, None
 
 	def _decide_winner(self, x: int, y: int) -> None:
 		"""
@@ -78,6 +82,7 @@ class Board:
 		:param y: Y coord.
 		"""
 		for step in [(1, 0), (0, 1), (1, 1), (1, -1)]:
+
 			winner, moves = self._decide_winner_line(x, y, step[0], step[1])
 			if winner != 0:
 				self._winner = winner
@@ -113,3 +118,7 @@ class Board:
 		:return: A deep copy of the board 2D array.
 		"""
 		return deepcopy(self._board)
+
+
+def check_coords(x: int, y: int) -> bool:
+	return 0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE

@@ -4,20 +4,12 @@ from copy import deepcopy
 from sys import argv
 
 from typing import List, Tuple
-from board import Board, BoardStruct
+from board import Board, BoardStruct, MovesStruct
 
 """
 Training data is represented as a list of moves/boards, and the winner for that game.
 """
 TrainingDataStruct = Tuple[List[BoardStruct], int]
-
-
-"""
-Moves are represented as a tuple of x and y coords.
-"""
-MoveStruct = Tuple[int, int]
-
-MovesStruct = List[MoveStruct]
 
 
 def parse_training_file(path: str) -> MovesStruct:
@@ -46,14 +38,15 @@ def simulate(moves: MovesStruct, should_print: bool=False) -> TrainingDataStruct
 	raise ValueError('Winner still not determined after all moves have been made.')
 
 
-def process_training_data(paths: List[str]):
+def process_training_data(paths: List[str], should_print=False):
 	training_data = []
 	for path in paths:
 		path_data = []
-		print('processing file', path)
+		if should_print:
+			print('processing file', path)
 		moves = parse_training_file(path)
 		try:
-			boards, winner = simulate(moves, should_print=False)
+			boards, winner = simulate(moves, should_print=should_print)
 			path_data.extend((b, winner) for b in boards)
 		except ValueError as error:
 			print ("Caught the following error for file: ", path, " Error: ", error)
@@ -74,6 +67,6 @@ def get_files() -> List[str]:
 
 if __name__ == '__main__':
 	if len(argv) > 1:
-		process_training_data(argv[1:])
+		process_training_data(argv[1:], should_print=True)
 	else:
-		process_training_data(get_files())
+		process_training_data(get_files(), should_print=True)
