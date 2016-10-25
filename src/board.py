@@ -111,7 +111,7 @@ class Board:
 		"""
 		self._possible_moves[x][y] = "X"
 		# del(self.possibleMoves[x][y])
-		print(self._possible_moves)
+		# print(self._possible_moves)
 
 	def get_board(self) -> BoardStruct:
 		"""
