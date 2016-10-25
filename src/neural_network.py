@@ -1,9 +1,22 @@
 import tensorflow as tf
-import numpy as np
-from training_data import process_training_data, get_files
+from training_data import process_training_data, get_files, get_test_files
 
-#TODO: get this from the board file 
+#TODO: this should be got from the board file
+# Width and Height of the board
 BOARD_SIZE = 20
+
+LEARNING_RATE = 0.1
+
+TRAINING_DATA_FILE_COUNT = 2000
+TEST_DATA_FILE_COUNT = 1000
+
+# THIS BELONGS IN training_data.py
+def count_moves(data):
+    counter = 0
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            counter += 1
+    return counter
 
 '''
 Training data format:
@@ -13,99 +26,120 @@ trainingData[0][2][0] = second move of first game
 trainingData[0][0][1] = winner of first game
 trainingData[0][1][0][0] = first line of first move of first game
 trainingData[0][1][0][0][0] = first tile on first line of first move of first game
-''' 
-def getTrainingData():
-	#TODO: GET ALL THE TRAINING DATA
-	files = get_files()
-	#files = files[:1] #for dev purposes just use the first however many
-	return process_training_data(files)
+'''
+def get_training_data():
+    # Obtain files for processing
+    files = get_files()
+    return process_training_data(files[:TRAINING_DATA_FILE_COUNT])
 
-#TODO: this should be in the board class but I can't import it, I tried my best, please someone else do it
-#game = trainingData[i]
-def getNextMoveOfWinningPlayer(game, currentMoveIndex):
-	#Although this is a lot of loop, it will make at max 2 iterations through all of it
-	for i in range (currentMoveIndex, len(game)):
-		for j in range (0, len(game[i][0])):
-			for k in range (0, len(game[i][0][j])):
-				#If the current move and next move are different and the person who made the move is the winning player
-				if ((game[i][0][j][k] != game[i+1][0][j][k]) and game[i][1] == game[i+1][0][j][k]):
-					return [i+1, j, k]
+def get_test_data():
+    test_files = get_test_files()
+    return process_training_data(test_files[:TEST_DATA_FILE_COUNT])
 
-def transformTrainingOutputForTF(actualTrainingOutput):
-	return [
-	    [actualTrainingOutput, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-	]
+def network():
+    print("Neural Network training beginning...")
+    print("If you see any 'can't read file' error messages below, please ignore them for now, this is normal behaviour in this early build")
+    print("------------------------------------------------")
+
+    # Get training data
+    training_data = get_training_data()
+    testing_data = get_test_data()
+
+    # Set up placeholders for input and output
+    input = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
+    correct = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
+
+    # Initialise weights and biases
+    weights = tf.Variable(tf.random_uniform([BOARD_SIZE, BOARD_SIZE], -0.1, 0.1))
+    bias = tf.Variable(tf.random_uniform([BOARD_SIZE, BOARD_SIZE], -0.1, 0.1))
+
+    # Define the model
+    # the 0 argument at the end is the index you wish to apply softmax to
+    # if you don't specify it assumes -1 which means the last entry
+    model = tf.nn.softmax(tf.matmul(input, weights) + bias, 0)
+    model = tf.sigmoid(model)
+
+    # Define Cross Entropy function
+    cross_entropy = tf.reduce_mean(-tf.reduce_sum(correct * tf.log(model)))
+
+    # Define a training step
+    train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
+
+    # Prepare model for training
+    init = tf.initialize_all_variables()
+
+    sess = tf.Session()
+    sess.run(init)
 
 
-def tensorMain():
-	trainingData = getTrainingData()
-	print(trainingData[0][0][0])
-	move = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
-	'''
-	tensorflow only support comparing inputs and outputs of the same shapes!!
-	So, we are passing it an output the size of the board but the first element in the board will be the actual output and the rest garbage
-	By garbage I mean 0s
-	'''
-	gameWinner = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
+    # For each game
+    for i in range (len(training_data)):
+        # For each move in the game
+        for j in range (len(training_data[i])):
+            batch_input = training_data[i][j][0]
+            batch_output = transform_training_output_for_tf(training_data[i][j][1])
+            sess.run(train_step, feed_dict={input: batch_input, correct: batch_output})
+            print("********************************")
+            print("Output from network:")
+            printableOuput = sess.run(model, feed_dict={input: batch_input, correct: batch_output})
+            print(printableOuput[0][0])
+            print("Output from training data:")
+            print(transform_training_output_for_tf(training_data[i][j][1])[0][0])
+            print("********************************")
+ 
+    #TODO: move this to its own method
+    #start accuracy calculation
+    size = count_moves(testing_data)
+    correct = 0
+    for i in range(0, len(testing_data)):
+        for j in range(0, len(testing_data[i])):
+            batch_input = testing_data[i][j][0]
+            batch_output = transform_training_output_for_tf(testing_data[i][j][1])
+            output = sess.run(model, feed_dict={input: batch_input})
+            output = output[0][0]
+            '''
+                For some reason the sigmoid function only seems to go between 0.5 and 0.75
+                It will literally never go above or below this
 
-	#the weights below mean there's a neuron for each place on the board
-	firstLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -0.1, 0.1))
-	firstLayerBias = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -0.1, 0.1))
+                but if we convert 0.5 to -1 and 0.75 to 1 
+                so anything above 0.625 goes to 1 and anything below to -1
+                it seems like it's actually learnt a bit
+            '''
+            if output < 0.625:
+                output = -1
+            else:
+                output = 1
+            if output == batch_output[0][0]:
+                correct += 1
 
-	firstLayerOutput = tf.nn.relu(tf.matmul(move,firstLayerWeights) + firstLayerBias)
+    print("correct: %s" % (correct))
+    print("number: %s" % size)
+    accuracy = (correct / size) * 100
+    print("%s percent" % (accuracy))
 
-	#secondLayerWeights = tf.Variable(tf.random_uniform([len(trainingData[0][1][0]),len(trainingData[0][1][0][0])], -1, 1))
-	#secondLayerOutput = tf.matmul(firstLayerOutput, secondLayerWeights)
-	
-	output = tf.nn.softmax(firstLayerOutput)
-	crossEntropy = tf.reduce_mean(-tf.reduce_sum(gameWinner * tf.log(output), reduction_indices=[1]))
-	#crossEntropy = -tf.reduce_sum(gameWinner*tf.log(output))
-
-	trainStep = tf.train.GradientDescentOptimizer(0.2).minimize(crossEntropy)
-
-	model = tf.initialize_all_variables()
-	session = tf.Session()
-	session.run(model)
-	for i in range (len(trainingData)):
-		for j in range (len(trainingData[i])):
-			session.run(trainStep, feed_dict={move: trainingData[i][j][0], gameWinner:transformTrainingOutputForTF(trainingData[i][j][1])})
-			entropy,_ = session.run([crossEntropy, trainStep], feed_dict={move: trainingData[i][j][0], gameWinner:transformTrainingOutputForTF(trainingData[i][j][1])})
-			print("step ",i,",",j, ": entropy ", entropy)
-			
-			#The code below outputs the prediction made by the nn vs the actual training data output
-			print("_------__----___----___--")
-			#the output from tensorflow will always be between 0-1, we will have to cast it to between -1 and 1 later before it goes to the rest of the
-			printableOuput = session.run(output, feed_dict={move: trainingData[i][j][0], gameWinner:transformTrainingOutputForTF(trainingData[i][j][1])})
-			print(printableOuput[0][0])	
-			print("_------__----___----___--")
-			print(transformTrainingOutputForTF(trainingData[i][j][1])[0][0])
-			print("_------__----___----___--")
-
-	correctPrediction = tf.equal(tf.argmax(output,1), tf.argmax(gameWinner,1))
-	accuracy = tf.reduce_mean(tf.cast(correctPrediction, "float")) 
-	print(session.run(accuracy, feed_dict={move: trainingData[0][40][0], gameWinner:transformTrainingOutputForTF(trainingData[0][40][1])}))
+def transform_training_output_for_tf(actualTrainingOutput):
+    return [
+        [actualTrainingOutput, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
 
 if __name__ == '__main__':
-        tensorMain()
-
-
-
+    network()
