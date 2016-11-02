@@ -162,6 +162,7 @@ def conv_network():
 	accuracy = (correct / size) * 100
 	print("%s percent" % (accuracy))
 
+#This is now deprecated, we'll be editing the conv_network going forward
 def network():
     print("Neural Network training beginning...")
     print("If you see any 'can't read file' error messages below, please ignore them for now, this is normal behaviour in this early build")
