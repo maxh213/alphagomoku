@@ -2,13 +2,6 @@ import tensorflow as tf
 import math
 from training_data import process_training_data, get_files, get_test_files
 
-'''
-would Reduction indeces[0] work better than removing it??
-do we need reduce sum if no reduction indeces
--convolution network tutorial
--fix the output scaling of the sigmoid
-'''
-
 #TODO: this should be got from the board file
 # Width and Height of the board
 BOARD_SIZE = 20
@@ -16,7 +9,7 @@ BOARD_SIZE = 20
 LEARNING_RATE = 0.01
 
 TRAINING_DATA_FILE_COUNT = 200
-TEST_DATA_FILE_COUNT = 10
+TEST_DATA_FILE_COUNT = 100
 
 # THIS BELONGS IN training_data.py
 def count_moves(data):
@@ -51,15 +44,18 @@ def get_weight_variable(shape):
 
 def get_bias_variable(shape):
 	return tf.Variable(tf.random_uniform(shape, -0.1, 0.1))
-	initial = tf.constant(0.1, shape=shape)
-	return tf.Variable(initial)
+	#initial = tf.constant(0.1, shape=shape)
+	#return tf.Variable(initial)
 
 def conv2d(x, W):
-  return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+  return tf.nn.conv2d(x, W, strides=[1, 1, 3, 1], padding='SAME')
 
 def max_pool_2x2(x):
-  return tf.nn.max_pool(x, ksize=[1, 1, 1, 1],
-                        strides=[1, 1, 1, 1], padding='SAME')  
+	#A 4-D Tensor with shape [batch, height, width, channels]
+	#ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
+	#strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
+  return tf.nn.max_pool(x, ksize=[1, 1, 3, 1], 
+  		strides=[1, 1, 3, 1], padding='SAME')  
 
 def sigmoid(x):
 	result = 1 / (1 + math.exp(-x))
@@ -85,16 +81,24 @@ def conv_network():
 
 	# Initialise weights and biases
 	#first layer
-	conv_weights1 = get_weight_variable([4, 5, 20, 20])
+	#looking at a 5x5 grid at each point in the board_size
+	#1 is the number of input channels so this shouldn't change
+	conv_weights1 = get_weight_variable([5, 5, 1, 20])
+	#bias is always the same as the last in the shape above
 	conv_bias1 = get_bias_variable([20])
 
-	input_image = tf.reshape(training_input, [-1,4,5,20])
+	#-1 and 1 are meant to be the colour channels of the image so no need to change them
+	#20 by 20 is the boardsize
+	input_image = tf.reshape(training_input, [-1,20,20,1])
+
 
 	convolution1 = tf.nn.relu(conv2d(input_image, conv_weights1) + conv_bias1)
 	pool1 = max_pool_2x2(convolution1)
 
 	#second layer
-	conv_weights2 = get_weight_variable([4, 5, 20, 20])
+	#here we'll have 40 features for each 5x5 patch and 20 input channels (one for each place on the board)
+	#not 100% on this
+	conv_weights2 = get_weight_variable([5, 5, 20, 20])
 	conv_bias2 = get_bias_variable([20])
 
 	convolution2 = tf.nn.relu(conv2d(pool1, conv_weights2) + conv_bias2)
@@ -130,12 +134,10 @@ def conv_network():
 			batch_output = transform_training_output_for_tf(training_data[i][j][1])
 			sess.run(train_step, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 0.5})
 			print_counter = print_counter + 1
-			if print_counter % 100000:
+			if print_counter % 1000 == 0:
 				print("Output from network:")
 				printable_output = sess.run(output, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 1})
 				print(printable_output[0][0])
-				#print("Sigmoided output from network:")
-				#print(sigmoid(printable_output[0][0]))
 				print("Output from training data:")
 				print(transform_training_output_for_tf(training_data[i][j][1])[0][0])
 				print("********************************")
