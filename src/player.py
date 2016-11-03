@@ -19,6 +19,17 @@ def is_valid(player: int) -> bool:
 	"""
 	return -1 <= player <= 1
 
+
 def convert_player_char(player: int) -> str:
-	assert -1 <= player <= 1, "Invalid board cell contents"
+	if not is_valid(player):
+		"Invalid board cell contents"
 	return PLAYER_CODES[player + 1]
+
+
+def get_player_string(player: int) -> str:
+	if not is_valid(player) or player == 0:
+		"Invalid player code"
+	if player == -1:
+		return "Player 1"
+	elif player == 1:
+		return "Player 2"

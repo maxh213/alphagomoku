@@ -1,7 +1,7 @@
+from copy import deepcopy
 from sys import stdout
-
-from copy import copy, deepcopy
 from typing import List, Tuple
+
 import player
 
 """
@@ -28,7 +28,6 @@ COUNT_NEEDED = 5
 
 
 class Board:
-
 	"""
 	Access the PLAYER_CODES array to determine which code
 	should be used
@@ -36,7 +35,7 @@ class Board:
 
 	def __init__(self):
 		self._board = [[0 for j in range(BOARD_SIZE)] for i in range(BOARD_SIZE)]
-		self._possible_moves = deepcopy(self._board)
+		self.possible_moves = deepcopy(self._board)
 		self._next_player = -1
 		self._winner = 0
 		self._winning_moves = None
@@ -61,7 +60,7 @@ class Board:
 		"""
 		p = self._board[x][y]
 		count = 1
-		moves = []
+		moves = [(x, y)]
 		for d in [-1, 1]:
 			tx = x + dx * d
 			ty = y + dy * d
@@ -105,13 +104,14 @@ class Board:
 		self._decide_winner(x, y)
 		return True
 
-	def _remove_move(self, x: int, y: int) -> None:
+	def remove_move(self, x: int, y: int) -> None:
 		"""
 		Removes a move from the list of possible moves.
 		"""
-		self._possible_moves[x][y] = "X"
-		# del(self.possibleMoves[x][y])
-		# print(self._possible_moves)
+		self.possible_moves[x][y] = "X"
+
+	# del(self.possibleMoves[x][y])
+	# print(self._possible_moves)
 
 	def get_board(self) -> BoardStruct:
 		"""
