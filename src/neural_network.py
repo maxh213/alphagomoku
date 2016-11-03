@@ -2,6 +2,12 @@ import tensorflow as tf
 import math
 from training_data import process_training_data, get_files, get_test_files
 
+'''
+-make the number make sense mathematically, and make it compile with said numbers
+-fix the inputs so they make sense
+-figure out trunticated normal should we use it???
+'''
+
 #TODO: this should be got from the board file
 # Width and Height of the board
 BOARD_SIZE = 20
@@ -10,8 +16,8 @@ LEARNING_RATE = 0.1
 #The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 2500
-TEST_DATA_FILE_COUNT = 20
+TRAINING_DATA_FILE_COUNT = 25
+TEST_DATA_FILE_COUNT = 2
 
 # THIS BELONGS IN training_data.py
 def count_moves(data):
@@ -59,6 +65,8 @@ def max_pool_2x2(x):
   return tf.nn.max_pool(x, ksize=[1, 2, 4, 1], 
   		strides=[1, 2, 4, 1], padding='SAME')  
 
+
+#ARGMAX SHOULD JUST BE LOOKING FOR 111 OR 000
 #even_count = -1 winner
 #odd_count = 1 winner
 def get_winner_from_output(output, print_counts):
@@ -174,6 +182,7 @@ def conv_network():
 			test_output = transform_training_output_for_tf(testing_data[i][j][1])
 			comparable_output = sess.run(output, feed_dict={training_input: test_input, training_output: test_output, keep_prob: 1})
 			comparable_output = sess.run(tf.argmax(comparable_output, 0))
+			print(comparable_output)
 			comparable_output = get_winner_from_output(comparable_output, False)
 			print_counter = print_counter + 1
 			if print_counter % 10 == 0:
@@ -246,11 +255,13 @@ def transform_training_output_for_tf(actualTrainingOutput):
 		output.append([])
 		for j in range(BOARD_SIZE):
 			if i % 2 == 0 and actualTrainingOutput == -1:
-				output[i].append(10)
+				output[i].append(1)
 			elif i % 2 == 1 and actualTrainingOutput == 1:
-				output[i].append(10)
+				output[i].append(1)
 			else:
 				output[i].append(0)
+	print(output)
+	print(actualTrainingOutput)
 	return output
 
 if __name__ == '__main__':
