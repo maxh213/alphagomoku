@@ -6,10 +6,12 @@ from training_data import process_training_data, get_files, get_test_files
 # Width and Height of the board
 BOARD_SIZE = 20
 
-LEARNING_RATE = 0.01
+LEARNING_RATE = 0.1
+#The rate at which neurons are kept after learning
+KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 2000
-TEST_DATA_FILE_COUNT = 100
+TRAINING_DATA_FILE_COUNT = 2500
+TEST_DATA_FILE_COUNT = 20
 
 # THIS BELONGS IN training_data.py
 def count_moves(data):
@@ -57,14 +59,27 @@ def max_pool_2x2(x):
   return tf.nn.max_pool(x, ksize=[1, 2, 4, 1], 
   		strides=[1, 2, 4, 1], padding='SAME')  
 
-def sigmoid(x):
-	result = 1 / (1 + math.exp(-x))
-	if result > 0.99999 :
+#even_count = -1 winner
+#odd_count = 1 winner
+def get_winner_from_output(output, print_counts):
+	odd_count = 0
+	even_count = 0
+	for i in range(len(output)):
+		if output[i] % 2 == 0:
+			even_count += 1
+		elif output[i] % 2 != 0:
+			odd_count += 1
+	if print_counts:
+		print("Chance the nn thinks it might be 1: " + str(odd_count) + "/20")
+		print("Chance the nn thinks it might be -1: " + str(even_count) + "/20")
+	if odd_count < even_count:
+		return -1
+	elif even_count < odd_count:
 		return 1
-	elif result < 0.00001:
-		return 0
 	else:
-		return result
+		#have to do something if the nn is 50:50
+		return -1
+
 
 def conv_network():
 	print("Convolutional Neural Network training beginning...")
@@ -136,53 +151,40 @@ def conv_network():
 		for j in range (len(training_data[i])):
 			batch_input = training_data[i][j][0]
 			batch_output = transform_training_output_for_tf(training_data[i][j][1])
-			sess.run(train_step, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 0.5})
+			sess.run(train_step, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: KEEP_PROBABILITY})
 			print_counter = print_counter + 1
 			if print_counter % 1000 == 0:
-				print("Output from network for likelyhood of -1 winning:")
 				printable_output = sess.run(output, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 1})
-				print(printable_output[0][0])
-				print("Output from network for likelyhood of 1 winning:")
-				print(printable_output[0][1])
+				printable_output = get_winner_from_output(sess.run(tf.argmax(printable_output, 0)), True)
+				print("Output from network for assumed winner:")
+				print(printable_output)
 				print("Output from training data:")
 				print(training_data[i][j][1])
 				print("********************************")
 
+	print("NN training complete, moving on to testing.")
+
 	#TODO: move this to its own method
-	#start accuracy calculation
+	print_counter = 0
 	size = count_moves(testing_data)
 	correct = 0
-	same_guess_count = 0;
 	for i in range(0, len(testing_data)):
 		for j in range(0, len(testing_data[i])):
 			test_input = testing_data[i][j][0]
 			test_output = transform_training_output_for_tf(testing_data[i][j][1])
 			comparable_output = sess.run(output, feed_dict={training_input: test_input, training_output: test_output, keep_prob: 1})
-			print("---")
-			print("chance of 1")
-			print(comparable_output[0])
-			print("chance of -1")
-			print(comparable_output[0][0])
-			print("answer")
-			print(testing_data[i][j][1])
-			if comparable_output[0][1] < comparable_output[0][0]:
-				comparable_output = -1
-			elif comparable_output[0][1] > comparable_output[0][0]:
-				comparable_output = 1
-			else:
-				comparable_output = 0
-				same_guess_count += 1
-
+			comparable_output = sess.run(tf.argmax(comparable_output, 0))
+			comparable_output = get_winner_from_output(comparable_output, False)
+			print_counter = print_counter + 1
+			if print_counter % 10 == 0:
+				print("output: " + str(comparable_output) + ", winner: " + str(testing_data[i][j][1]))
 			if comparable_output == testing_data[i][j][1]:
 				correct += 1
 
-	print("same guesses made: %s" % same_guess_count)
 	print("correct: %s" % (correct))
 	print("number: %s" % size)
 	accuracy = (correct / size) * 100
 	print("%s percent" % (accuracy))
-	#accuracy_without_same_guesses = (correct / (size - same_guess_count)) * 100
-	#print("%s percent accuracy without same guesses" % (accuracy_without_same_guesses))
 
 #This is now deprecated, we'll be editing the conv_network going forward
 def network():
@@ -243,13 +245,12 @@ def transform_training_output_for_tf(actualTrainingOutput):
 	for i in range(BOARD_SIZE):
 		output.append([])
 		for j in range(BOARD_SIZE):
-			if actualTrainingOutput == 1:
-				if j % 1 == 0 and actualTrainingOutput == -1:
-					output[i].append(10)
-				elif j % 1 == 1 and actualTrainingOutput == 1:
-					output[i].append(10)
-				else:
-					output[i].append(0)
+			if i % 2 == 0 and actualTrainingOutput == -1:
+				output[i].append(10)
+			elif i % 2 == 1 and actualTrainingOutput == 1:
+				output[i].append(10)
+			else:
+				output[i].append(0)
 	return output
 
 if __name__ == '__main__':

@@ -71,10 +71,10 @@ def get_files() -> List[str]:
 	Gets a list of file paths for the training data.
 	:rtype: list[str]
 	"""
-	return glob.glob("../resources/training/freestyle/freestyle1/*.psq") + glob.glob("../resources/training/freestyle/freestyle3/*.psq")
+	return glob.glob("../resources/training/freestyle/freestyle1/*.psq") + glob.glob("../resources/training/freestyle/freestyle3/*.psq") + glob.glob("../resources/training/freestyle/freestyle2/*.psq")[:500]
 
 def get_test_files() -> List[str]:
-	return glob.glob("../resources/training/freestyle/freestyle2/*.psq")
+	return glob.glob("../resources/training/freestyle/freestyle2/*.psq")[500:]
 
 if __name__ == '__main__':
 	process_training_data(argv[1:])
