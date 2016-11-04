@@ -16,8 +16,8 @@ LEARNING_RATE = 0.1
 #The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 2500
-TEST_DATA_FILE_COUNT = 100
+TRAINING_DATA_FILE_COUNT = 500
+TEST_DATA_FILE_COUNT = 50
 
 # THIS BELONGS IN training_data.py
 def count_moves(data):
@@ -163,7 +163,7 @@ def conv_network():
 			print_counter = print_counter + 1
 			if print_counter % 1000 == 0:
 				printable_output = sess.run(output, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 1})
-				print("Game number: " + i)
+				print("Game number: " + str(i))
 				print("Output from network for assumed winner (200 or over = 1, less than 200 = -1:")
 				print(sess.run(tf.argmax(printable_output, 0)))
 				print("Output from training data:")
