@@ -62,11 +62,14 @@ def max_pool_2x2(x):
 	#A 4-D Tensor with shape [batch, height, width, channels]
 	#ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
 	#strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
+
+	'''
+	TODO:We should have a [1, 2, 2, 1] ksize/stride, i put it as 1,1,1,1 because i though it didn't matter cause we hot footed it be it gets reshaped later
+	'''
   return tf.nn.max_pool(x, ksize=[1, 1, 1, 1], 
   		strides=[1, 1, 1, 1], padding='SAME')  
 
 
-#ARGMAX SHOULD JUST BE LOOKING FOR 111 OR 000
 #even_count = -1 winner
 #odd_count = 1 winner
 def get_winner_from_output(output, print_counts):
@@ -111,6 +114,7 @@ def conv_network():
 	conv_bias1 = get_bias_variable([20])
 
 	'''
+	TODO:
 	I assumed below previously that we'd only need one colour channel but should we need more?
 	The MNIST tutorial has two colours essentially, black and white
 	but a "pixel" on our board has 3 states:
@@ -140,6 +144,7 @@ def conv_network():
 	fully_connected_bias1 = get_bias_variable([1000])
 
 	'''
+	TODO:
 	--Tutorial's
 	>>> 7*7*64
 	3136
@@ -164,7 +169,22 @@ def conv_network():
 	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
 
-	'''THE 25 BELOW SHOULD BE A 2 FOR US (-1, 1) BECAUSE IT'S 10 IN THE TUTORIAL (BECAUSE NUMBERS 0-9)'''
+	'''
+	TODO:
+	THE 25 BELOW SHOULD BE A 2 FOR US (-1, 1) BECAUSE IT'S 10 IN THE TUTORIAL (BECAUSE NUMBERS 0-9)
+
+	THE 1000 BELOW (1024 IN TUTORIAL) should match up with our 5*5 above (7*7 in tutorial):
+	>>> 1024/64
+	16.0
+	>>> 784/49
+	16.0
+	>>> 784/(7*7)
+	16.0
+	>>> 
+
+	1024 is just the number of neurons though, but it's probably improtant to have the correct amount of neurons for each feautre
+
+	'''
 	fully_connected_weights2 = get_weight_variable([1000, 25])
 	fully_connected_bias2 = get_bias_variable([25])
 
