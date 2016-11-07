@@ -64,7 +64,8 @@ def max_pool_2x2(x):
 	#strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
 
 	'''
-	TODO:We should have a [1, 2, 2, 1] ksize/stride, i put it as 1,1,1,1 because i though it didn't matter cause we hot footed it be it gets reshaped later
+	TODO:We should have a [1, 2, 2, 1] ksize/stride, I set it as [1,1,1,1] before because I thought it didn't matter because we hot footed it.
+	However it gets reshaped later to 20x20.
 	'''
   return tf.nn.max_pool(x, ksize=[1, 1, 1, 1], 
   		strides=[1, 1, 1, 1], padding='SAME')  
