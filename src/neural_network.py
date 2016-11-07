@@ -110,6 +110,16 @@ def conv_network():
 	#bias is always the same as the last in the shape above
 	conv_bias1 = get_bias_variable([20])
 
+	'''
+	I assumed below previously that we'd only need one colour channel but should we need more?
+	The MNIST tutorial has two colours essentially, black and white
+	but a "pixel" on our board has 3 states:
+		-person to go next has made a move there
+		-person to get after has made a move there
+		-no one has made a move there
+
+	It might help?
+	'''
 	#-1 and 1 are meant to be the colour channels of the image so no need to change them
 	#20 by 20 is the boardsize
 	input_image = tf.reshape(training_input, [-1,20,20,1])
@@ -129,6 +139,24 @@ def conv_network():
 	fully_connected_weights1 = get_weight_variable([5 * 5 * 40, 1000])
 	fully_connected_bias1 = get_bias_variable([1000])
 
+	'''
+	--Tutorial's
+	>>> 7*7*64
+	3136
+	>>> 28**2
+	784
+	>>> 3136/784
+	4.0
+	--Our's
+	>>> 20**2
+	400
+	>>> 5*5*40
+	1000
+	>>> 1000/400
+	2.5
+
+	--Should ours match?
+	'''
 	pool2_flat = tf.reshape(pool2, [-1, 5 * 5 * 40])
 	fully_connected_output1 = tf.nn.relu(tf.matmul(pool2_flat, fully_connected_weights1) + fully_connected_bias1)
 
@@ -136,6 +164,7 @@ def conv_network():
 	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
 
+	'''THE 25 BELOW SHOULD BE A 2 FOR US (-1, 1) BECAUSE IT'S 10 IN THE TUTORIAL (BECAUSE NUMBERS 0-9)'''
 	fully_connected_weights2 = get_weight_variable([1000, 25])
 	fully_connected_bias2 = get_bias_variable([25])
 
