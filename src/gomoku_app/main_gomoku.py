@@ -1,6 +1,5 @@
 import re
 
-from pip._vendor.distlib.compat import raw_input
 
 from gomoku_app.gomoku import Gomoku
 from player import get_player_string
@@ -14,9 +13,11 @@ def validate_input(move: str) -> bool:
 def get_user_move(player: int) -> (int, int):
 	move = None
 	while True:
-		move = raw_input("Type your move " + get_player_string(player) + " (X,Y): ")
+		move = input("Type your move " + get_player_string(player) + " (X,Y): ")
 		if validate_input(move):
 			break
+		print("Invalid move.")
+
 	coordinates = move.split(",")
 	x = int(coordinates[0]) - 1
 	y = int(coordinates[1]) - 1

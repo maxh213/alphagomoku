@@ -17,16 +17,16 @@ def is_valid(player: int) -> bool:
 	:param player: integer representing the player.
 	:return: True if int between -1 and 1, False otherwise.
 	"""
-	return -1 <= player <= 1
+	return isinstance(player, int) and -1 <= player <= 1
 
 
 def convert_player_char(player: int) -> str:
-	assert not is_valid(player), "Invalid board cell contents"
+	assert is_valid(player), "Invalid board cell contents"
 	return PLAYER_CODES[player + 1]
 
 
 def get_player_string(player: int) -> str:
-	assert not is_valid(player) or player == 0, "Invalid player code"
+	assert is_valid(player) and player != 0, "Invalid player code"
 	if player == -1:
 		return "Player 1"
 	elif player == 1:

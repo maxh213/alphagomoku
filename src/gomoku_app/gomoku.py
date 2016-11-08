@@ -16,11 +16,10 @@ class Gomoku:
 	board = Board()
 
 	def make_move(self, x: int, y: int, player: int) -> bool:
-		if self.board.possible_moves[x][y] != "X":
-			self.board.move(x, y, player)
-			self.board.remove_move(x, y)
+		if self.board.move(x, y, player):
 			self.board.print_board()
 			return True
+		return False
 
 	def check_for_winner(self) -> bool:
 		winner, winning_moves = self.board.decide_winner()
