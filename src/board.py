@@ -35,10 +35,10 @@ class Board:
 
 	def __init__(self):
 		self._board = [[0 for j in range(BOARD_SIZE)] for i in range(BOARD_SIZE)]
-		self.possible_moves = deepcopy(self._board)
 		self._next_player = -1
 		self._winner = 0
 		self._winning_moves = None
+		self._possible_moves = deepcopy(self._board)
 
 	def print_board(self):
 		coords = range(BOARD_SIZE)
@@ -108,16 +108,14 @@ class Board:
 		"""
 		Removes a move from the list of possible moves.
 		"""
-		self.possible_moves[x][y] = "X"
-
-	# del(self.possibleMoves[x][y])
-	# print(self._possible_moves)
+		self._possible_moves[x][y] = "X"
 
 	def get_board(self) -> BoardStruct:
 		"""
 		:return: A deep copy of the board 2D array.
 		"""
 		return deepcopy(self._board)
+
 
 
 def check_coords(x: int, y: int) -> bool:
