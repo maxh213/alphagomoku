@@ -223,8 +223,8 @@ def conv_network():
 	for i in range(len(training_data)):
 		# For each move in the game
 		for j in range(len(training_data[i])):
-			batch_input = hotfoot(training_data[i][j][0])
-			batch_output = hotfoot(transform_training_output_for_tf(training_data[i][j][1]))
+			batch_input = onehot_input(training_data[i][j][0])
+			batch_output = onehot_input(transform_training_output_for_tf(training_data[i][j][1]))
 			sess.run(train_step, feed_dict={training_input: batch_input, training_output: batch_output,
 											keep_prob: KEEP_PROBABILITY})
 			print_counter = print_counter + 1
@@ -247,8 +247,8 @@ def conv_network():
 	correct = 0
 	for i in range(0, len(testing_data)):
 		for j in range(0, len(testing_data[i])):
-			test_input = hotfoot(testing_data[i][j][0])
-			test_output = hotfoot(transform_training_output_for_tf(testing_data[i][j][1]))
+			test_input = onehot_input(testing_data[i][j][0])
+			test_output = onehot_input(transform_training_output_for_tf(testing_data[i][j][1]))
 			comparable_output = sess.run(output, feed_dict={training_input: test_input, training_output: test_output,
 															keep_prob: 1})
 			comparable_output = sess.run(tf.argmax(comparable_output, 0))
@@ -355,15 +355,8 @@ def transform_training_output_for_tf(actual_training_output):
 	return output
 
 
-def hotfoot(input):
-	output = []
-	for i in input:
-		for j in i:
-			output.append(j)
-	return output
 
-
-def onehot_input(inpuut):
+def onehot_input(input):
 	input = []
 	for row in input:
 		for move in row:
