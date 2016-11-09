@@ -20,8 +20,8 @@ LEARNING_RATE = 0.1
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 50
-TEST_DATA_FILE_COUNT = 10
+TRAINING_DATA_FILE_COUNT = 2500
+TEST_DATA_FILE_COUNT = 50
 
 
 # THIS BELONGS IN training_data.py
@@ -63,7 +63,7 @@ def conv2d(x, W):
 	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
 
 
-def avg_pool_2x2(x):
+def max_pool_2x2(x):
 	# A 4-D Tensor with shape [batch, height, width, channels]
 	# ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
 	# strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
@@ -81,35 +81,34 @@ def conv_network():
 
 	# Set up placeholders for input and output
 	training_input = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
-	training_output = tf.placeholder(tf.float32, [1, 100])
+	training_output = tf.placeholder(tf.float32, [20, 100])
 
 	# Initialise weights and biases
 	# first layer
 	# looking at a 5x5 grid at each point in the board_size
 	# 1 is the number of input channels so this shouldn't change
-	conv_weights1 = get_weight_variable([5, 5, 1, 32])
+	conv_weights1 = get_weight_variable([5, 5, 1, 100])
 	# bias is always the same as the last in the shape above
-	conv_bias1 = get_bias_variable([32])
+	conv_bias1 = get_bias_variable([100])
 
 	# -1 and 1 are meant to be the colour channels of the image so no need to change them
 	# 20 by 20 is the boardsize
 	input_image = tf.reshape(training_input, [-1, 20, 20, 1])
 
 	convolution1 = tf.nn.relu(conv2d(input_image, conv_weights1) + conv_bias1)
-	pool1 = avg_pool_2x2(convolution1)
+	pool1 = max_pool_2x2(convolution1)
 
 	# second layer
-	# here we'll have 40 features for each 5x5 patch and 20 input channels
-	conv_weights2 = get_weight_variable([5, 5, 32, 64])
-	conv_bias2 = get_bias_variable([64])
+	conv_weights2 = get_weight_variable([5, 5, 100, 200])
+	conv_bias2 = get_bias_variable([200])
 
 	convolution2 = tf.nn.relu(conv2d(pool1, conv_weights2) + conv_bias2)
-	pool2 = avg_pool_2x2(convolution2)
+	pool2 = max_pool_2x2(convolution2)
 
-	fully_connected_weights1 = get_weight_variable([1600, 1000])
+	fully_connected_weights1 = get_weight_variable([250, 1000])
 	fully_connected_bias1 = get_bias_variable([1000])
 
-	pool2_flat = tf.reshape(pool2, [-1, 1600])
+	pool2_flat = tf.reshape(pool2, [-1, 250])
 	fully_connected_output1 = tf.nn.relu(tf.matmul(pool2_flat, fully_connected_weights1) + fully_connected_bias1)
 
 	keep_prob = tf.placeholder(tf.float32)
@@ -119,6 +118,8 @@ def conv_network():
 	fully_connected_bias2 = get_bias_variable([100])
 
 	tf_output = tf.nn.softmax(tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2, 0)
+	
+
 	tf_output = tf.sigmoid(tf_output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
@@ -135,12 +136,20 @@ def conv_network():
 	# For each game
 	for i in range(len(training_data)):
 		# For each move in the game
-		for j in range(len(training_data[i])):
+
+		# Here we check if we can start later in the game because most the time little meaningful learning
+		# can be gained from the first 10 or so moves (I think!) and is messes with the weights/bias unessesarily
+		starting_move = 0
+		if (len(training_data[i]) > 10):
+			starting_move = 10
+
+		for j in range(starting_move, len(training_data[i])):
 			batch_input = training_data[i][j][0]
 			batch_output = transform_training_output_for_tf(training_data[i][j][1])
 			entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: KEEP_PROBABILITY})
-			if print_counter % 1000 == 0:
+			if print_counter % 50 == 0:
 				print("Game Number: " + str(i))
+				print("Game Move: " + str(j))
 				print("Entropy: " + str(entropy))
 				output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
 				correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
@@ -158,13 +167,18 @@ def conv_network():
 	size = count_moves(testing_data)
 	correct = 0
 	for i in range(0, len(testing_data)):
-		for j in range(0, len(testing_data[i])):
+		if i % 2 == 0:
+			print("Tested " + str(i) + "/" + str(len(testing_data)) + " games so far.")
+		starting_move = 0
+		if (len(testing_data[i]) > 10):
+			starting_move = 10
+		for j in range(starting_move, len(testing_data[i])):
 			batch_input = testing_data[i][j][0]
 			batch_output = transform_training_output_for_tf(testing_data[i][j][1])
 			output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
 			correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
 			accuracy = sess.run(tf.reduce_mean(tf.cast(correct_prediction, "float")))
-			if accuracy > 0.5:
+			if accuracy >= 0.5:
 				correct += 1
 
 
@@ -179,7 +193,7 @@ def transform_training_output_for_tf(actual_training_output):
 		actual_training_output = 0
 	output = []
 	count = 0
-	for i in range(1):
+	for i in range(20):
 		output.append([])
 		for j in range(100):
 			if j == actual_training_output:
@@ -187,15 +201,6 @@ def transform_training_output_for_tf(actual_training_output):
 			else:
 				output[i].append(0)
 	return output
-
-
-def onehot_input(input):
-	input = []
-	for row in input:
-		for move in row:
-			input.append(move)
-	return input
-
 
 if __name__ == '__main__':
 	conv_network()
