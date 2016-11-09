@@ -20,8 +20,8 @@ LEARNING_RATE = 0.1
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 2500
-TEST_DATA_FILE_COUNT = 50
+TRAINING_DATA_FILE_COUNT = 1000
+TEST_DATA_FILE_COUNT = 20
 
 
 # THIS BELONGS IN training_data.py
@@ -67,7 +67,7 @@ def max_pool_2x2(x):
 	# A 4-D Tensor with shape [batch, height, width, channels]
 	# ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
 	# strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
-	return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+	return tf.nn.avg_pool(x, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
 
 
 def conv_network():
@@ -81,15 +81,15 @@ def conv_network():
 
 	# Set up placeholders for input and output
 	training_input = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
-	training_output = tf.placeholder(tf.float32, [20, 100])
+	training_output = tf.placeholder(tf.float32, [400, 2])
 
 	# Initialise weights and biases
 	# first layer
 	# looking at a 5x5 grid at each point in the board_size
 	# 1 is the number of input channels so this shouldn't change
-	conv_weights1 = get_weight_variable([5, 5, 1, 100])
+	conv_weights1 = get_weight_variable([5, 5, 1, 5])
 	# bias is always the same as the last in the shape above
-	conv_bias1 = get_bias_variable([100])
+	conv_bias1 = get_bias_variable([5])
 
 	# -1 and 1 are meant to be the colour channels of the image so no need to change them
 	# 20 by 20 is the boardsize
@@ -99,27 +99,25 @@ def conv_network():
 	pool1 = max_pool_2x2(convolution1)
 
 	# second layer
-	conv_weights2 = get_weight_variable([5, 5, 100, 200])
-	conv_bias2 = get_bias_variable([200])
+	conv_weights2 = get_weight_variable([5, 5, 5, 10])
+	conv_bias2 = get_bias_variable([10])
 
 	convolution2 = tf.nn.relu(conv2d(pool1, conv_weights2) + conv_bias2)
 	pool2 = max_pool_2x2(convolution2)
 
-	fully_connected_weights1 = get_weight_variable([250, 1000])
-	fully_connected_bias1 = get_bias_variable([1000])
+	fully_connected_weights1 = get_weight_variable([10, 500])
+	fully_connected_bias1 = get_bias_variable([500])
 
-	pool2_flat = tf.reshape(pool2, [-1, 250])
+	pool2_flat = tf.reshape(pool2, [-1, 10])
 	fully_connected_output1 = tf.nn.relu(tf.matmul(pool2_flat, fully_connected_weights1) + fully_connected_bias1)
 
 	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
 
-	fully_connected_weights2 = get_weight_variable([1000, 100])
-	fully_connected_bias2 = get_bias_variable([100])
+	fully_connected_weights2 = get_weight_variable([500, 2])
+	fully_connected_bias2 = get_bias_variable([2])
 
-	tf_output = tf.nn.softmax(tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2, 0)
-	
-
+	tf_output = tf.nn.softmax(tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2)
 	tf_output = tf.sigmoid(tf_output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
@@ -147,15 +145,15 @@ def conv_network():
 			batch_input = training_data[i][j][0]
 			batch_output = transform_training_output_for_tf(training_data[i][j][1])
 			entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: KEEP_PROBABILITY})
-			if print_counter % 50 == 0:
-				print("Game Number: " + str(i))
-				print("Game Move: " + str(j))
+			if print_counter % 100 == 0:
+				print("Game Number: " + str(i) + "/" + str(len(training_data)))
+				print("Game Move: " + str(j) + "/" + str(len(training_data[i])))
 				print("Entropy: " + str(entropy))
 				output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
 				correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
 				accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-				print("Network output: " + str(sess.run(tf.argmax(output,1))))
-				print("Actual output: " + str(sess.run(tf.argmax(batch_output,1))))
+				#print("Network output: " + str(sess.run(tf.argmax(output,1))))
+				#print("Actual output: " + str(sess.run(tf.argmax(batch_output,1))))
 				print("Accuracy: " + str(sess.run(accuracy)))
 				print("***")
 			print_counter += 1
@@ -168,7 +166,7 @@ def conv_network():
 	correct = 0
 	for i in range(0, len(testing_data)):
 		if i % 2 == 0:
-			print("Tested " + str(i) + "/" + str(len(testing_data)) + " games so far.")
+			print("Tested " + str(i) + "/" + str(len(testing_data)) + " games...")
 		starting_move = 0
 		if (len(testing_data[i]) > 10):
 			starting_move = 10
@@ -193,9 +191,9 @@ def transform_training_output_for_tf(actual_training_output):
 		actual_training_output = 0
 	output = []
 	count = 0
-	for i in range(20):
+	for i in range(400):
 		output.append([])
-		for j in range(100):
+		for j in range(2):
 			if j == actual_training_output:
 				output[i].append(100)
 			else:
