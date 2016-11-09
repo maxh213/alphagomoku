@@ -17,11 +17,7 @@ def moves(board: Board) -> List[Board]:
 	"""
 	Returns the number of moves that can be made on the board currently, as boards.
 	"""
-	moves = board._possible_moves
-	boards = []
-	for move in moves:
-		boards.append()
-	return board._possible_moves
+	return board.get_possible_moves()
 
 
 def winning_moves(b, depth) -> List:

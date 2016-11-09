@@ -7,13 +7,13 @@ import player
 """
 A row consists of a list of players.
 """
-RowStruct = List[int]
+ColStruct = List[int]
 
 """
 A board consists of a list of rows.
 The board is navigated with [x][y] coordinates.
 """
-BoardStruct = List[RowStruct]
+BoardStruct = List[ColStruct]
 
 """
 Moves are represented as a tuple of x and y coords.
@@ -33,12 +33,24 @@ class Board:
 	should be used
 	"""
 
-	def __init__(self):
+	def __init__(self, board_struct: BoardStruct = None):
+		if board_struct is not None:
+			self._init_from_board_struct(board_struct)
+			return
 		self._board = [[0 for j in range(BOARD_SIZE)] for i in range(BOARD_SIZE)]
 		self._next_player = -1
 		self._winner = 0
 		self._winning_moves = None
-		self._possible_moves = deepcopy(self._board)
+
+	def _init_from_board_struct(self, board_struct: BoardStruct):
+		"""
+		Simulates the board as though all moves were being played from left to right, bottom to top.
+		"""
+		self.__init__()
+		for x in range(BOARD_SIZE):
+			for y in range(BOARD_SIZE):
+				if board_struct[x][y] != 0:
+					self.move(x, y, board_struct[x][y])
 
 	def print_board(self):
 		coords = range(BOARD_SIZE)
@@ -103,12 +115,6 @@ class Board:
 		self._board[x][y] = p
 		self._decide_winner(x, y)
 		return True
-
-	def remove_move(self, x: int, y: int) -> None:
-		"""
-		Removes a move from the list of possible moves.
-		"""
-		self._possible_moves[x][y] = "X"
 
 	def get_board(self) -> BoardStruct:
 		"""
