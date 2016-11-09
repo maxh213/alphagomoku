@@ -119,6 +119,7 @@ def conv_network():
 	fully_connected_bias2 = get_bias_variable([100])
 
 	tf_output = tf.nn.softmax(tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2, 0)
+	tf_output = tf.sigmoid(tf_output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 	train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
@@ -163,7 +164,7 @@ def conv_network():
 			output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
 			correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
 			accuracy = sess.run(tf.reduce_mean(tf.cast(correct_prediction, "float")))
-			if accuracy < 0.5:
+			if accuracy > 0.5:
 				correct += 1
 
 
