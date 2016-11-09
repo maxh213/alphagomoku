@@ -122,6 +122,18 @@ class Board:
 		"""
 		return deepcopy(self._board)
 
+	def get_possible_moves(self) -> List:
+		"""
+		Returns a list of Board instances representing the state of the board after a possible move has been made.
+		"""
+		boards = []
+		for y in range(BOARD_SIZE):
+			for x in range(BOARD_SIZE):
+				if self._board[x][y] == 0:
+					board = Board(self.get_board())
+					board.move(x, y, self._next_player)
+					boards.append(board)
+		return boards
 
 
 def check_coords(x: int, y: int) -> bool:
