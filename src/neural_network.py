@@ -20,7 +20,7 @@ LEARNING_RATE = 0.1
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 1000
+TRAINING_DATA_FILE_COUNT = 100
 TEST_DATA_FILE_COUNT = 20
 
 
@@ -63,11 +63,11 @@ def conv2d(x, W):
 	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
 
 
-def max_pool_2x2(x):
+#def max_pool_2x2(x):
 	# A 4-D Tensor with shape [batch, height, width, channels]
 	# ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
 	# strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
-	return tf.nn.avg_pool(x, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
+	#return tf.nn.avg_pool(x, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
 
 
 def conv_network():
@@ -96,20 +96,21 @@ def conv_network():
 	input_image = tf.reshape(training_input, [-1, 20, 20, 1])
 
 	convolution1 = tf.nn.relu(conv2d(input_image, conv_weights1) + conv_bias1)
-	pool1 = max_pool_2x2(convolution1)
+	#pool1 = max_pool_2x2(convolution1)
 
 	# second layer
 	conv_weights2 = get_weight_variable([5, 5, 5, 10])
 	conv_bias2 = get_bias_variable([10])
 
-	convolution2 = tf.nn.relu(conv2d(pool1, conv_weights2) + conv_bias2)
-	pool2 = max_pool_2x2(convolution2)
+	convolution2 = tf.nn.relu(conv2d(convolution1, conv_weights2) + conv_bias2)
+	#pool2 = max_pool_2x2(convolution2)
 
 	fully_connected_weights1 = get_weight_variable([10, 500])
 	fully_connected_bias1 = get_bias_variable([500])
 
-	pool2_flat = tf.reshape(pool2, [-1, 10])
-	fully_connected_output1 = tf.nn.relu(tf.matmul(pool2_flat, fully_connected_weights1) + fully_connected_bias1)
+	#pool2_flat = tf.reshape(pool2, [-1, 10])
+	conv2_flat = tf.reshape(convolution2, [-1, 10])
+	fully_connected_output1 = tf.nn.relu(tf.matmul(conv2_flat, fully_connected_weights1) + fully_connected_bias1)
 
 	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
