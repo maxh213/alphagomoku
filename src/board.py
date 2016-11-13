@@ -47,10 +47,19 @@ class Board:
 		Simulates the board as though all moves were being played from left to right, bottom to top.
 		"""
 		self.__init__()
+		next_player = 0
 		for x in range(BOARD_SIZE):
 			for y in range(BOARD_SIZE):
-				if board_struct[x][y] != 0:
-					self.move(x, y, board_struct[x][y])
+				p = board_struct[x][y]
+				if p != 0:
+					next_player += p
+
+					self._next_player = p
+					assert self.move(x, y, p)
+		if next_player == 0:
+			self._next_player = -1
+		else:
+			self._next_player = 1
 
 	def print_board(self):
 		coords = range(BOARD_SIZE)
@@ -108,7 +117,10 @@ class Board:
 		:param p: The player.
 		:return: True if move successful, False if move invalid.
 		"""
-		if self._board[x][y] != 0 or not player.is_valid(p) or p != self._next_player or self._winner != 0:
+		if self._winner != 0 or self._board[x][y] != 0:
+			return False
+
+		if not (player.is_valid(p) and p == self._next_player):
 			return False
 
 		self._next_player = -p
@@ -122,16 +134,20 @@ class Board:
 		"""
 		return deepcopy(self._board)
 
-	def get_possible_moves(self) -> List:
+	def get_possible_moves(self) -> List['Board']:
 		"""
 		Returns a list of Board instances representing the state of the board after a possible move has been made.
 		"""
+		if self._winner != 0:
+			return []
+
 		boards = []
 		for y in range(BOARD_SIZE):
 			for x in range(BOARD_SIZE):
 				if self._board[x][y] == 0:
 					board = Board(self.get_board())
-					board.move(x, y, self._next_player)
+					b = board.move(x, y, self._next_player)
+					assert b
 					boards.append(board)
 		return boards
 
