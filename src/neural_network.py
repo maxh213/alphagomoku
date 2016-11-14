@@ -1,5 +1,6 @@
 import tensorflow as tf
 import math
+import random
 from training_data import process_training_data, get_files, get_test_files
 
 '''
@@ -16,11 +17,11 @@ from training_data import process_training_data, get_files, get_test_files
 # Width and Height of the board
 BOARD_SIZE = 20
 
-LEARNING_RATE = 0.1
+LEARNING_RATE = 1e-6
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 100
+TRAINING_DATA_FILE_COUNT = 1000
 TEST_DATA_FILE_COUNT = 20
 
 
@@ -34,22 +35,29 @@ def count_moves(data):
 
 '''
 Training data format:
-trainingData[0] = first game
-trainingData[0][1][0] = first move of first game
-trainingData[0][2][0] = second move of first game
-trainingData[0][0][1] = winner of first game
-trainingData[0][1][0][0] = first line of first move of first game
-trainingData[0][1][0][0][0] = first tile on first line of first move of first game
+training_data[0] = first game
+training_data[0][1][0] = first move of first game
+training_data[0][2][0] = second move of first game
+training_data[0][0][1] = winner of first game
+training_data[0][1][0][0] = first line of first move of first game
+training_data[0][1][0][0][0] = first tile on first line of first move of first game
+
+After the training data has been shuffled training data loses the first index above and they're just random moves from any given game
+For example:
+training_data[0][0] = a move of a random game
+training_data[0][1] = winner of the game which the random move was taken from
+training_data[1][0] = another move of a random game
+and so on...
 '''
-def get_training_data():
+def get_training_data(file_count):
 	# Obtain files for processing
 	files = get_files()
-	return process_training_data(files[:TRAINING_DATA_FILE_COUNT])
+	return process_training_data(files[:file_count])
 
 
-def get_test_data():
+def get_test_data(file_count):
 	test_files = get_test_files()
-	return process_training_data(test_files[:TEST_DATA_FILE_COUNT])
+	return process_training_data(test_files[:file_count])
 
 
 def get_weight_variable(shape):
@@ -76,8 +84,9 @@ def conv_network():
 	print("------------------------------------------------")
 
 	# Get training data
-	training_data = get_training_data()
-	testing_data = get_test_data()
+	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
+	training_data = shuffle_training_data(training_data)
+	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 
 	# Set up placeholders for input and output
 	training_input = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
@@ -122,7 +131,7 @@ def conv_network():
 	tf_output = tf.sigmoid(tf_output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
-	train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -133,31 +142,22 @@ def conv_network():
 	print("Network training starting!")
 	print_counter = 0
 	# For each game
-	for i in range(len(training_data)):
-		# For each move in the game
 
-		# Here we check if we can start later in the game because most the time little meaningful learning
-		# can be gained from the first 10 or so moves (I think!) and is messes with the weights/bias unessesarily
-		starting_move = 0
-		if (len(training_data[i]) > 10):
-			starting_move = 10
-
-		for j in range(starting_move, len(training_data[i])):
-			batch_input = training_data[i][j][0]
-			batch_output = transform_training_output_for_tf(training_data[i][j][1])
-			entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: KEEP_PROBABILITY})
-			if print_counter % 100 == 0:
-				print("Game Number: " + str(i) + "/" + str(len(training_data)))
-				print("Game Move: " + str(j) + "/" + str(len(training_data[i])))
-				print("Entropy: " + str(entropy))
-				output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
-				correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
-				accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-				#print("Network output: " + str(sess.run(tf.argmax(output,1))))
-				#print("Actual output: " + str(sess.run(tf.argmax(batch_output,1))))
-				print("Accuracy: " + str(sess.run(accuracy)))
-				print("***")
-			print_counter += 1
+	for i in range(0, len(training_data)):
+		batch_input = training_data[i][0]
+		batch_output = transform_training_output_for_tf(training_data[i][1])
+		entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: KEEP_PROBABILITY})
+		if print_counter % 100 == 0:
+			print("Training Data Number: " + str(i) + "/" + str(len(training_data)))
+			print("Entropy: " + str(entropy))
+			output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
+			correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
+			accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+			#print("Network output: " + str(sess.run(tf.argmax(output,1))))
+			#print("Actual output: " + str(sess.run(tf.argmax(batch_output,1))))
+			print("Accuracy: " + str(sess.run(accuracy)))
+			print("***")
+		print_counter += 1
 
 	print("NN training complete, moving on to testing.")
 
@@ -200,6 +200,25 @@ def transform_training_output_for_tf(actual_training_output):
 			else:
 				output[i].append(0)
 	return output
+
+'''
+	This shuffles all the moves from all the games in the training data into one array.
+	This is done so we don't bombard our NN with hundreds of the same training outputs at once.
+'''
+def shuffle_training_data(training_data):
+	new_training_data = []
+	for i in range(len(training_data)):
+
+		# Here we remove the first 10 starting moves (for now!)
+		# not much can be gained from the first 10 or so moves (I think!) and is messes with the weights/bias unessesarily
+		starting_move = 0
+		if (len(training_data[i]) > 10):
+			starting_move = 10
+
+		for j in range(starting_move, len(training_data[i])):
+			new_training_data.append(training_data[i][j])
+	random.shuffle(new_training_data)
+	return new_training_data
 
 if __name__ == '__main__':
 	conv_network()
