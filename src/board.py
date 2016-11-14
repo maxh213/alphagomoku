@@ -41,6 +41,7 @@ class Board:
 		self._next_player = -1
 		self._winner = 0
 		self._winning_moves = None
+		self._moves = []
 
 	def _init_from_board_struct(self, board_struct: BoardStruct):
 		"""
@@ -124,9 +125,28 @@ class Board:
 			return False
 
 		self._next_player = -p
+		self._moves.append((x, y))
 		self._board[x][y] = p
 		self._decide_winner(x, y)
 		return True
+
+	def reverse_move(self) -> Tuple[int, int, int]:
+		"""
+		Reverts a move, as though it had never been played.
+		:return: x, y, player.
+		"""
+		assert len(self._moves) > 0
+		x, y = self._moves.pop()
+		p = self._board[x][y]
+		self._board[x][y] = 0
+		self._next_player = p
+		if self._winner != 0:
+			self._winner == 0
+			self._winning_moves = None
+		return x, y, p
+
+	def get_next_player(self) -> int:
+		return self._next_player
 
 	def get_board(self) -> BoardStruct:
 		"""
@@ -141,15 +161,8 @@ class Board:
 		if self._winner != 0:
 			return []
 
-		boards = []
-		for y in range(BOARD_SIZE):
-			for x in range(BOARD_SIZE):
-				if self._board[x][y] == 0:
-					board = Board(self.get_board())
-					b = board.move(x, y, self._next_player)
-					assert b
-					boards.append(board)
-		return boards
+		moves = [(x, y) for x in range(BOARD_SIZE) for y in range(BOARD_SIZE) if self._board[x][y] == 0]
+		return moves
 
 
 def check_coords(x: int, y: int) -> bool:

@@ -3,17 +3,18 @@ nn : Board -> [-1 to 1]
 moves : Board -> list[Board]
 moves(b) = [] Person to move last.
 """
-from typing import List
+from random import Random
+from typing import List, Tuple
 
 from board import Board
 
-
-def nn(board) -> int:
+r = Random()
+def nn(board) -> float:
 	# Will return value between -1 and 1. Needs to hook up with the neural network when it's ready.
-	return 1
+	return r.uniform(0.6,0.71)
 
 
-def moves(board: Board) -> List[Board]:
+def moves(board: Board) -> List[Tuple[int, int, int]]:
 	"""
 	Returns the number of moves that can be made on the board currently, as boards.
 	"""
@@ -45,17 +46,24 @@ def winning_moves(board: Board, depth: int, should_print: bool=False) -> List[Bo
 	for i, c in enumerate(cs):
 		if should_print:
 			print('%d/%d' % (i, len(cs)))
-		ms = winning_moves(c, depth - 1)
+		x, y = c
+		p = board.get_next_player()
+		board.move(x, y, p)
+		ms = winning_moves(board, depth - 1)
+		rx, ry, rp = board.reverse_move()
+		boolean = (rx, ry, rp) == (x, y, p)
+		assert boolean
 		if len(ms) == 0:
 			rs.append(c)
 	return rs
+
 
 def main():
 	board = Board()
 	# for i in range(20):
 	# 	board.move(i, 0, board._next_player)
 
-	m = winning_moves(board, 2, should_print=True)
+	m = winning_moves(board, 3, should_print=True)
 
 	print(len(m))
 
