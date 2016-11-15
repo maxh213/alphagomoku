@@ -10,6 +10,20 @@ Training data is represented as a list of moves/boards, and the winner for that 
 """
 TrainingDataStruct = Tuple[List[BoardStruct], int]
 
+"""
+All files from freestyle 1 and 3, and only the first 500 from freestyle 2.
+_TEST_DATA_FILES uses the rest of freestyle2.
+"""
+_TRAINING_DATA_FILES = glob.glob("../resources/training/freestyle/freestyle1/*.psq") \
+			+ glob.glob("../resources/training/freestyle/freestyle3/*.psq") + glob.glob(
+		"../resources/training/freestyle/freestyle2/*.psq")[:500]
+
+"""
+All but the first 500 files from freestyle 2.
+_TRAINING_DATA_FILES uses the other 500.
+"""
+_TEST_DATA_FILES = glob.glob("../resources/training/freestyle/freestyle2/*.psq")[500:]
+
 
 def parse_training_file(path: str) -> MovesStruct:
 	with open(path) as f:
@@ -21,7 +35,7 @@ def parse_training_file(path: str) -> MovesStruct:
 	return [(int(m[0]) - 1, int(m[1]) - 1) for m in ls]
 
 
-def simulate(moves: MovesStruct, should_print: bool=False) -> TrainingDataStruct:
+def simulate(moves: MovesStruct, should_print: bool = False) -> TrainingDataStruct:
 	board = Board()
 	all_boards = [board.get_board()]
 	p = -1
@@ -48,9 +62,10 @@ def process_training_data(paths: List[str], should_print=False):
 			boards, winner = simulate(moves, should_print=should_print)
 			path_data.extend((b, winner) for b in boards)
 		except ValueError as error:
-			print ("Caught the following error for file: ", path, " Error: ", error)
+			print("Warning: Training data not interpretable: %s. Error: %s" % (path, error))
+			continue
 		if path_data == []:
-			#TODO: make it so if the winner is not determined this message changes
+			# TODO: make it so if the winner is not determined this message changes
 			print("Can't read/find file ", path)
 		else:
 			training_data.append(path_data)
@@ -61,13 +76,28 @@ def get_files() -> List[str]:
 	"""
 	Gets a list of file paths for the training data.
 	:rtype: list[str]
+	:return _TRAINING_DATA_FILES
 	"""
-	files = glob.glob("../resources/training/freestyle/freestyle1/*.psq") + glob.glob("../resources/training/freestyle/freestyle3/*.psq") + glob.glob("../resources/training/freestyle/freestyle2/*.psq")[:500]
-	files = files + files + files + files
+	files = _TRAINING_DATA_FILES
+	"""
+	Temporary fix for running out of training data.
+	It's more computationally efficient to:
+	1: Only re-use training data as and when it's needed, instead of assuming that we'll need X amount.
+	2: Re-use data that's already been parsed, instead of parsing the file again.
+	Todo: Move this kind of thing into the NN, and get it to do it as and when more training data is needed.
+	"""
+
+	files *= 4
 	return files
-	
+
+
 def get_test_files() -> List[str]:
-	return glob.glob("../resources/training/freestyle/freestyle2/*.psq")[500:]
+	"""
+	Returns files to be used for testing the NN.
+	:return: _TEST_DATA_FILES
+	"""
+	return _TEST_DATA_FILES
+
 
 if __name__ == '__main__':
 	if len(argv) > 1:

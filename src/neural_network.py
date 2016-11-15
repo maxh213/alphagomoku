@@ -210,9 +210,10 @@ def shuffle_training_data(training_data):
 	for i in range(len(training_data)):
 
 		# Here we remove the first 10 starting moves (for now!)
-		# not much can be gained from the first 10 or so moves (I think!) and is messes with the weights/bias unessesarily
+		# not much can be gained from the first 10 or so moves (I think!),
+		# and it messes with the weights/bias unnecessarily.
 		starting_move = 0
-		if (len(training_data[i]) > 10):
+		if len(training_data[i]) > 10:
 			starting_move = 10
 
 		for j in range(starting_move, len(training_data[i])):
