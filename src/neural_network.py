@@ -21,8 +21,10 @@ LEARNING_RATE = 1e-6
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 1000
-TEST_DATA_FILE_COUNT = 20
+TRAINING_DATA_FILE_COUNT = 3
+TEST_DATA_FILE_COUNT = 1
+
+MODEL_SAVE_FILE_PATH = "save_data/model.ckpt"
 
 
 # THIS BELONGS IN training_data.py
@@ -136,12 +138,22 @@ def conv_network():
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
+	# Allows saving the state of all tf variables
+	saver = tf.train.Saver()
+
 	sess = tf.Session()
 	sess.run(tf.initialize_all_variables())
 
 	print("Network training starting!")
 	print_counter = 0
 	# For each game
+
+	try:
+		saver.restore(sess, MODEL_SAVE_FILE_PATH)
+		print("TensorFlow model restored from last session.")
+	except ValueError as error:
+		print("Could not load a TensorFlow model from the last session because none was found.")
+	
 
 	for i in range(0, len(training_data)):
 		batch_input = training_data[i][0]
@@ -158,6 +170,9 @@ def conv_network():
 			print("Accuracy: " + str(sess.run(accuracy)))
 			print("***")
 		print_counter += 1
+
+	save_path = saver.save(sess, MODEL_SAVE_FILE_PATH)
+	print("TensorFlow model saved in file: %s" % save_path)
 
 	print("NN training complete, moving on to testing.")
 

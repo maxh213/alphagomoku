@@ -79,15 +79,6 @@ def get_files() -> List[str]:
 	:return _TRAINING_DATA_FILES
 	"""
 	files = _TRAINING_DATA_FILES
-	"""
-	Temporary fix for running out of training data.
-	It's more computationally efficient to:
-	1: Only re-use training data as and when it's needed, instead of assuming that we'll need X amount.
-	2: Re-use data that's already been parsed, instead of parsing the file again.
-	Todo: Move this kind of thing into the NN, and get it to do it as and when more training data is needed.
-	"""
-
-	files *= 4
 	return files
 
 
