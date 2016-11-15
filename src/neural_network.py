@@ -146,11 +146,11 @@ def conv_network(should_use_save_data):
 
 	print("Network training starting!")
 	print("")
-	
+
 	print_counter = 0
 	# For each game
 
-	if should_use_save_data:
+	if should_use_save_data == ['True'] or should_use_save_data == ['true']:
 		#Try load the weights and biases from when the network was last run
 		try:
 			saver.restore(sess, MODEL_SAVE_FILE_PATH)
