@@ -80,7 +80,7 @@ def conv2d(x, W):
 	#return tf.nn.avg_pool(x, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
 
 
-def conv_network():
+def conv_network(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
 	print("If you see any 'can't read file' error messages below, please ignore them for now, this is normal behaviour in this early build")
 	print("------------------------------------------------")
@@ -145,15 +145,20 @@ def conv_network():
 	sess.run(tf.initialize_all_variables())
 
 	print("Network training starting!")
+	print("")
+	
 	print_counter = 0
 	# For each game
 
-	try:
-		saver.restore(sess, MODEL_SAVE_FILE_PATH)
-		print("TensorFlow model restored from last session.")
-	except ValueError as error:
-		print("Could not load a TensorFlow model from the last session because none was found.")
-	
+	if should_use_save_data:
+		#Try load the weights and biases from when the network was last run
+		try:
+			saver.restore(sess, MODEL_SAVE_FILE_PATH)
+			print("TensorFlow model restored from last session.")
+		except ValueError as error:
+			print("Could not load a TensorFlow model from the last session because none was found.")
+	else:
+		print("Did not load previous save data because you did not pass in a boolean flag saying True. If you wish to load the previous save data run: python3 main.py True")
 
 	for i in range(0, len(training_data)):
 		batch_input = training_data[i][0]
@@ -236,5 +241,3 @@ def shuffle_training_data(training_data):
 	random.shuffle(new_training_data)
 	return new_training_data
 
-if __name__ == '__main__':
-	conv_network()
