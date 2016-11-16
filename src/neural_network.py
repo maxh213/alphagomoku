@@ -150,7 +150,7 @@ def conv_network(should_use_save_data):
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-	tf.histogram_summary("accuracy", accuracy)
+	#tf.histogram_summary("accuracy", accuracy)
 
 	# Allows saving the state of all tf variables
 	saver = tf.train.Saver()
