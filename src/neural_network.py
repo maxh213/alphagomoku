@@ -21,10 +21,11 @@ LEARNING_RATE = 1e-6
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 3
-TEST_DATA_FILE_COUNT = 1
+TRAINING_DATA_FILE_COUNT = 500
+TEST_DATA_FILE_COUNT = 5
 
-MODEL_SAVE_FILE_PATH = "save_data/model.ckpt"
+MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
+GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 
 
 # THIS BELONGS IN training_data.py
@@ -102,6 +103,9 @@ def conv_network(should_use_save_data):
 	# bias is always the same as the last in the shape above
 	conv_bias1 = get_bias_variable([5])
 
+	conv_weights1_histogram = tf.histogram_summary("conv_weights1", conv_weights1)
+	conv_bias1_histogram = tf.histogram_summary("conv_bias1", conv_bias1)
+
 	# -1 and 1 are meant to be the colour channels of the image so no need to change them
 	# 20 by 20 is the boardsize
 	input_image = tf.reshape(training_input, [-1, 20, 20, 1])
@@ -113,11 +117,17 @@ def conv_network(should_use_save_data):
 	conv_weights2 = get_weight_variable([5, 5, 5, 10])
 	conv_bias2 = get_bias_variable([10])
 
+	conv_weights2_histogram = tf.histogram_summary("conv_weights2", conv_weights2)
+	conv_bias2_histogram = tf.histogram_summary("conv_bias2", conv_bias2)
+
 	convolution2 = tf.nn.relu(conv2d(convolution1, conv_weights2) + conv_bias2)
 	#pool2 = max_pool_2x2(convolution2)
 
 	fully_connected_weights1 = get_weight_variable([10, 500])
 	fully_connected_bias1 = get_bias_variable([500])
+
+	fc_weights1_histogram = tf.histogram_summary("fully_connected_weights1", fully_connected_weights1)
+	fc_bias1_histogram = tf.histogram_summary("fully_connected_bias1", fully_connected_bias1)
 
 	#pool2_flat = tf.reshape(pool2, [-1, 10])
 	conv2_flat = tf.reshape(convolution2, [-1, 10])
@@ -133,16 +143,24 @@ def conv_network(should_use_save_data):
 	tf_output = tf.sigmoid(tf_output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
+	tf.histogram_summary("cross_entropy", cross_entropy)
+	#tf.scalar_summary("cross_entropy", cross_entropy)
 	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
+	
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+	tf.histogram_summary("accuracy", accuracy)
 
 	# Allows saving the state of all tf variables
 	saver = tf.train.Saver()
-
+	
+	merged_summary_op = tf.merge_all_summaries()
+	
 	sess = tf.Session()
 	sess.run(tf.initialize_all_variables())
+	
+	summary_writer = tf.train.SummaryWriter(GRAPH_LOGS_SAVE_FILE_PATH, graph=sess.graph)
 
 	print("Network training starting!")
 	print("")
@@ -174,6 +192,8 @@ def conv_network(should_use_save_data):
 			#print("Actual output: " + str(sess.run(tf.argmax(batch_output,1))))
 			print("Accuracy: " + str(sess.run(accuracy)))
 			print("***")
+		summary_str = sess.run(merged_summary_op, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 1.0})
+		summary_writer.add_summary(summary_str, i)
 		print_counter += 1
 
 	save_path = saver.save(sess, MODEL_SAVE_FILE_PATH)
@@ -205,6 +225,9 @@ def conv_network(should_use_save_data):
 	print("number: %s" % size)
 	percentage = (correct / size) * 100
 	print("%s percent" % (percentage))
+
+	print("Run the following command to see the graphs produced from this training:")
+	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
 
 
 def transform_training_output_for_tf(actual_training_output):
