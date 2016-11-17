@@ -1,17 +1,6 @@
 import tensorflow as tf
 import math
-import random
-from training_data import process_training_data, get_files, get_test_files
-
-'''
--make the numbers make sense mathematically, and make it compile with said numbers
--figure out trunticated normal should we use it???
--figure out what our output data should look like when we feed to to tensorflow.
-- Do we need 0 padding for the windows?
-- Which version of pooling do we need, seeing as max pooling doesn't sit with our input data
-	- It looks like average pooling might help!
-	- Actually no, because this is just going to return the player with the most moves in a patch
-'''
+from training_data import transform_training_output_for_tf, get_training_data, get_test_data
 
 # TODO: this should be got from the board file
 # Width and Height of the board
@@ -34,34 +23,6 @@ def count_moves(data):
 	for i in range(len(data)):
 		counter += len(data[i])
 	return counter
-
-
-'''
-Training data format:
-training_data[0] = first game
-training_data[0][1][0] = first move of first game
-training_data[0][2][0] = second move of first game
-training_data[0][0][1] = winner of first game
-training_data[0][1][0][0] = first line of first move of first game
-training_data[0][1][0][0][0] = first tile on first line of first move of first game
-
-After the training data has been shuffled training data loses the first index above and they're just random moves from any given game
-For example:
-training_data[0][0] = a move of a random game
-training_data[0][1] = winner of the game which the random move was taken from
-training_data[1][0] = another move of a random game
-and so on...
-'''
-def get_training_data(file_count):
-	# Obtain files for processing
-	files = get_files()
-	return process_training_data(files[:file_count])
-
-
-def get_test_data(file_count):
-	test_files = get_test_files()
-	return process_training_data(test_files[:file_count])
-
 
 def get_weight_variable(shape):
 	return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
@@ -88,7 +49,6 @@ def conv_network(should_use_save_data):
 
 	# Get training data
 	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
-	training_data = shuffle_training_data(training_data)
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 
 	# Set up placeholders for input and output
@@ -230,37 +190,5 @@ def conv_network(should_use_save_data):
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
 
 
-def transform_training_output_for_tf(actual_training_output):
-	if actual_training_output == -1:
-		actual_training_output = 0
-	output = []
-	count = 0
-	for i in range(400):
-		output.append([])
-		for j in range(2):
-			if j == actual_training_output:
-				output[i].append(100)
-			else:
-				output[i].append(0)
-	return output
 
-'''
-	This shuffles all the moves from all the games in the training data into one array.
-	This is done so we don't bombard our NN with hundreds of the same training outputs at once.
-'''
-def shuffle_training_data(training_data):
-	new_training_data = []
-	for i in range(len(training_data)):
-
-		# Here we remove the first 10 starting moves (for now!)
-		# not much can be gained from the first 10 or so moves (I think!),
-		# and it messes with the weights/bias unnecessarily.
-		starting_move = 0
-		if len(training_data[i]) > 10:
-			starting_move = 10
-
-		for j in range(starting_move, len(training_data[i])):
-			new_training_data.append(training_data[i][j])
-	random.shuffle(new_training_data)
-	return new_training_data
 

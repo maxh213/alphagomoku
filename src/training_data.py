@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 import glob
+import random
 from sys import argv
 
 from typing import List, Tuple
@@ -71,6 +72,50 @@ def process_training_data(paths: List[str], should_print=False):
 			training_data.append(path_data)
 	return training_data
 
+'''
+	This method transforms a single digit training output (either -1 or 1, however in this method we map -1 to 0) 
+	into a format which is compatible with tensorflow.
+
+	Basically it will create an 400 long array (400 because 20*20 for board size) but it can be a different number if we want
+	and then at each point it point it will append 100 in either 0 or 1 so tensorflow can argmax it.
+
+	So if at position [0][0] the output is 1 it means that the first output neuron in tf(our of 400 currently) should learn that
+	player 1 won the game.
+'''
+def transform_training_output_for_tf(actual_training_output):
+	if actual_training_output == -1:
+		actual_training_output = 0
+	output = []
+	count = 0
+	for i in range(400):
+		output.append([])
+		for j in range(2):
+			if j == actual_training_output:
+				output[i].append(100)
+			else:
+				output[i].append(0)
+	return output
+
+'''
+	This shuffles all the moves from all the games in the training data into one array.
+	This is done so we don't bombard our NN with hundreds of the same training outputs at once.
+'''
+def shuffle_training_data(training_data):
+	new_training_data = []
+	for i in range(len(training_data)):
+
+		# Here we remove the first 10 starting moves (for now!)
+		# not much can be gained from the first 10 or so moves (I think!),
+		# and it messes with the weights/bias unnecessarily.
+		starting_move = 0
+		if len(training_data[i]) > 10:
+			starting_move = 10
+
+		for j in range(starting_move, len(training_data[i])):
+			new_training_data.append(training_data[i][j])
+	random.shuffle(new_training_data)
+	return new_training_data
+
 
 def get_files() -> List[str]:
 	"""
@@ -88,6 +133,34 @@ def get_test_files() -> List[str]:
 	:return: _TEST_DATA_FILES
 	"""
 	return _TEST_DATA_FILES
+
+'''
+Training data format:
+training_data[0] = first game
+training_data[0][1][0] = first move of first game
+training_data[0][2][0] = second move of first game
+training_data[0][0][1] = winner of first game
+training_data[0][1][0][0] = first line of first move of first game
+training_data[0][1][0][0][0] = first tile on first line of first move of first game
+
+After the training data has been shuffled training data loses the first index above and they're just random moves from any given game
+For example:
+training_data[0][0] = a move of a random game
+training_data[0][1] = winner of the game which the random move was taken from
+training_data[1][0] = another move of a random game
+and so on...
+'''
+def get_training_data(file_count):
+	# Obtain files for processing
+	files = get_files()
+	processed_training_files = process_training_data(files[:file_count])
+	shuffled_training_files = shuffle_training_data(processed_training_files)
+	return shuffled_training_files
+
+
+def get_test_data(file_count):
+	test_files = get_test_files()
+	return process_training_data(test_files[:file_count])
 
 
 if __name__ == '__main__':
