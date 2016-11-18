@@ -6,7 +6,7 @@ from training_data import get_training_data, get_test_data, get_batch
 # Width and Height of the board
 BOARD_SIZE = 20
 
-LEARNING_RATE = 1e-6
+LEARNING_RATE = 0.2
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.9
 
@@ -21,18 +21,6 @@ def get_weight_variable(shape):
 
 def get_bias_variable(shape):
 	return tf.Variable(tf.constant(0.1, shape=shape))
-
-def conv2d(x, W):
-	# [(Batch) 1, x, y, (Channels) 1]
-	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
-
-
-#def max_pool_2x2(x):
-	# A 4-D Tensor with shape [batch, height, width, channels]
-	# ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
-	# strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
-	#return tf.nn.avg_pool(x, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
-
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
@@ -98,7 +86,6 @@ def neural_network_train(should_use_save_data):
 		print("Did not load previous save data because you did not pass in a boolean flag saying True. If you wish to load the previous save data run: python3 main.py True")
 
 	print("Network training starting!")
-	print("")
 
 	train_input_batch, train_output_batch = get_batch(training_data)
 	entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_PROBABILITY})
