@@ -72,51 +72,6 @@ def process_training_data(paths: List[str], should_print=False):
 			training_data.append(path_data)
 	return training_data
 
-'''
-	This method transforms a single digit training output (either -1 or 1, however in this method we map -1 to 0) 
-	into a format which is compatible with tensorflow.
-
-	Basically it will create an 400 long array (400 because 20*20 for board size) but it can be a different number if we want
-	and then at each point it point it will append 100 in either 0 or 1 so tensorflow can argmax it.
-
-	So if at position [0][0] the output is 1 it means that the first output neuron in tf(our of 400 currently) should learn that
-	player 1 won the game.
-'''
-def transform_training_output_for_tf(actual_training_output):
-	if actual_training_output == -1:
-		actual_training_output = 0
-	output = []
-	count = 0
-	for i in range(400):
-		output.append([])
-		for j in range(2):
-			if j == actual_training_output:
-				output[i].append(100)
-			else:
-				output[i].append(0)
-	return output
-
-'''
-	This shuffles all the moves from all the games in the training data into one array.
-	This is done so we don't bombard our NN with hundreds of the same training outputs at once.
-'''
-def shuffle_training_data(training_data):
-	new_training_data = []
-	for i in range(len(training_data)):
-
-		# Here we remove the first 10 starting moves (for now!)
-		# not much can be gained from the first 10 or so moves (I think!),
-		# and it messes with the weights/bias unnecessarily.
-		starting_move = 0
-		if len(training_data[i]) > 10:
-			starting_move = 10
-
-		for j in range(starting_move, len(training_data[i])):
-			new_training_data.append(training_data[i][j])
-	random.shuffle(new_training_data)
-	return new_training_data
-
-
 def get_files() -> List[str]:
 	"""
 	Gets a list of file paths for the training data.
@@ -154,8 +109,26 @@ def get_training_data(file_count):
 	# Obtain files for processing
 	files = get_files()
 	processed_training_files = process_training_data(files[:file_count])
-	shuffled_training_files = shuffle_training_data(processed_training_files)
-	return shuffled_training_files
+	return processed_training_files
+	#shuffled_training_files = shuffle_training_data(processed_training_files)
+	#return shuffled_training_files
+
+'''
+	returns the training data in a batch format which can be argmaxed by tensorflow
+'''
+def get_batch(training_data):
+	train_input = []
+	train_output = []
+	for i in range(len(training_data)):
+		for j in range(len(training_data[i])):
+			train_input.append(training_data[i][j][0])
+			if training_data[i][j][1] == -1:
+				train_output.append([100, 0])
+			elif training_data[i][j][1] == 1:
+				train_output.append([0, 100])
+			else:
+				train_output.append([0, 0])
+	return train_input, train_output
 
 
 def get_test_data(file_count):

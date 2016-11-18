@@ -1,28 +1,22 @@
 import tensorflow as tf
 import math
-from training_data import transform_training_output_for_tf, get_training_data, get_test_data
+import random
+import numpy as np
+from training_data import get_training_data, get_test_data, get_batch
 
 # TODO: this should be got from the board file
 # Width and Height of the board
 BOARD_SIZE = 20
 
-LEARNING_RATE = 1e-6
+LEARNING_RATE = 1e-4
 # The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 500
-TEST_DATA_FILE_COUNT = 5
+TRAINING_DATA_FILE_COUNT = 2500
+TEST_DATA_FILE_COUNT = 500
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
-
-
-# THIS BELONGS IN training_data.py
-def count_moves(data):
-	counter = 0
-	for i in range(len(data)):
-		counter += len(data[i])
-	return counter
 
 def get_weight_variable(shape):
 	return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
@@ -30,19 +24,7 @@ def get_weight_variable(shape):
 def get_bias_variable(shape):
 	return tf.Variable(tf.constant(0.1, shape=shape))
 
-def conv2d(x, W):
-	# [(Batch) 1, x, y, (Channels) 1]
-	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
-
-
-#def max_pool_2x2(x):
-	# A 4-D Tensor with shape [batch, height, width, channels]
-	# ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
-	# strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
-	#return tf.nn.avg_pool(x, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
-
-
-def conv_network(should_use_save_data):
+def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
 	print("If you see any 'can't read file' error messages below, please ignore them for now, this is normal behaviour in this early build")
 	print("------------------------------------------------")
@@ -52,65 +34,39 @@ def conv_network(should_use_save_data):
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 
 	# Set up placeholders for input and output
-	training_input = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
-	training_output = tf.placeholder(tf.float32, [400, 2])
+	training_input = tf.placeholder(tf.float32, [None, BOARD_SIZE, BOARD_SIZE])
+	training_output = tf.placeholder(tf.float32, [None, 2])
 
-	# Initialise weights and biases
-	# first layer
-	# looking at a 5x5 grid at each point in the board_size
-	# 1 is the number of input channels so this shouldn't change
-	conv_weights1 = get_weight_variable([5, 5, 1, 5])
-	# bias is always the same as the last in the shape above
-	conv_bias1 = get_bias_variable([5])
-
-	conv_weights1_histogram = tf.histogram_summary("conv_weights1", conv_weights1)
-	conv_bias1_histogram = tf.histogram_summary("conv_bias1", conv_bias1)
-
-	# -1 and 1 are meant to be the colour channels of the image so no need to change them
-	# 20 by 20 is the boardsize
-	input_image = tf.reshape(training_input, [-1, 20, 20, 1])
-
-	convolution1 = tf.nn.relu(conv2d(input_image, conv_weights1) + conv_bias1)
-	#pool1 = max_pool_2x2(convolution1)
-
-	# second layer
-	conv_weights2 = get_weight_variable([5, 5, 5, 10])
-	conv_bias2 = get_bias_variable([10])
-
-	conv_weights2_histogram = tf.histogram_summary("conv_weights2", conv_weights2)
-	conv_bias2_histogram = tf.histogram_summary("conv_bias2", conv_bias2)
-
-	convolution2 = tf.nn.relu(conv2d(convolution1, conv_weights2) + conv_bias2)
-	#pool2 = max_pool_2x2(convolution2)
-
-	fully_connected_weights1 = get_weight_variable([10, 500])
-	fully_connected_bias1 = get_bias_variable([500])
+	fully_connected_weights1 = get_weight_variable([400, 2000])
+	fully_connected_bias1 = get_bias_variable([2000])
 
 	fc_weights1_histogram = tf.histogram_summary("fully_connected_weights1", fully_connected_weights1)
 	fc_bias1_histogram = tf.histogram_summary("fully_connected_bias1", fully_connected_bias1)
 
-	#pool2_flat = tf.reshape(pool2, [-1, 10])
-	conv2_flat = tf.reshape(convolution2, [-1, 10])
-	fully_connected_output1 = tf.nn.relu(tf.matmul(conv2_flat, fully_connected_weights1) + fully_connected_bias1)
+	fc1_flat = tf.reshape(training_input, [-1, 400])
+	fully_connected_output1 = tf.nn.relu(tf.matmul(fc1_flat, fully_connected_weights1) + fully_connected_bias1)
 
 	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
 
-	fully_connected_weights2 = get_weight_variable([500, 2])
+	fully_connected_weights2 = get_weight_variable([2000, 2])
 	fully_connected_bias2 = get_bias_variable([2])
 
-	tf_output = tf.nn.softmax(tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2)
+	fc_weights2_histogram = tf.histogram_summary("fully_connected_weights2", fully_connected_weights2)
+	fc_bias2_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
+
+	tf_output = tf.nn.softmax(tf.matmul(fully_connected_output1, fully_connected_weights2) + fully_connected_bias2)
 	tf_output = tf.sigmoid(tf_output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 	tf.histogram_summary("cross_entropy", cross_entropy)
 	#tf.scalar_summary("cross_entropy", cross_entropy)
-	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
+	train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-	#tf.histogram_summary("accuracy", accuracy)
+	tf.histogram_summary("accuracy", accuracy)
 
 	# Allows saving the state of all tf variables
 	saver = tf.train.Saver()
@@ -122,12 +78,6 @@ def conv_network(should_use_save_data):
 	
 	summary_writer = tf.train.SummaryWriter(GRAPH_LOGS_SAVE_FILE_PATH, graph=sess.graph)
 
-	print("Network training starting!")
-	print("")
-
-	print_counter = 0
-	# For each game
-
 	if should_use_save_data == ['True'] or should_use_save_data == ['true']:
 		#Try load the weights and biases from when the network was last run
 		try:
@@ -138,57 +88,22 @@ def conv_network(should_use_save_data):
 	else:
 		print("Did not load previous save data because you did not pass in a boolean flag saying True. If you wish to load the previous save data run: python3 main.py True")
 
-	for i in range(0, len(training_data)):
-		batch_input = training_data[i][0]
-		batch_output = transform_training_output_for_tf(training_data[i][1])
-		entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: KEEP_PROBABILITY})
-		if print_counter % 100 == 0:
-			print("Training Data Number: " + str(i) + "/" + str(len(training_data)))
-			print("Entropy: " + str(entropy))
-			output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
-			correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
-			accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-			#print("Network output: " + str(sess.run(tf.argmax(output,1))))
-			#print("Actual output: " + str(sess.run(tf.argmax(batch_output,1))))
-			print("Accuracy: " + str(sess.run(accuracy)))
-			print("***")
-		summary_str = sess.run(merged_summary_op, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 1.0})
-		summary_writer.add_summary(summary_str, i)
-		print_counter += 1
+	print("Network training starting!")
+	print("")
 
+	train_input_batch, train_output_batch = get_batch(training_data)
+	entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_PROBABILITY})
+	print("Entropy: " + str(entropy))
+	print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob:1.0})))
+	summary_str = sess.run(merged_summary_op, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: 1.0})
+	summary_writer.add_summary(summary_str, 0)
+
+	print("NN training complete, moving on to testing.")
 	save_path = saver.save(sess, MODEL_SAVE_FILE_PATH)
 	print("TensorFlow model saved in file: %s" % save_path)
 
-	print("NN training complete, moving on to testing.")
-
-	# TODO: move this to its own method
-	print_counter = 0
-	size = count_moves(testing_data)
-	correct = 0
-	for i in range(0, len(testing_data)):
-		if i % 2 == 0:
-			print("Tested " + str(i) + "/" + str(len(testing_data)) + " games...")
-		starting_move = 0
-		if (len(testing_data[i]) > 10):
-			starting_move = 10
-		for j in range(starting_move, len(testing_data[i])):
-			batch_input = testing_data[i][j][0]
-			batch_output = transform_training_output_for_tf(testing_data[i][j][1])
-			output = sess.run(tf_output, feed_dict={training_input: batch_input, keep_prob: 1.0})
-			correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(batch_output,1))
-			accuracy = sess.run(tf.reduce_mean(tf.cast(correct_prediction, "float")))
-			if accuracy >= 0.5:
-				correct += 1
-
-
-	print("correct: %s" % (correct))
-	print("number: %s" % size)
-	percentage = (correct / size) * 100
-	print("%s percent" % (percentage))
+	test_input_batch, test_output_batch = get_batch(testing_data)
+	print("Testing Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: test_input_batch, training_output: test_output_batch, keep_prob:1.0})))
 
 	print("Run the following command to see the graphs produced from this training:")
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
-
-
-
-
