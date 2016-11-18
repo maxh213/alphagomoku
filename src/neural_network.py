@@ -1,16 +1,14 @@
 import tensorflow as tf
 import math
-import random
-import numpy as np
 from training_data import get_training_data, get_test_data, get_batch
 
 # TODO: this should be got from the board file
 # Width and Height of the board
 BOARD_SIZE = 20
 
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 1e-6
 # The rate at which neurons are kept after learning
-KEEP_PROBABILITY = 0.5
+KEEP_PROBABILITY = 0.9
 
 TRAINING_DATA_FILE_COUNT = 2500
 TEST_DATA_FILE_COUNT = 500
@@ -23,6 +21,18 @@ def get_weight_variable(shape):
 
 def get_bias_variable(shape):
 	return tf.Variable(tf.constant(0.1, shape=shape))
+
+def conv2d(x, W):
+	# [(Batch) 1, x, y, (Channels) 1]
+	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+
+
+#def max_pool_2x2(x):
+	# A 4-D Tensor with shape [batch, height, width, channels]
+	# ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
+	# strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
+	#return tf.nn.avg_pool(x, ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
+
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
@@ -56,12 +66,11 @@ def neural_network_train(should_use_save_data):
 	fc_bias2_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
 
 	tf_output = tf.nn.softmax(tf.matmul(fully_connected_output1, fully_connected_weights2) + fully_connected_bias2)
-	tf_output = tf.sigmoid(tf_output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 	tf.histogram_summary("cross_entropy", cross_entropy)
 	#tf.scalar_summary("cross_entropy", cross_entropy)
-	train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
+	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	
@@ -94,7 +103,7 @@ def neural_network_train(should_use_save_data):
 	train_input_batch, train_output_batch = get_batch(training_data)
 	entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_PROBABILITY})
 	print("Entropy: " + str(entropy))
-	print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob:1.0})))
+	#print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob:1.0})))
 	summary_str = sess.run(merged_summary_op, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: 1.0})
 	summary_writer.add_summary(summary_str, 0)
 

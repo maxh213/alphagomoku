@@ -122,12 +122,10 @@ def get_batch(training_data):
 	for i in range(len(training_data)):
 		for j in range(len(training_data[i])):
 			train_input.append(training_data[i][j][0])
-			if training_data[i][j][1] == -1:
-				train_output.append([100, 0])
-			elif training_data[i][j][1] == 1:
-				train_output.append([0, 100])
-			else:
-				train_output.append([0, 0])
+			#If training_data[i][j][1] == -1 then an argmax function would identify the first index 0 as the highest
+			#If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
+			#Our nn just has to mimic this
+			train_output.append([0, training_data[i][j][1]])
 	return train_input, train_output
 
 
