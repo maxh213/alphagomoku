@@ -1,14 +1,17 @@
 import tensorflow as tf
 import math
-from training_data import get_training_data, get_test_data, get_batch
+from random import randrange
+from training_data import get_training_data, get_test_data, get_batch, one_hot_input_batch, get_testing_data_save_path, get_training_data_save_path
+import pickle
 
 # TODO: this should be got from the board file
 # Width and Height of the board
 BOARD_SIZE = 20
 
-LEARNING_RATE = 0.2
+LEARNING_RATE = 0.03
 # The rate at which neurons are kept after learning
-KEEP_PROBABILITY = 0.9
+KEEP_SOME_PROBABILITY = 0.5
+KEEP_ALL_PROBABILITY = 1.0
 
 TRAINING_DATA_FILE_COUNT = 2500
 TEST_DATA_FILE_COUNT = 500
@@ -32,33 +35,45 @@ def neural_network_train(should_use_save_data):
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 
 	# Set up placeholders for input and output
-	training_input = tf.placeholder(tf.float32, [None, BOARD_SIZE, BOARD_SIZE])
+	training_input = tf.placeholder(tf.float32, [None, 400])
 	training_output = tf.placeholder(tf.float32, [None, 2])
+	keep_prob = tf.placeholder(tf.float32) 	
 
-	fully_connected_weights1 = get_weight_variable([400, 2000])
-	fully_connected_bias1 = get_bias_variable([2000])
+	layer_1_weights = get_weight_variable([400, 2])
+	layer_1_bias = get_bias_variable([2])
 
-	fc_weights1_histogram = tf.histogram_summary("fully_connected_weights1", fully_connected_weights1)
-	fc_bias1_histogram = tf.histogram_summary("fully_connected_bias1", fully_connected_bias1)
+	layer_1_weights_histogram = tf.histogram_summary("layer_1_weights", layer_1_weights)
+	layer_1_bias_histogram = tf.histogram_summary("layer_1_bias", layer_1_bias)
 
-	fc1_flat = tf.reshape(training_input, [-1, 400])
-	fully_connected_output1 = tf.nn.relu(tf.matmul(fc1_flat, fully_connected_weights1) + fully_connected_bias1)
+	layer_1_output = tf.sigmoid(tf.matmul(training_input, layer_1_weights) + layer_1_bias)
+	
+	#[2, 2] not [400, 2] because the layer above transforms the output
+	layer_2_weights = get_weight_variable([2, 2])
+	layer_2_bias = get_bias_variable([2])
 
-	keep_prob = tf.placeholder(tf.float32)
-	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
+	layer_2_weights_histogram = tf.histogram_summary("layer_2_weights", layer_2_weights)
+	layer_2_bias_histogram = tf.histogram_summary("layer_2_bias", layer_2_bias)
 
-	fully_connected_weights2 = get_weight_variable([2000, 2])
-	fully_connected_bias2 = get_bias_variable([2])
+	layer_2_output = tf.nn.sigmoid(tf.matmul(layer_1_output, layer_2_weights) + layer_2_bias)
 
-	fc_weights2_histogram = tf.histogram_summary("fully_connected_weights2", fully_connected_weights2)
-	fc_bias2_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
+	#Drop some of the neurons, this is done to try prevent overfitting (the NN outputting the same pattern or output everytime)
+	layer_2_dropout_output = tf.nn.dropout(layer_2_output, keep_prob) 
 
-	tf_output = tf.nn.softmax(tf.matmul(fully_connected_output1, fully_connected_weights2) + fully_connected_bias2)
+	layer_3_weights = get_weight_variable([2, 2])
+	layer_3_bias = get_bias_variable([2])
 
-	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
+	layer_3_weights_histogram = tf.histogram_summary("layer_3_weights", layer_3_weights)
+	layer_3_bias_histogram = tf.histogram_summary("layer_3_bias", layer_3_bias)
+
+	layer_3_output = tf.nn.sigmoid(tf.matmul(layer_2_dropout_output, layer_3_weights) + layer_3_bias)
+	
+	tf_output = layer_3_output
+
+	cross_entropy = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(tf_output, training_output))
 	tf.histogram_summary("cross_entropy", cross_entropy)
-	#tf.scalar_summary("cross_entropy", cross_entropy)
-	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
+
+	train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
+	#train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	
@@ -88,10 +103,15 @@ def neural_network_train(should_use_save_data):
 	print("Network training starting!")
 
 	train_input_batch, train_output_batch = get_batch(training_data)
-	entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_PROBABILITY})
+	train_input_batch = one_hot_input_batch(train_input_batch)
+	entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY})
 	print("Entropy: " + str(entropy))
-	#print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob:1.0})))
-	summary_str = sess.run(merged_summary_op, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: 1.0})
+	print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
+	
+	debug_outputs = sess.run(tf_output, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})
+	print_debug_outputs(5, train_output_batch, debug_outputs)
+
+	summary_str = sess.run(merged_summary_op, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})
 	summary_writer.add_summary(summary_str, 0)
 
 	print("NN training complete, moving on to testing.")
@@ -99,7 +119,19 @@ def neural_network_train(should_use_save_data):
 	print("TensorFlow model saved in file: %s" % save_path)
 
 	test_input_batch, test_output_batch = get_batch(testing_data)
-	print("Testing Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: test_input_batch, training_output: test_output_batch, keep_prob:1.0})))
+	test_input_batch = one_hot_input_batch(test_input_batch)
+	print("Testing Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: test_input_batch, training_output: test_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
 
 	print("Run the following command to see the graphs produced from this training:")
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
+
+
+def print_debug_outputs(amount, train_output_batch, debug_outputs):
+	print("---")
+	print("Debugging/printing random outputs from tensorflow compared to the actual outputs...")
+	for i in range(amount):
+		random_move_index = randrange(0, len(train_output_batch))
+		print("index of move in output array: " + str(random_move_index))
+		print("tf output: " + str(debug_outputs[random_move_index]))
+		print("Actual output: " + str(train_output_batch[random_move_index]))
+	print("---")

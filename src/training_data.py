@@ -1,10 +1,11 @@
 #! /usr/bin/env python3
 import glob
 import random
+import pickle
 from sys import argv
-
 from typing import List, Tuple
 from board import Board, BoardStruct, MovesStruct
+
 
 """
 Training data is represented as a list of moves/boards, and the winner for that game.
@@ -24,6 +25,9 @@ All but the first 500 files from freestyle 2.
 _TRAINING_DATA_FILES uses the other 500.
 """
 _TEST_DATA_FILES = glob.glob("../resources/training/freestyle/freestyle2/*.psq")[500:]
+
+TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
+TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
 
 
 def parse_training_file(path: str) -> MovesStruct:
@@ -72,7 +76,7 @@ def process_training_data(paths: List[str], should_print=False):
 			training_data.append(path_data)
 	return training_data
 
-def get_files() -> List[str]:
+def get_training_files() -> List[str]:
 	"""
 	Gets a list of file paths for the training data.
 	:rtype: list[str]
@@ -106,12 +110,17 @@ training_data[1][0] = another move of a random game
 and so on...
 '''
 def get_training_data(file_count):
+	'''
+		TODO: make a check to see if the file exists and add another if necessary!
+	'''
 	# Obtain files for processing
-	files = get_files()
+	'''
+	files = get_training_files()
 	processed_training_files = process_training_data(files[:file_count])
+	persist_file_in_pickle(TRAINING_DATA_SAVE_PATH, processed_training_files)
 	return processed_training_files
-	#shuffled_training_files = shuffle_training_data(processed_training_files)
-	#return shuffled_training_files
+	'''
+	return load_file_from_pickle(TRAINING_DATA_SAVE_PATH)
 
 '''
 	returns the training data in a batch format which can be argmaxed by tensorflow
@@ -121,17 +130,56 @@ def get_batch(training_data):
 	train_output = []
 	for i in range(len(training_data)):
 		for j in range(len(training_data[i])):
-			train_input.append(training_data[i][j][0])
-			#If training_data[i][j][1] == -1 then an argmax function would identify the first index 0 as the highest
-			#If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
-			#Our nn just has to mimic this
-			train_output.append([0, training_data[i][j][1]])
+			#if the move is less than 15 and the game lasts more than 15 moves don't bother
+			if not (j < 15 and len(training_data[i]) > 15):
+				train_input.append(training_data[i][j][0])
+				#If training_data[i][j][1] == -1 then an argmax function would identify the first index 0 as the highest
+				#If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
+				#Our nn just has to mimic this
+				train_output.append([0, training_data[i][j][1]])
 	return train_input, train_output
 
 
+
 def get_test_data(file_count):
+	'''
 	test_files = get_test_files()
-	return process_training_data(test_files[:file_count])
+	processed_test_data = process_training_data(test_files[:file_count])
+	persist_file_in_pickle(TESTING_DATA_SAVE_PATH, processed_test_data)
+	return processed_test_data
+	'''
+	return load_file_from_pickle(TESTING_DATA_SAVE_PATH)
+
+def persist_file_in_pickle(file_path, data):
+	file = open(file_path, 'wb')
+	pickle.dump(data, file)
+	file.close()
+
+def load_file_from_pickle(file_path):
+	f = open(get_training_data_save_path(), 'rb')
+	data = pickle.load(f)
+	f.close()
+	return data
+
+
+'''
+	This only works on batched_inputs
+'''
+def one_hot_input_batch(input_batch):
+	one_hotted_input_batch = []
+	for board in input_batch:
+		one_hotted_move = []
+		for row in board:
+			for cell in row:
+				one_hotted_move.append(cell)
+		one_hotted_input_batch.append(one_hotted_move)
+	return one_hotted_input_batch
+
+def get_training_data_save_path():
+	return TRAINING_DATA_SAVE_PATH
+
+def get_testing_data_save_path():
+	return TESTING_DATA_SAVE_PATH
 
 
 if __name__ == '__main__':
