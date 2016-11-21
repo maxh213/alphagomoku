@@ -8,16 +8,27 @@ import pickle
 # Width and Height of the board
 BOARD_SIZE = 20
 
-LEARNING_RATE = 0.03
+LEARNING_RATE = 0.003
 # The rate at which neurons are kept after learning
-KEEP_SOME_PROBABILITY = 0.5
+KEEP_SOME_PROBABILITY = 0.7
 KEEP_ALL_PROBABILITY = 1.0
 
 TRAINING_DATA_FILE_COUNT = 2500
+TRAING_DATA_BATCH_SIZE = 500
 TEST_DATA_FILE_COUNT = 500
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
+
+INPUT_SIZE = 400
+OUTPUT_SIZE = 2
+#You can change the below to be whatever you want, the higher they are the longer it'll take to run though
+LAYER_1_WEIGHTS_SIZE = 200
+LAYER_2_WEIGHTS_SIZE = 100
+
+TRAINING_ITERATIONS = 20
+DEBUG_PRINT_SIZE = 5
+
 
 def get_weight_variable(shape):
 	return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
@@ -27,53 +38,53 @@ def get_bias_variable(shape):
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
-	print("If you see any 'can't read file' error messages below, please ignore them for now, this is normal behaviour in this early build")
-	print("------------------------------------------------")
 
+	print("Loading training data...")
 	# Get training data
 	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
+	print("Training data loaded!")
 
 	# Set up placeholders for input and output
-	training_input = tf.placeholder(tf.float32, [None, 400])
-	training_output = tf.placeholder(tf.float32, [None, 2])
+	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
+	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
 	keep_prob = tf.placeholder(tf.float32) 	
 
-	layer_1_weights = get_weight_variable([400, 2])
-	layer_1_bias = get_bias_variable([2])
+	layer_1_weights = get_weight_variable([INPUT_SIZE, LAYER_1_WEIGHTS_SIZE])
+	layer_1_bias = get_bias_variable([LAYER_1_WEIGHTS_SIZE])
 
 	layer_1_weights_histogram = tf.histogram_summary("layer_1_weights", layer_1_weights)
 	layer_1_bias_histogram = tf.histogram_summary("layer_1_bias", layer_1_bias)
 
-	layer_1_output = tf.sigmoid(tf.matmul(training_input, layer_1_weights) + layer_1_bias)
+	layer_1_output = tf.nn.tanh(tf.matmul(training_input, layer_1_weights) + layer_1_bias)
 	
 	#[2, 2] not [400, 2] because the layer above transforms the output
-	layer_2_weights = get_weight_variable([2, 2])
-	layer_2_bias = get_bias_variable([2])
+	layer_2_weights = get_weight_variable([LAYER_1_WEIGHTS_SIZE, LAYER_2_WEIGHTS_SIZE])
+	layer_2_bias = get_bias_variable([LAYER_2_WEIGHTS_SIZE])
 
 	layer_2_weights_histogram = tf.histogram_summary("layer_2_weights", layer_2_weights)
 	layer_2_bias_histogram = tf.histogram_summary("layer_2_bias", layer_2_bias)
 
-	layer_2_output = tf.nn.sigmoid(tf.matmul(layer_1_output, layer_2_weights) + layer_2_bias)
+	layer_2_output = tf.nn.tanh(tf.matmul(layer_1_output, layer_2_weights) + layer_2_bias)
 
 	#Drop some of the neurons, this is done to try prevent overfitting (the NN outputting the same pattern or output everytime)
 	layer_2_dropout_output = tf.nn.dropout(layer_2_output, keep_prob) 
 
-	layer_3_weights = get_weight_variable([2, 2])
-	layer_3_bias = get_bias_variable([2])
+	layer_3_weights = get_weight_variable([LAYER_2_WEIGHTS_SIZE, OUTPUT_SIZE])
+	layer_3_bias = get_bias_variable([OUTPUT_SIZE])
 
 	layer_3_weights_histogram = tf.histogram_summary("layer_3_weights", layer_3_weights)
 	layer_3_bias_histogram = tf.histogram_summary("layer_3_bias", layer_3_bias)
 
-	layer_3_output = tf.nn.sigmoid(tf.matmul(layer_2_dropout_output, layer_3_weights) + layer_3_bias)
+	layer_3_output = tf.nn.tanh(tf.matmul(layer_2_dropout_output, layer_3_weights) + layer_3_bias)
 	
 	tf_output = layer_3_output
 
-	cross_entropy = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(tf_output, training_output))
+	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 	tf.histogram_summary("cross_entropy", cross_entropy)
 
-	train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
-	#train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
+	#train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cross_entropy)
+	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	
@@ -104,12 +115,19 @@ def neural_network_train(should_use_save_data):
 
 	train_input_batch, train_output_batch = get_batch(training_data)
 	train_input_batch = one_hot_input_batch(train_input_batch)
-	entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY})
-	print("Entropy: " + str(entropy))
-	print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
+	
+	previous_entropy = 99999
+	for i in range(TRAINING_ITERATIONS):
+		print("Training step: " + str(i))
+		entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY})
+		print("Entropy: " + str(entropy))
+		if entropy > previous_entropy:
+			break
+		previous_entropy = entropy
+	#print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
 	
 	debug_outputs = sess.run(tf_output, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})
-	print_debug_outputs(5, train_output_batch, debug_outputs)
+	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch, debug_outputs)
 
 	summary_str = sess.run(merged_summary_op, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})
 	summary_writer.add_summary(summary_str, 0)

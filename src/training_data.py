@@ -125,7 +125,7 @@ def get_training_data(file_count):
 '''
 	returns the training data in a batch format which can be argmaxed by tensorflow
 '''
-def get_batch(training_data):
+def get_batch(training_data, oh):
 	train_input = []
 	train_output = []
 	for i in range(len(training_data)):
@@ -138,8 +138,6 @@ def get_batch(training_data):
 				#Our nn just has to mimic this
 				train_output.append([0, training_data[i][j][1]])
 	return train_input, train_output
-
-
 
 def get_test_data(file_count):
 	'''
