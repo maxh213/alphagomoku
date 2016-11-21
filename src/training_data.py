@@ -125,7 +125,7 @@ def get_training_data(file_count):
 '''
 	returns the training data in a batch format which can be argmaxed by tensorflow
 '''
-def get_batch(training_data, oh):
+def get_batch(training_data):
 	train_input = []
 	train_output = []
 	for i in range(len(training_data)):
