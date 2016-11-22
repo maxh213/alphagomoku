@@ -3,5 +3,6 @@ __pycache__
 *.pyc
 *.swp
 /.idea
+/src/save_data/logs
 program
 
