@@ -1,8 +1,6 @@
 import tensorflow as tf
-import math
 from random import randrange
-from training_data import get_training_data, get_test_data, get_batch, one_hot_input_batch, get_testing_data_save_path, get_training_data_save_path
-import pickle
+from training_data import get_training_data, get_test_data, get_batch, one_hot_input_batch
 from board import BOARD_SIZE
 
 LEARNING_RATE = 0.003
@@ -10,7 +8,7 @@ LEARNING_RATE = 0.003
 KEEP_SOME_PROBABILITY = 0.7
 KEEP_ALL_PROBABILITY = 1.0
 
-TRAINING_DATA_FILE_COUNT = 2500
+TRAINING_DATA_FILE_COUNT = BOARD_SIZE ** 2
 TEST_DATA_FILE_COUNT = 500
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
