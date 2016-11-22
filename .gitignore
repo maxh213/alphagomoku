@@ -3,7 +3,7 @@ __pycache__
 *.pyc
 *.swp
 /.idea
-/src/.idea
+/src/.idea/*
 /src/save_data/logs
 program
 
