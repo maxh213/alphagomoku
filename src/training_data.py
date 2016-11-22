@@ -154,7 +154,7 @@ def persist_file_in_pickle(file_path, data):
 	file.close()
 
 def load_file_from_pickle(file_path):
-	f = open(get_training_data_save_path(), 'rb')
+	f = open(file_path, 'rb')
 	data = pickle.load(f)
 	f.close()
 	return data

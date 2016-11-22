@@ -3,10 +3,7 @@ import math
 from random import randrange
 from training_data import get_training_data, get_test_data, get_batch, one_hot_input_batch, get_testing_data_save_path, get_training_data_save_path
 import pickle
-
-# TODO: this should be got from the board file
-# Width and Height of the board
-BOARD_SIZE = 20
+from board import BOARD_SIZE
 
 LEARNING_RATE = 0.003
 # The rate at which neurons are kept after learning
@@ -14,7 +11,6 @@ KEEP_SOME_PROBABILITY = 0.7
 KEEP_ALL_PROBABILITY = 1.0
 
 TRAINING_DATA_FILE_COUNT = 2500
-TRAING_DATA_BATCH_SIZE = 500
 TEST_DATA_FILE_COUNT = 500
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
@@ -121,10 +117,12 @@ def neural_network_train(should_use_save_data):
 		print("Training step: " + str(i))
 		entropy, _ = sess.run([cross_entropy,train_step], feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY})
 		print("Entropy: " + str(entropy))
+		#Keeping the iteration accuracy makes this very slow
+		#print("Iteration Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
 		if entropy > previous_entropy:
 			break
 		previous_entropy = entropy
-	#print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
+	print("Training Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
 	
 	debug_outputs = sess.run(tf_output, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})
 	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch, debug_outputs)
