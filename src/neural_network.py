@@ -8,13 +8,13 @@ LEARNING_RATE = 0.003
 KEEP_SOME_PROBABILITY = 0.7
 KEEP_ALL_PROBABILITY = 1.0
 
-TRAINING_DATA_FILE_COUNT = BOARD_SIZE ** 2
+TRAINING_DATA_FILE_COUNT = 2500
 TEST_DATA_FILE_COUNT = 500
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 
-INPUT_SIZE = 400
+INPUT_SIZE = BOARD_SIZE ** 2
 OUTPUT_SIZE = 2
 #You can change the below to be whatever you want, the higher they are the longer it'll take to run though
 LAYER_1_WEIGHTS_SIZE = 200
