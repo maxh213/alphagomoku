@@ -1,6 +1,6 @@
 import tensorflow as tf
 from random import randrange
-from training_data import get_training_data, get_test_data, get_batch, one_hot_input_batch
+from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
 
 LEARNING_RATE = 0.003
@@ -27,8 +27,42 @@ DEBUG_PRINT_SIZE = 5
 def get_weight_variable(shape):
 	return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
 
+
 def get_bias_variable(shape):
 	return tf.Variable(tf.constant(0.1, shape=shape))
+
+'''
+	This only works on batched_inputs
+'''
+
+
+def one_hot_input_batch(input_batch):
+	one_hotted_input_batch = []
+	for board in input_batch:
+		one_hotted_move = []
+		for row in board:
+			for cell in row:
+				one_hotted_move.append(cell)
+		one_hotted_input_batch.append(one_hotted_move)
+	return one_hotted_input_batch
+
+'''
+	returns the training data in a batch format which can be argmaxed by tensorflow
+'''
+def convert_training_to_batch(training_data):
+	train_input = []
+	train_output = []
+	for i in range(len(training_data)):
+		for j in range(len(training_data[i])):
+			# if the move is less than 15 and the game lasts more than 15 moves don't bother
+			if not (j < 15 and len(training_data[i]) > 15):
+				train_input.append(training_data[i][j][0])
+				# If training_data[i][j][1] == -1 then an argmax function would identify the first index 0 as the highest
+				# If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
+				# Our nn just has to mimic this
+				train_output.append([0, training_data[i][j][1]])
+	return train_input, train_output
+
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
@@ -95,7 +129,7 @@ def neural_network_train(should_use_save_data):
 	
 	summary_writer = tf.train.SummaryWriter(GRAPH_LOGS_SAVE_FILE_PATH, graph=sess.graph)
 
-	if should_use_save_data == ['True'] or should_use_save_data == ['true']:
+	if should_use_save_data:
 		#Try load the weights and biases from when the network was last run
 		try:
 			saver.restore(sess, MODEL_SAVE_FILE_PATH)
@@ -107,7 +141,7 @@ def neural_network_train(should_use_save_data):
 
 	print("Network training starting!")
 
-	train_input_batch, train_output_batch = get_batch(training_data)
+	train_input_batch, train_output_batch = convert_training_to_batch(training_data)
 	train_input_batch = one_hot_input_batch(train_input_batch)
 	
 	previous_entropy = 99999
@@ -132,7 +166,7 @@ def neural_network_train(should_use_save_data):
 	save_path = saver.save(sess, MODEL_SAVE_FILE_PATH)
 	print("TensorFlow model saved in file: %s" % save_path)
 
-	test_input_batch, test_output_batch = get_batch(testing_data)
+	test_input_batch, test_output_batch = convert_training_to_batch(testing_data)
 	test_input_batch = one_hot_input_batch(test_input_batch)
 	print("Testing Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: test_input_batch, training_output: test_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
 

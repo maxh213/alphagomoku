@@ -1,11 +1,10 @@
 #! /usr/bin/env python3
 import glob
-import random
 import pickle
 from sys import argv
-from typing import List, Tuple
+from typing import List, Tuple, Any
 from board import Board, BoardStruct, MovesStruct
-
+from os.path import isfile
 
 """
 Training data is represented as a list of moves/boards, and the winner for that game.
@@ -16,9 +15,9 @@ TrainingDataStruct = Tuple[List[BoardStruct], int]
 All files from freestyle 1 and 3, and only the first 500 from freestyle 2.
 _TEST_DATA_FILES uses the rest of freestyle2.
 """
-_TRAINING_DATA_FILES = glob.glob("../resources/training/freestyle/freestyle1/*.psq") \
-			+ glob.glob("../resources/training/freestyle/freestyle3/*.psq") + glob.glob(
-		"../resources/training/freestyle/freestyle2/*.psq")[:500]
+_TRAINING_DATA_FILES = glob.glob("../resources/training/freestyle/freestyle1/*.psq")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle3/*.psq")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle2/*.psq")[:500]
 
 """
 All but the first 500 files from freestyle 2.
@@ -26,8 +25,8 @@ _TRAINING_DATA_FILES uses the other 500.
 """
 _TEST_DATA_FILES = glob.glob("../resources/training/freestyle/freestyle2/*.psq")[500:]
 
-TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
-TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
+_TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
+_TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
 
 
 def parse_training_file(path: str) -> MovesStruct:
@@ -76,22 +75,6 @@ def process_training_data(paths: List[str], should_print=False):
 			training_data.append(path_data)
 	return training_data
 
-def get_training_files() -> List[str]:
-	"""
-	Gets a list of file paths for the training data.
-	:rtype: list[str]
-	:return _TRAINING_DATA_FILES
-	"""
-	files = _TRAINING_DATA_FILES
-	return files
-
-
-def get_test_files() -> List[str]:
-	"""
-	Returns files to be used for testing the NN.
-	:return: _TEST_DATA_FILES
-	"""
-	return _TEST_DATA_FILES
 
 '''
 Training data format:
@@ -109,79 +92,61 @@ training_data[0][1] = winner of the game which the random move was taken from
 training_data[1][0] = another move of a random game
 and so on...
 '''
-def get_training_data(file_count):
-	'''
-		TODO: make a check to see if the file exists and add another if necessary!
-	'''
-	# Obtain files for processing
-	'''
-	files = get_training_files()
-	processed_training_files = process_training_data(files[:file_count])
-	persist_file_in_pickle(TRAINING_DATA_SAVE_PATH, processed_training_files)
-	return processed_training_files
-	'''
-	return load_file_from_pickle(TRAINING_DATA_SAVE_PATH)
 
-'''
-	returns the training data in a batch format which can be argmaxed by tensorflow
-'''
-def get_batch(training_data):
-	train_input = []
-	train_output = []
-	for i in range(len(training_data)):
-		for j in range(len(training_data[i])):
-			#if the move is less than 15 and the game lasts more than 15 moves don't bother
-			if not (j < 15 and len(training_data[i]) > 15):
-				train_input.append(training_data[i][j][0])
-				#If training_data[i][j][1] == -1 then an argmax function would identify the first index 0 as the highest
-				#If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
-				#Our nn just has to mimic this
-				train_output.append([0, training_data[i][j][1]])
-	return train_input, train_output
 
-def get_test_data(file_count):
+def _save_data(file_path: str, data: List[TrainingDataStruct]) -> None:
 	'''
-	test_files = get_test_files()
-	processed_test_data = process_training_data(test_files[:file_count])
-	persist_file_in_pickle(TESTING_DATA_SAVE_PATH, processed_test_data)
-	return processed_test_data
+	Takes a list of pre-parsed training data, and stores it at the given path, for quicker access.
 	'''
-	return load_file_from_pickle(TESTING_DATA_SAVE_PATH)
-
-def persist_file_in_pickle(file_path, data):
 	file = open(file_path, 'wb')
 	pickle.dump(data, file)
 	file.close()
 
-def load_file_from_pickle(file_path):
+
+def _load_data(file_path: str) -> List[TrainingDataStruct]:
+	'''
+	Takes a file path, and returns the list of training data stored there.
+	'''
 	f = open(file_path, 'rb')
 	data = pickle.load(f)
 	f.close()
 	return data
 
 
-'''
-	This only works on batched_inputs
-'''
-def one_hot_input_batch(input_batch):
-	one_hotted_input_batch = []
-	for board in input_batch:
-		one_hotted_move = []
-		for row in board:
-			for cell in row:
-				one_hotted_move.append(cell)
-		one_hotted_input_batch.append(one_hotted_move)
-	return one_hotted_input_batch
+def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int=None) -> List[TrainingDataStruct]:
+	'''
+	If the given save path already exists, attempts to extract a list of training data from it.
+	Otherwise, the parse paths are used to generate data, which is stored at the given save path, and then returned.
 
-def get_training_data_save_path():
-	return TRAINING_DATA_SAVE_PATH
+	The file count is ignored when saving data.
+	This also means that all of the files given by parse_paths will be parsed.
 
-def get_testing_data_save_path():
-	return TESTING_DATA_SAVE_PATH
+	:param parse_paths: A list of file paths for training data to be parsed.
+	:param save_path: A path that may or may not contain pre-parsed training data; written to, in the latter case.
+	:param file_count: The amount of training data to return.
+	:return: Parsed training data, one way or another.
+	'''
+	if isfile(save_path):
+		data = _load_data(save_path)
+	else:
+		data = process_training_data(parse_paths)
+		_save_data(save_path, data)
+
+	if file_count is None:
+		return data
+	return data[:file_count]
+
+
+def get_training_data(file_count: int=None):
+	return _load_or_parse_data(_TRAINING_DATA_FILES, _TRAINING_DATA_SAVE_PATH, file_count)
+
+
+def get_test_data(file_count: int=None):
+	return _load_or_parse_data(_TEST_DATA_FILES, _TESTING_DATA_SAVE_PATH, file_count)
 
 
 if __name__ == '__main__':
 	if len(argv) > 1:
 		process_training_data(argv[1:], should_print=True)
 	else:
-		process_training_data(get_files(), should_print=True)
+		process_training_data(_TRAINING_DATA_FILES, should_print=True)
