@@ -1,10 +1,17 @@
 import tensorflow as tf
+import math
 from random import randrange
 from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
 
+TRAINING_ITERATIONS = 100
+DEBUG_PRINT_SIZE = 5
 
-LEARNING_RATES = [0.003, 0.0003, 0.00003, 0.000003]
+LEARNING_RATE = 0.003
+#The below is only needed for gradient decent
+#DECAY_LEARNING_RATE_EVERY_STEP_AMOUNT = math.ceil(TRAINING_ITERATIONS/4)
+#LEARNING_RATE_DECAY_AMOUNT = 0.1
+
 # The rate at which neurons are kept after learning
 KEEP_SOME_PROBABILITY = 0.7
 KEEP_ALL_PROBABILITY = 1.0
@@ -19,11 +26,8 @@ GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 INPUT_SIZE = BOARD_SIZE ** 2
 OUTPUT_SIZE = 2
 #You can change the below to be whatever you want, the higher they are the longer it'll take to run though
-LAYER_1_WEIGHTS_SIZE = 200
-LAYER_2_WEIGHTS_SIZE = 100
-
-TRAINING_ITERATIONS = 20
-DEBUG_PRINT_SIZE = 5
+LAYER_1_WEIGHTS_SIZE = 400
+LAYER_2_WEIGHTS_SIZE = 200
 
 
 def get_weight_variable(shape):
@@ -76,8 +80,8 @@ def neural_network_train(should_use_save_data):
 	# Set up placeholders for input and output
 	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
 	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
-	keep_prob = tf.placeholder(tf.float32) 	
-	learning_rate = tf.placeholder(tf.float32, shape=[])
+	keep_prob = tf.placeholder(tf.float32)
+	global_step = tf.Variable(0, trainable=False)
 
 	layer_1_weights = get_weight_variable([INPUT_SIZE, LAYER_1_WEIGHTS_SIZE])
 	layer_1_bias = get_bias_variable([LAYER_1_WEIGHTS_SIZE])
@@ -112,8 +116,10 @@ def neural_network_train(should_use_save_data):
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 	tf.histogram_summary("cross_entropy", cross_entropy)
 
-	#train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
-	train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
+	#learning_rate = tf.train.exponential_decay(LEARNING_RATE, global_step, DECAY_LEARNING_RATE_EVERY_STEP_AMOUNT, LEARNING_RATE_DECAY_AMOUNT, staircase=True)
+	#train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy, global_step=global_step)
+	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy, global_step=global_step)
+	#train_step = tf.train.AdadeltaOptimizer(LEARNING_RATE, rho=LEARNING_RATE_DECAY_AMOUNT, epsilon=EPSILON, use_locking=False).minimize(cross_entropy, global_step=global_step)
 
 	correct_prediction = tf.equal(tf.argmax(tf_output,1), tf.argmax(training_output,1))
 	
@@ -144,25 +150,16 @@ def neural_network_train(should_use_save_data):
 
 	train_input_batch, train_output_batch = convert_training_to_batch(training_data)
 	train_input_batch = one_hot_input_batch(train_input_batch)
-	feed_dict_train={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY, learning_rate:LEARNING_RATES[0]}
-	feed_dict_train_keep_all={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY, learning_rate:LEARNING_RATES[0]}
+	feed_dict_train={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY}
+	feed_dict_train_keep_all={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY}
 
 	
 	for i in range(TRAINING_ITERATIONS):
-		#Adapt the learning rate based on training progress 
-		#TODO: this should be refactored into it's own method
-		if (i > TRAINING_ITERATIONS * 0.75):
-			feed_dict_train={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY, learning_rate:LEARNING_RATES[3]}
-		elif (i > TRAINING_ITERATIONS * 0.5):
-			feed_dict_train={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY, learning_rate:LEARNING_RATES[2]}
-		elif (i > TRAINING_ITERATIONS * 0.25):
-			feed_dict_train={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY, learning_rate:LEARNING_RATES[1]}
-
-		print("Training step: " + str(i) + "/" + str(TRAINING_ITERATIONS))
-		entropy, _ = sess.run([cross_entropy,train_step], feed_dict=feed_dict_train)
+		#TODO: IT'S A GOOD IDEA TO SHUFFLE THE TRAINING DATA AFTER EVERY EPOCHE TO AVOID BAIS
+		print("Training step: " + str(sess.run(global_step)) + "/" + str(TRAINING_ITERATIONS))
+		entropy, _, train_step_accuracy = sess.run([cross_entropy,train_step, accuracy], feed_dict=feed_dict_train)
 		print("Entropy: " + str(entropy))
-		#Keeping the training step accuracy makes things slower
-		print("Training Step Result Accuracy: " + str(sess.run(accuracy, feed_dict={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY})))
+		print("Training Step Result Accuracy: " + str(train_step_accuracy))
 	print("Training Accuracy: " + str(sess.run(accuracy, feed_dict=feed_dict_train_keep_all)))
 	
 	debug_outputs = sess.run(tf_output, feed_dict=feed_dict_train_keep_all)
@@ -177,7 +174,7 @@ def neural_network_train(should_use_save_data):
 
 	test_input_batch, test_output_batch = convert_training_to_batch(testing_data)
 	test_input_batch = one_hot_input_batch(test_input_batch)
-	feed_dict_test={training_input: test_input_batch, training_output: test_output_batch, keep_prob: KEEP_ALL_PROBABILITY, learning_rate:LEARNING_RATES[0]}
+	feed_dict_test={training_input: test_input_batch, training_output: test_output_batch, keep_prob: KEEP_ALL_PROBABILITY}
 	print("Testing Accuracy: " + str(sess.run(accuracy, feed_dict=feed_dict_test)))
 
 	print("Run the following command to see the graphs produced from this training:")
