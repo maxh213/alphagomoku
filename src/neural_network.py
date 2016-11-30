@@ -156,7 +156,7 @@ def neural_network_train(should_use_save_data):
 	
 	for i in range(TRAINING_ITERATIONS):
 		#TODO: IT'S A GOOD IDEA TO SHUFFLE THE TRAINING DATA AFTER EVERY EPOCHE TO AVOID BAIS
-		print("Training step: " + str(sess.run(global_step)) + "/" + str(TRAINING_ITERATIONS))
+		print("Training step: " + str(sess.run(global_step)) + "/" + str(TRAINING_ITERATIONS-1))
 		entropy, _, train_step_accuracy = sess.run([cross_entropy,train_step, accuracy], feed_dict=feed_dict_train)
 		print("Entropy: " + str(entropy))
 		print("Training Step Result Accuracy: " + str(train_step_accuracy))
