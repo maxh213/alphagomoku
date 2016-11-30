@@ -130,7 +130,7 @@ def neural_network_train(should_use_save_data):
 	merged_summary_op = tf.merge_all_summaries()
 	
 	sess = tf.Session()
-	sess.run(tf.initialize_all_variables())
+	sess.run(tf.global_variables_initializer())
 	
 	summary_writer = tf.train.SummaryWriter(GRAPH_LOGS_SAVE_FILE_PATH, graph=sess.graph)
 
