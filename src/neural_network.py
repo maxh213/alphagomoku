@@ -4,7 +4,7 @@ from random import randrange
 from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
 
-TRAINING_ITERATIONS = 100
+TRAINING_ITERATIONS = 1
 DEBUG_PRINT_SIZE = 5
 
 LEARNING_RATE = 0.003
@@ -176,6 +176,21 @@ def neural_network_train(should_use_save_data):
 	test_input_batch = one_hot_input_batch(test_input_batch)
 	feed_dict_test={training_input: test_input_batch, training_output: test_output_batch, keep_prob: KEEP_ALL_PROBABILITY}
 	print("Testing Accuracy: " + str(sess.run(accuracy, feed_dict=feed_dict_test)))
+
+	# Added in to help see the gap between training and testing accuracy
+	# -----
+	training_accuracy = sess.run(accuracy, feed_dict=feed_dict_train_keep_all)
+	testing_accuracy = sess.run(accuracy, feed_dict=feed_dict_test)
+	training_accuracy = "%.2f" % (training_accuracy * 100)
+	testing_accuracy = "%.2f" % (testing_accuracy * 100)
+	# training_accuracy = tf.matmul(training_accuracy, 100)
+	# testing_accuracy = tf.matmul(testing_accuracy, 100)
+	print("-----")
+	print("Training Accuracy: " + str(training_accuracy) + "%")
+	print("Testing Accuracy: " + str(testing_accuracy) + "%")
+	print("-----")
+
+	# -----
 
 	print("Run the following command to see the graphs produced from this training:")
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
