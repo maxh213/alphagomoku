@@ -178,9 +178,7 @@ def neural_network_train(should_use_save_data):
 	print("Testing Accuracy: " + str(sess.run(accuracy, feed_dict=feed_dict_test)))
 
 	training_accuracy = sess.run(accuracy, feed_dict=feed_dict_train_keep_all)
-	testing_accuracy = sess.run(accuracy, feed_dict=feed_dict_test)
-	training_accuracy = "%.2f" % (training_accuracy * 100)
-	testing_accuracy = "%.2f" % (testing_accuracy * 100)
+	testing_accuracy = sess.run(accuracy, feed_dict=feed_dict_test))
 	print_accuracy_percentage(training_accuracy, testing_accuracy)
 
 
@@ -199,6 +197,8 @@ def print_debug_outputs(amount, train_output_batch, debug_outputs):
 	print("---")
 
 def print_accuracy_percentage(training_accuracy, testing_accuracy):
+	training_accuracy = "%.2f" % (training_accuracy * 100)
+	testing_accuracy = "%.2f" % (testing_accuracy * 100
 	print("-----")
 	print("Training Accuracy: " + str(training_accuracy) + "%")
 	print("Testing Accuracy: " + str(testing_accuracy) + "%")
