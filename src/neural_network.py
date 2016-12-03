@@ -130,7 +130,12 @@ def neural_network_train(should_use_save_data):
 	merged_summary_op = tf.merge_all_summaries()
 	
 	sess = tf.Session()
-	sess.run(tf.global_variables_initializer())
+
+	#This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
+	try:
+		sess.run(tf.global_variables_initializer())
+	except AttributeError as error:
+		sess.run(tf.initialize_all_variables())
 	
 	summary_writer = tf.train.SummaryWriter(GRAPH_LOGS_SAVE_FILE_PATH, graph=sess.graph)
 
