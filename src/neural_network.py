@@ -1,10 +1,11 @@
 import tensorflow as tf
 import math
 import random
+from random import randrange
 from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
 
-TRAINING_ITERATIONS = 5000
+TRAINING_ITERATIONS = 10
 DEBUG_PRINT_SIZE = 5
 
 LEARNING_RATE = 0.003
@@ -26,8 +27,8 @@ GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 INPUT_SIZE = BOARD_SIZE ** 2
 OUTPUT_SIZE = 2
 #You can change the below to be whatever you want, the higher they are the longer it'll take to run though
-LAYER_1_WEIGHTS_SIZE = 600
-LAYER_2_WEIGHTS_SIZE = 400
+LAYER_1_WEIGHTS_SIZE = 400
+LAYER_2_WEIGHTS_SIZE = 200
 
 
 def get_weight_variable(shape):
@@ -98,7 +99,7 @@ def neural_network_train(should_use_save_data):
 
 	layer_2_output = tf.nn.tanh(tf.matmul(layer_1_output, layer_2_weights) + layer_2_bias)
 
-	#Drop some of the neurons, this is done to try prevent overfitting (the NN outputting the same pattern or output everytime)
+	#Drop some of the neurons, this is done to try prevent overfitting 
 	layer_2_dropout_output = tf.nn.dropout(layer_2_output, keep_prob) 
 
 	layer_3_weights = get_weight_variable([LAYER_2_WEIGHTS_SIZE, OUTPUT_SIZE])
