@@ -74,7 +74,7 @@ class Board:
 	def decide_winner(self):
 		return self._winner, self._winning_moves
 
-	def _decide_winner_line(self, x: int, y: int, dx: int, dy: int) -> Tuple[int, MovesStruct]:
+	def _decide_winner_line(self, x: int, y: int, dx: int, dy: int) -> Tuple[int, MovesStruct or None]:
 		"""
 		Counts the number of spaces in a line belonging to the player in the given space.
 		So if board[x][y] belongs to player 1, dx = 1, and dy = 0,
@@ -108,8 +108,6 @@ class Board:
 			if winner != 0:
 				self._winner = winner
 				self._winning_moves = moves
-				return winner, moves
-		return 0, None
 
 	def move(self, x: int, y: int, p: int) -> bool:
 		"""
@@ -145,6 +143,9 @@ class Board:
 			self._winning_moves = None
 		return x, y, p
 
+	def get_last_move(self) -> Tuple[int, int, int]:
+		return self._moves[-1]
+
 	def get_next_player(self) -> int:
 		return self._next_player
 
@@ -154,14 +155,14 @@ class Board:
 		"""
 		return deepcopy(self._board)
 
-	def get_possible_moves(self) -> List['Board']:
+	def get_possible_moves(self) -> List[Tuple[int, int]]:
 		"""
 		Returns a list of Board instances representing the state of the board after a possible move has been made.
 		"""
 		if self._winner != 0:
 			return []
 
-		moves = [(x, y) for x in range(BOARD_SIZE) for y in range(BOARD_SIZE) if self._board[x][y] == 0]
+		moves = [(x, y) for y in range(BOARD_SIZE) for x in range(BOARD_SIZE) if self._board[x][y] == 0]
 		return moves
 
 

@@ -1,34 +1,58 @@
-import re
+from typing import Callable
 
-
+from players import human, computer
 from gomoku_app.gomoku import Gomoku
-from player import get_player_string
 
+"""
+Represents the different types of player we can have as a tuple.
+In the format {user input: (type description, type function)}
 
-def validate_input(move: str) -> bool:
-	pattern = re.compile('([1-9]|1[0-9]|20),([1-9]|1[0-9]|20)')
-	return pattern.match(move) is not None
+User input char: What we expect the user to input in order to tell us what type to use.
+Type description: A simple description of what kind of player this type represents.
+The type function is the function that should be called in order to get a move from the player.
+"""
+PLAYER_TYPES = {
+	'c': ('A computer', computer.make_move),
+	'h': ('Manual input from (supposedly) a human', human.make_move)
+}
 
+ENUMERATE_TYPE_MESSAGE = '\r\nTypes include %s: ' % [(k, PLAYER_TYPES[k][0]) for k in PLAYER_TYPES]
 
-def get_user_move(player: int) -> (int, int):
-	move = None
-	while True:
-		move = input("Type your move " + get_player_string(player) + " (X,Y): ")
-		if validate_input(move):
-			break
-		print("Invalid move.")
+"""
+Format string for the first console prompt for a player type.
+0: An integer representing the player we want a type for.
+"""
+PLAYER_TYPE_PROMPT_INITIAL = "Who should player %d be?" + ENUMERATE_TYPE_MESSAGE
+"""
+Format string for any repeat console prompts for a player type.
+0: A string representing the last response from the console.
+"""
+PLAYER_TYPE_PROMPT_REPEAT = "'%s' is not a valid opponent." + ENUMERATE_TYPE_MESSAGE
 
-	coordinates = move.split(",")
-	x = int(coordinates[0]) - 1
-	y = int(coordinates[1]) - 1
-	return x, y
+def prompt_player_type(player: int) -> Callable:
+	"""
+	Prompts the console for the given player type.
+	Allows the user to choose who plays who (c vs c, p vs c, etc.)
+	:param player: The player we're asking for.
+	:return: 'c' for 'computer', or 'h' for 'human'
+	"""
+	player_type = input(PLAYER_TYPE_PROMPT_INITIAL % player)
+	while player_type is not 'c' and player_type is not 'h':
+		player_type = input(PLAYER_TYPE_PROMPT_REPEAT % player_type)
+	return PLAYER_TYPES[player_type][1]
 
 
 def play_game() -> None:
+
+	players = {
+		-1: prompt_player_type(1),
+		1: prompt_player_type(2)
+	}
+
 	player = -1
 	won = False
 	while not won:
-		x_coordinate, y_coordinate = get_user_move(player)
+		x_coordinate, y_coordinate = players[player](gomoku.board)
 		if gomoku.make_move(x_coordinate, y_coordinate, player):
 			won = gomoku.check_for_winner()
 			player = -player

@@ -14,14 +14,14 @@ def nn(board) -> float:
 	return r.uniform(0.6,0.71)
 
 
-def moves(board: Board) -> List[Tuple[int, int, int]]:
+def moves(board: Board) -> List[Tuple[int, int]]:
 	"""
 	Returns the number of moves that can be made on the board currently, as boards.
 	"""
 	return board.get_possible_moves()
 
 
-def winning_moves(board: Board, depth: int, should_print: bool=False) -> List[Board]:
+def winning_moves(board: Board, depth: int, should_print: bool=False) -> List[Tuple[int, int]]:
 	"""
 	Searches the board for winning moves to the given depth.
 	Total number of moves checked = reduce(lambda x, y: x + len(moves) - i, range(i+1))
