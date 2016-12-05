@@ -5,5 +5,8 @@ __pycache__
 /.idea
 /src/.idea/*
 /src/save_data/logs
+/src/save_data/models/model.ckpt
+/src/save_data/models/checkpoint
+/src/save_data/models/model.ckpt.meta
 program
 
