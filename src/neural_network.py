@@ -5,10 +5,26 @@ from random import randrange
 from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
 
+#---FILE BASED CONSTANTS---
+#This is how many times each batch will be trained on
 TRAINING_ITERATIONS = 10
 DEBUG_PRINT_SIZE = 5
+'''
+	It's very possible the program will crash if you decrease NUMBER_OF_BATCHES due to an out of memory.
+	This is because NUMBER_OF_BATCHES is how many times the total training/testing data is split into seperate batches,
+	so the lower the number the larger the batch amount.
 
-LEARNING_RATE = 0.003
+	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
+	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
+'''
+NUMBER_OF_BATCHES = 1000
+NUMBER_OF_BATCHES_TO_TRAIN_ON = 5
+
+MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
+GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
+
+#---HYPER PARAMETERS ---
+LEARNING_RATE = 1e-4
 #The below is only needed for gradient decent
 #DECAY_LEARNING_RATE_EVERY_N = math.ceil(TRAINING_ITERATIONS/4)
 #DECAY_RATE = 0.96
@@ -21,14 +37,17 @@ KEEP_ALL_PROBABILITY = 1.0
 TRAINING_DATA_FILE_COUNT = None 
 TEST_DATA_FILE_COUNT = None
 
-MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
-GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
-
+#--- LAYER/WEIGHT/BIAS CONSTANTS---
 INPUT_SIZE = BOARD_SIZE ** 2
 OUTPUT_SIZE = 2
-#You can change the below to be whatever you want, the higher they are the longer it'll take to run though
-LAYER_1_WEIGHTS_SIZE = 400
-LAYER_2_WEIGHTS_SIZE = 200
+CONV_SIZE = 5
+CONV_WEIGHT_1_INPUT_CHANNELS = 1
+CONV_WEIGHT_1_FEATURES = 50
+CONV_WEIGHT_2_FEATURES = 100
+CONV_2_OUTPUT_SIZE = 40000
+FC_LAYER_1_WEIGHTS = 1000
+STRIDE_SIZE = 1 #this probably won't need changing
+COLOUR_CHANNELS_USED = 1 #We are not feeding our network a colour image so this is always 1
 
 
 def get_weight_variable(shape):
@@ -54,7 +73,7 @@ def one_hot_input_batch(input_batch):
 '''
 	returns the training data in a batch format which can be argmaxed by tensorflow
 '''
-def convert_training_to_batch(training_data):
+def convert_training_to_batch(training_data, number_of_batches):
 	train_input = []
 	train_output = []
 	for i in range(len(training_data)):
@@ -66,8 +85,17 @@ def convert_training_to_batch(training_data):
 				# If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
 				# Our nn just has to mimic this
 				train_output.append([0, training_data[i][j][1]])
-	return train_input, train_output
+	if number_of_batches == 1:
+		return train_input, train_output
+	else:
+		return split_list_into_n_lists(train_input, number_of_batches), split_list_into_n_lists(train_output, number_of_batches)
 
+def split_list_into_n_lists(list, n):
+	return [list[i::n] for i in range(n)]
+
+
+def conv2d(x, W):
+	return tf.nn.conv2d(x, W, strides=[STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE], padding='SAME')
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
@@ -83,34 +111,45 @@ def neural_network_train(should_use_save_data):
 	keep_prob = tf.placeholder(tf.float32)
 	global_step = tf.Variable(0, trainable=False)
 
-	layer_1_weights = get_weight_variable([INPUT_SIZE, LAYER_1_WEIGHTS_SIZE])
-	layer_1_bias = get_bias_variable([LAYER_1_WEIGHTS_SIZE])
+	conv_weights1 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_INPUT_CHANNELS, CONV_WEIGHT_1_FEATURES])
+	conv_bias1 = get_bias_variable([CONV_WEIGHT_1_FEATURES])
 
-	layer_1_weights_histogram = tf.histogram_summary("layer_1_weights", layer_1_weights)
-	layer_1_bias_histogram = tf.histogram_summary("layer_1_bias", layer_1_bias)
+	layer_1_weights_histogram = tf.histogram_summary("conv_weights1", conv_weights1)
+	layer_1_bias_histogram = tf.histogram_summary("conv_bias1", conv_bias1)
 
-	layer_1_output = tf.nn.tanh(tf.matmul(training_input, layer_1_weights) + layer_1_bias)
-	
-	layer_2_weights = get_weight_variable([LAYER_1_WEIGHTS_SIZE, LAYER_2_WEIGHTS_SIZE])
-	layer_2_bias = get_bias_variable([LAYER_2_WEIGHTS_SIZE])
+	input_image = tf.reshape(training_input, [-1, BOARD_SIZE, BOARD_SIZE, COLOUR_CHANNELS_USED])
 
-	layer_2_weights_histogram = tf.histogram_summary("layer_2_weights", layer_2_weights)
-	layer_2_bias_histogram = tf.histogram_summary("layer_2_bias", layer_2_bias)
+	convolution1 = tf.nn.tanh(conv2d(input_image, conv_weights1) + conv_bias1)
 
-	layer_2_output = tf.nn.tanh(tf.matmul(layer_1_output, layer_2_weights) + layer_2_bias)
+	# second layer
+	conv_weights2 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_FEATURES, CONV_WEIGHT_2_FEATURES])
+	conv_bias2 = get_bias_variable([CONV_WEIGHT_2_FEATURES])
 
-	#Drop some of the neurons, this is done to try prevent overfitting 
-	layer_2_dropout_output = tf.nn.dropout(layer_2_output, keep_prob) 
+	layer_2_weights_histogram = tf.histogram_summary("conv_weights2", conv_weights2)
+	layer_2_bias_histogram = tf.histogram_summary("conv_bias2", conv_bias2)
 
-	layer_3_weights = get_weight_variable([LAYER_2_WEIGHTS_SIZE, OUTPUT_SIZE])
-	layer_3_bias = get_bias_variable([OUTPUT_SIZE])
+	convolution2 = tf.nn.tanh(conv2d(convolution1, conv_weights2) + conv_bias2)
 
-	layer_3_weights_histogram = tf.histogram_summary("layer_3_weights", layer_3_weights)
-	layer_3_bias_histogram = tf.histogram_summary("layer_3_bias", layer_3_bias)
+	fully_connected_weights1 = get_weight_variable([CONV_2_OUTPUT_SIZE, FC_LAYER_1_WEIGHTS])
+	fully_connected_bias1 = get_bias_variable([FC_LAYER_1_WEIGHTS])
 
-	layer_3_output = tf.nn.tanh(tf.matmul(layer_2_dropout_output, layer_3_weights) + layer_3_bias)
-	
-	tf_output = layer_3_output
+	layer_3_weights_histogram = tf.histogram_summary("fully_connected_weights1", fully_connected_weights1)
+	layer_3_bias_histogram = tf.histogram_summary("fully_connected_bias1", fully_connected_bias1)
+
+	conv2_flat = tf.reshape(convolution2, [-1, CONV_2_OUTPUT_SIZE])
+	fully_connected_output1 = tf.nn.tanh(tf.matmul(conv2_flat, fully_connected_weights1) + fully_connected_bias1)
+
+	keep_prob = tf.placeholder(tf.float32)
+	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
+
+	fully_connected_weights2 = get_weight_variable([FC_LAYER_1_WEIGHTS, OUTPUT_SIZE])
+	fully_connected_bias2 = get_bias_variable([OUTPUT_SIZE])
+
+	layer_4_weights_histogram = tf.histogram_summary("fully_connected_weights2", fully_connected_weights2)
+	layer_4_bias_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
+
+	#TODO: MAKE THIS TAHN???
+	tf_output = tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 	tf.histogram_summary("cross_entropy", cross_entropy)
@@ -139,6 +178,7 @@ def neural_network_train(should_use_save_data):
 	
 	summary_writer = tf.train.SummaryWriter(GRAPH_LOGS_SAVE_FILE_PATH, graph=sess.graph)
 
+	print("---")
 	if should_use_save_data:
 		#Try load the weights and biases from when the network was last run
 		try:
@@ -148,42 +188,52 @@ def neural_network_train(should_use_save_data):
 			print("Could not load a TensorFlow model from the last session because none was found.")
 	else:
 		print("Previous save data not loaded! If you wish to load the previous save data run: python3 main.py True")
-
+	print("---")
 	print("Network training starting!")
 
-	train_input_batch, train_output_batch = convert_training_to_batch(training_data)
-	train_input_batch = one_hot_input_batch(train_input_batch)
-	feed_dict_train={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY}
-	feed_dict_train_keep_all={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_ALL_PROBABILITY}
-	test_input_batch, test_output_batch = convert_training_to_batch(testing_data)
-	test_input_batch = one_hot_input_batch(test_input_batch)
-	feed_dict_test={training_input: test_input_batch, training_output: test_output_batch, keep_prob: KEEP_ALL_PROBABILITY}
-	
-	for i in range(TRAINING_ITERATIONS):
-		print("-")
-		print("Training step: " + str(sess.run(global_step)) + "/" + str(TRAINING_ITERATIONS-1))
-		entropy, _, train_step_accuracy = sess.run([cross_entropy,train_step, accuracy], feed_dict=feed_dict_train)
-		print("Entropy: " + str(entropy))
-		print("Training Step Result Accuracy: " + str(train_step_accuracy))
-		if i % 100 == 0:
-			print("Testing Accuracy if training were to finish now: " + str(sess.run(accuracy, feed_dict=feed_dict_test)))
-		train_input_batch, train_output_batch = shuffle_batch_inputs_and_outputs(train_input_batch, train_output_batch)
-		feed_dict_train={training_input: train_input_batch, training_output: train_output_batch, keep_prob: KEEP_SOME_PROBABILITY}
+	train_input_batch, train_output_batch = convert_training_to_batch(training_data, NUMBER_OF_BATCHES)
+	test_input_batch, test_output_batch = convert_training_to_batch(testing_data, NUMBER_OF_BATCHES)
+	feed_dict_train = []
+	feed_dict_train_keep_all = []
+	feed_dict_test = []
+	for i in range (len(train_input_batch)):
+		train_input_batch[i] = one_hot_input_batch(train_input_batch[i])
+		test_input_batch[i] = one_hot_input_batch(test_input_batch[i])
+		feed_dict_train.append({training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY})
+		feed_dict_train_keep_all.append({training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_ALL_PROBABILITY})
+		feed_dict_test.append({training_input: test_input_batch[i], training_output: test_output_batch[i], keep_prob: KEEP_ALL_PROBABILITY})
 
 
-	debug_outputs = sess.run(tf_output, feed_dict=feed_dict_train_keep_all)
-	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch, debug_outputs)
+	for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):
+		for j in range(TRAINING_ITERATIONS):
+			print("-")
+			print("Batch number: " + str(i+1) + "/" + str(NUMBER_OF_BATCHES_TO_TRAIN_ON) + " Training step: " + str(j+1) + "/" + str(TRAINING_ITERATIONS) +  " Global step: " + str(sess.run(global_step)))
+			entropy, _, train_step_accuracy = sess.run([cross_entropy,train_step, accuracy], feed_dict=feed_dict_train[i])
+			print("Entropy: " + str(entropy))
+			print("Training Step Result Accuracy: " + str(train_step_accuracy))
+			train_input_batch[i], train_output_batch[i] = shuffle_batch_inputs_and_outputs(train_input_batch[i], train_output_batch[i])
+			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY}		
+		print("Testing Accuracy if training were to finish now: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
 
-	summary_str = sess.run(merged_summary_op, feed_dict=feed_dict_train_keep_all)
+	debug_outputs = sess.run(tf_output, feed_dict=feed_dict_train_keep_all[0])
+	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch[0], debug_outputs)
+
+	summary_str = sess.run(merged_summary_op, feed_dict=feed_dict_train_keep_all[0])
 	summary_writer.add_summary(summary_str, 0)
 
 	print("NN training complete, moving on to testing.")
+
+	training_accuracy = []
+	testing_accuracy = []
+	for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):
+		training_accuracy.append(sess.run(accuracy, feed_dict=feed_dict_train_keep_all[i]))
+		testing_accuracy.append(sess.run(accuracy, feed_dict=feed_dict_test[i]))
+	training_average = sum(training_accuracy)/len(training_accuracy)
+	testing_average = sum(testing_accuracy)/len(testing_accuracy)
+	print_accuracy_percentage(training_average, testing_average)
+
 	save_path = saver.save(sess, MODEL_SAVE_FILE_PATH)
 	print("TensorFlow model saved in file: %s" % save_path)
-
-	training_accuracy = sess.run(accuracy, feed_dict=feed_dict_train_keep_all)
-	testing_accuracy = sess.run(accuracy, feed_dict=feed_dict_test)
-	print_accuracy_percentage(training_accuracy, testing_accuracy)
 
 	print("Run the following command to see the graphs produced from this training:")
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
