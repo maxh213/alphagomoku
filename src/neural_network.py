@@ -8,29 +8,29 @@ from board import BOARD_SIZE
 #---FILE BASED CONSTANTS---
 DEBUG_PRINT_SIZE = 5
 '''
-	It's very possible the program will crash if you decrease NUMBER_OF_BATCHES due to an out of memory.
+	It's very possible the program will crash if you decrease NUMBER_OF_BATCHES enough due to an out of memory.
 	This is because NUMBER_OF_BATCHES is how many times the total training/testing data is split into seperate batches,
 	so the lower the number the larger the batch amount.
 
 	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
 	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
 '''
-NUMBER_OF_BATCHES = 1000
-NUMBER_OF_BATCHES_TO_TRAIN_ON = 5
+NUMBER_OF_BATCHES = 2000
+NUMBER_OF_BATCHES_TO_TRAIN_ON = 20
 #This is how many times each batch will be trained on
-TRAINING_ITERATIONS = 100
+TRAINING_ITERATIONS = 5
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 
 #---HYPER PARAMETERS ---
 LEARNING_RATE = 1e-4
-#The below is only needed for gradient decent
+#below is only needed for gradient decent
 #DECAY_LEARNING_RATE_EVERY_N = math.ceil(TRAINING_ITERATIONS/4)
 #DECAY_RATE = 0.96
 
 # The rate at which neurons are kept after learning
-KEEP_SOME_PROBABILITY = 0.5
+KEEP_SOME_PROBABILITY = 0.7
 KEEP_ALL_PROBABILITY = 1.0
 
 #Setting the below to None means load all of them
@@ -42,10 +42,11 @@ INPUT_SIZE = BOARD_SIZE ** 2
 OUTPUT_SIZE = 2
 CONV_SIZE = 5
 CONV_WEIGHT_1_INPUT_CHANNELS = 1
-CONV_WEIGHT_1_FEATURES = 50
-CONV_WEIGHT_2_FEATURES = 100
-CONV_2_OUTPUT_SIZE = 40000
-FC_LAYER_1_WEIGHTS = 1000
+CONV_WEIGHT_1_FEATURES = 30
+CONV_WEIGHT_2_FEATURES = 30
+#The board size in the below conv outbout size is usually divided by 4 because of 2x2 pooling but we don't do that which means we have a huge amount of neurons
+CONV_2_OUTPUT_SIZE = BOARD_SIZE * BOARD_SIZE * CONV_WEIGHT_2_FEATURES 
+FC_LAYER_1_WEIGHTS = 10000
 STRIDE_SIZE = 1 #this probably won't need changing
 COLOUR_CHANNELS_USED = 1 #We are not feeding our network a colour image so this is always 1
 
@@ -95,8 +96,8 @@ def split_list_into_n_lists(list, n):
 	return [list[i::n] for i in range(n)]
 
 
-def conv2d(x, W):
-	return tf.nn.conv2d(x, W, strides=[STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE], padding='SAME')
+def conv2d(image, weights):
+	return tf.nn.conv2d(image, weights, strides=[STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE], padding='SAME')
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
@@ -211,7 +212,7 @@ def neural_network_train(should_use_save_data):
 			print("Training Step Result Accuracy: " + str(train_step_accuracy))
 			train_input_batch[i], train_output_batch[i] = shuffle(train_input_batch[i], train_output_batch[i])
 			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY}		
-		print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
+		#print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
 
 	debug_outputs = sess.run(tf_output, feed_dict=feed_dict_train_keep_all[0])
 	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch[0], debug_outputs)
