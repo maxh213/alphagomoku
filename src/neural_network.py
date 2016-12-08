@@ -212,7 +212,7 @@ def neural_network_train(should_use_save_data):
 			print("Training Step Result Accuracy: " + str(train_step_accuracy))
 			train_input_batch[i], train_output_batch[i] = shuffle(train_input_batch[i], train_output_batch[i])
 			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY}		
-		#print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
+		print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
 
 	debug_outputs = sess.run(tf_output, feed_dict=feed_dict_train_keep_all[0])
 	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch[0], debug_outputs)
