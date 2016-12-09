@@ -4,12 +4,13 @@ import random
 from random import randrange
 from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
+from sys import argv
 
 #---FILE BASED CONSTANTS---
 DEBUG_PRINT_SIZE = 5
 '''
-	It's very possible the program will crash if you decrease NUMBER_OF_BATCHES enough due to an out of memory.
-	This is because NUMBER_OF_BATCHES is how many times the total training/testing data is split into seperate batches,
+	It's very possible the program will crash if you decrease NUMBER_OF_BATCHES due to an out of memory.
+	This is because NUMBER_OF_BATCHES is how many times the total training/testing data is split into separate batches,
 	so the lower the number the larger the batch amount.
 
 	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
@@ -238,6 +239,65 @@ def neural_network_train(should_use_save_data):
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
 
 
+def use_network(input):
+	print("hello")
+	usage_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
+	conv_weights1 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_INPUT_CHANNELS, CONV_WEIGHT_1_FEATURES])
+	conv_bias1 = get_bias_variable([CONV_WEIGHT_1_FEATURES])
+
+	layer_1_weights_histogram = tf.histogram_summary("conv_weights1", conv_weights1)
+	layer_1_bias_histogram = tf.histogram_summary("conv_bias1", conv_bias1)
+
+	input_image = tf.reshape(usage_input, [-1, BOARD_SIZE, BOARD_SIZE, COLOUR_CHANNELS_USED])
+
+	convolution1 = tf.nn.tanh(conv2d(input_image, conv_weights1) + conv_bias1)
+
+	conv_weights2 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_FEATURES, CONV_WEIGHT_2_FEATURES])
+	conv_bias2 = get_bias_variable([CONV_WEIGHT_2_FEATURES])
+
+	layer_2_weights_histogram = tf.histogram_summary("conv_weights2", conv_weights2)
+	layer_2_bias_histogram = tf.histogram_summary("conv_bias2", conv_bias2)
+
+	convolution2 = tf.nn.tanh(conv2d(convolution1, conv_weights2) + conv_bias2)
+
+	fully_connected_weights1 = get_weight_variable([CONV_2_OUTPUT_SIZE, FC_LAYER_1_WEIGHTS])
+	fully_connected_bias1 = get_bias_variable([FC_LAYER_1_WEIGHTS])
+
+	layer_3_weights_histogram = tf.histogram_summary("fully_connected_weights1", fully_connected_weights1)
+	layer_3_bias_histogram = tf.histogram_summary("fully_connected_bias1", fully_connected_bias1)
+
+	conv2_flat = tf.reshape(convolution2, [-1, CONV_2_OUTPUT_SIZE])
+	fully_connected_output1 = tf.nn.tanh(tf.matmul(conv2_flat, fully_connected_weights1) + fully_connected_bias1)
+
+	keep_prob = tf.placeholder(tf.float32)
+	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
+
+	fully_connected_weights2 = get_weight_variable([FC_LAYER_1_WEIGHTS, OUTPUT_SIZE])
+	fully_connected_bias2 = get_bias_variable([OUTPUT_SIZE])
+
+	layer_4_weights_histogram = tf.histogram_summary("fully_connected_weights2", fully_connected_weights2)
+	layer_4_bias_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
+
+	tf_output = tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2
+
+	# Allows saving the state of all tf variables
+	saver = tf.train.Saver()
+
+	sess = tf.Session()
+
+	# This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
+	try:
+		sess.run(tf.global_variables_initializer())
+	except AttributeError as error:
+		sess.run(tf.initialize_all_variables())
+
+	saver.restore(sess, MODEL_SAVE_FILE_PATH)
+
+	test_input_batch = one_hot_input_batch(input)
+	feed_dict_test = {usage_input: test_input_batch}
+
+	print(sess.run(tf_output, feed_dict=feed_dict_test))
+
 def print_debug_outputs(amount, train_output_batch, debug_outputs):
 	print("---")
 	print("Debugging/printing random outputs from tensorflow compared to the actual outputs...")
@@ -264,3 +324,6 @@ def shuffle(batch_input, batch_ouput):
 	#[:] just essentially casts the tuple result from zip into the same list variables we already used
 	batch_input[:], batch_ouput[:] = zip(*combined_batch)
 	return batch_input, batch_ouput
+
+if __name__ == '__main__':
+	use_network(argv[1])
