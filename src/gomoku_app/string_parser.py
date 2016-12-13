@@ -1,19 +1,23 @@
 import re
-from board import Board
+import sys
+from typing import Callable
+from gomoku_app.gomoku import Gomoku
+
+class String_Parser:
+
+	def __init__(self):
+		self.game = None
+		self.user_input = None
 
 
-"""
-	"Brain" refers to the Neural Network/application.
-	"Manager" refers to the third-party brokering the games.
-"""
+	"""
+		"Brain" refers to the Neural Network/application.
+		"Manager" refers to the third-party brokering the games.
+	"""
 
-class string_parser:
 
-	board = None
-	while(True):
-		def read(input: str) -> (str):
-			if(input == "START 20"):
-				board = Board()
+	def read(self, input: str) -> (str):
+		if input == "START 20":
 			"""
 			When it receives this command (99% of the time it will be 20, but not always),
 			the brain will create a new board of whatever size is defined in the command,
@@ -24,19 +28,79 @@ class string_parser:
 			The brain will respond with "OK" if the board initiatites correctly.
 			The brain will respond with "ERROR" (and an optional message) if it does not.
 			"""
-			if (input == "BEGIN"):
-				"""
+			if self.game != None:
+				print("ERROR")
+				return "ERROR"
+			print("OK")
+			self.game = Gomoku()
+			return "OK"
+		if re.search('START', input):
+			print("ERROR")
+			return "ERROR"
+		if input == "BEGIN":
+			"""
 			After receiving a START command and initiating the board, "BEGIN" states that the
 			brain gets the first move.
 			The brain will respond with the X and Y coordinates of its move.
+
+			The difference between BEGIN and TURN is simply:
+				BEGIN states that the AI is taking the first turn
+				TURN states that a move has just been taken, and that a new space must be acknowledged by the AI
 			"""
-			if(input == "TURN X,Y"):
-				"""
+			"""
+			DUMMY CODE
+			string array of size 2 is populated by x and y coordinate of AI's move
+			AI acknowledges move by adding it to its own board
+			AI sends move to manager
+			"""
+			"""self.game.make_move(10,12)"""
+			print("10,12")
+			return "10,12"
+		if re.search('TURN\s', input):
+			"""
 			X and Y represent the X and Y coordinates of the opponent's move.
 			The brain will respond with the X and Y coordinates of its move.
 			"""
-			if(input == "BOARD"):
-				"""
+			"""
+			DUMMY CODE
+			AI adds opponents move to own board by reading in
+			string array of size 2 is populated by x and y coordinate of AI's move
+			AI acknowledges move by adding it to its own board
+			AI sends move to manager
+			"""
+			"""
+			First: Sorry
+			Second: Here's how it reads the inputs...
+				First, it sees if the opponent's y-coordinate move is 2 digits long or not. It will adjust
+				how far away from the end of the string it will look in order to find the x coordinate.
+				This is because it needs to avoid reading the comma in as a number. I threw in a
+				Try-Catch-like thing because someone's gonna say TURN hello,goodbye or some garbage.
+			"""
+			try:
+				two_digit_x_coord = re.search('\s[0-9][0-9],', input)
+				two_digit_y_coord = re.search(',[0-9][0-9]', input)
+				opponent_x_coord = None
+				opponent_y_coord = None
+				if two_digit_y_coord:
+					opponent_y_coord = (input[len(input) - 2]) + (input[len(input) - 1])
+					if two_digit_x_coord:
+						opponent_x_coord = (input[len(input) - 5]) + (input[len(input) - 4])
+					else:
+						opponent_x_coord = (input[len(input) - 4])
+				else:
+					opponent_y_coord = (input[len(input) - 1])
+					if two_digit_x_coord:
+						opponent_x_coord = (input[len(input) - 4]) + (input[len(input) - 3])
+					else:
+						opponent_x_coord = (input[len(input) - 3])
+				print (str(opponent_x_coord) + "," + str(opponent_y_coord))
+				"""self.game.make_move(opponent_x_coord, opponent_y_coord, 0)"""
+			except RuntimeError:
+				print("ERROR")
+				return "ERROR"
+
+		if input == "BOARD":
+			"""
 			"BOARD" creates a new match, but with the potential to set the board to however the
 			manager wishes it to be. After receiving the command, new lines will be of format
 			"X,Y,[Player (1/2)]", until it sends "DONE".
@@ -52,7 +116,7 @@ class string_parser:
 			(This assumes the brain is player 2 I assume)
 			PS: Moves aren't necessarily sent in the order they were played in, unless using Renju rules.
 			"""
-			if(input == "INFO [key] [value]"):
+		if input == "INFO [key] [value]":
 				"""
 			"INFO" sends the brain some information about the game so everyone knows the rules.
 			For instance, "INTO timeout_match 300000" sets the time limit for the whole match
@@ -74,15 +138,26 @@ class string_parser:
 			Brain:
 				<no answer expected, just store the value somewhere>
 			"""
-			if(input == "END"):
-				"""
+		if input == "END":
+			"""
 			The brain is not expected to answer to this instruction, but rather to delete all of its temporary files.
 			"""
-			if(input == "ABOUT"):
-				"""
+		if input == "ABOUT":
+			"""
 			In the format key="value", the brain replies with some details about itself.
 			Manager:
 				ABOUT
 			Brain:
 				name="GroupProjectNN", version="1.0", author="#Banterbury", country="UK"
 			"""
+			print("name=\"GroupProjectNN\", version=\"0.1\", author=\"Banterbury\", country=\"UK\"")
+			return("name=\"GroupProjectNN\", version=\"0.1\", author=\"Banterbury\", country=\"UK\"")
+
+def test():
+	while(True):
+		user_input = input("")
+		parser = String_Parser()
+		parser.read(user_input)
+
+if __name__ == "__main__":
+	test()
