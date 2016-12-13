@@ -1,3 +1,4 @@
+import numpy
 import tensorflow as tf
 import math
 import random
@@ -17,7 +18,7 @@ DEBUG_PRINT_SIZE = 5
 	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
 '''
 NUMBER_OF_BATCHES = 2000
-NUMBER_OF_BATCHES_TO_TRAIN_ON = 20
+NUMBER_OF_BATCHES_TO_TRAIN_ON = 5
 #This is how many times each batch will be trained on
 TRAINING_ITERATIONS = 5
 
@@ -240,31 +241,26 @@ def neural_network_train(should_use_save_data):
 
 
 def use_network(input):
-	print("hello")
-	usage_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
+	input = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
+	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
+	keep_prob = tf.placeholder(tf.float32)
+	global_step = tf.Variable(0, trainable=False)
+
 	conv_weights1 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_INPUT_CHANNELS, CONV_WEIGHT_1_FEATURES])
 	conv_bias1 = get_bias_variable([CONV_WEIGHT_1_FEATURES])
 
-	layer_1_weights_histogram = tf.histogram_summary("conv_weights1", conv_weights1)
-	layer_1_bias_histogram = tf.histogram_summary("conv_bias1", conv_bias1)
-
-	input_image = tf.reshape(usage_input, [-1, BOARD_SIZE, BOARD_SIZE, COLOUR_CHANNELS_USED])
+	input_image = tf.reshape(training_input, [-1, BOARD_SIZE, BOARD_SIZE, COLOUR_CHANNELS_USED])
 
 	convolution1 = tf.nn.tanh(conv2d(input_image, conv_weights1) + conv_bias1)
 
 	conv_weights2 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_FEATURES, CONV_WEIGHT_2_FEATURES])
 	conv_bias2 = get_bias_variable([CONV_WEIGHT_2_FEATURES])
 
-	layer_2_weights_histogram = tf.histogram_summary("conv_weights2", conv_weights2)
-	layer_2_bias_histogram = tf.histogram_summary("conv_bias2", conv_bias2)
-
 	convolution2 = tf.nn.tanh(conv2d(convolution1, conv_weights2) + conv_bias2)
 
 	fully_connected_weights1 = get_weight_variable([CONV_2_OUTPUT_SIZE, FC_LAYER_1_WEIGHTS])
 	fully_connected_bias1 = get_bias_variable([FC_LAYER_1_WEIGHTS])
-
-	layer_3_weights_histogram = tf.histogram_summary("fully_connected_weights1", fully_connected_weights1)
-	layer_3_bias_histogram = tf.histogram_summary("fully_connected_bias1", fully_connected_bias1)
 
 	conv2_flat = tf.reshape(convolution2, [-1, CONV_2_OUTPUT_SIZE])
 	fully_connected_output1 = tf.nn.tanh(tf.matmul(conv2_flat, fully_connected_weights1) + fully_connected_bias1)
@@ -274,9 +270,6 @@ def use_network(input):
 
 	fully_connected_weights2 = get_weight_variable([FC_LAYER_1_WEIGHTS, OUTPUT_SIZE])
 	fully_connected_bias2 = get_bias_variable([OUTPUT_SIZE])
-
-	layer_4_weights_histogram = tf.histogram_summary("fully_connected_weights2", fully_connected_weights2)
-	layer_4_bias_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
 
 	tf_output = tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2
 
@@ -293,10 +286,33 @@ def use_network(input):
 
 	saver.restore(sess, MODEL_SAVE_FILE_PATH)
 
-	test_input_batch = one_hot_input_batch(input)
-	feed_dict_test = {usage_input: test_input_batch}
+	test_input = []
+	test_input.append(input)
+	test_input_batch = one_hot_input_batch(test_input)
+	feed_dict_test = {training_input: test_input_batch, keep_prob: KEEP_ALL_PROBABILITY}
 
-	print(sess.run(tf_output, feed_dict=feed_dict_test))
+	output = sess.run(tf_output, feed_dict=feed_dict_test)
+	print (output)
+	winner = get_winner(output[0])
+	print (winner)
+	difference = get_difference(output[0])
+	print (difference)
+	scale_difference(difference)
+
+
+def get_winner(output):
+	max_value = max(output)
+	winner = numpy.where(output == max_value)
+	if winner == 0:
+		return -1
+	else:
+		return 1
+
+def get_difference(output):
+	return abs(output[0] - output[1])
+
+def scale_difference(difference):
+	return 1
 
 def print_debug_outputs(amount, train_output_batch, debug_outputs):
 	print("---")
@@ -326,4 +342,4 @@ def shuffle(batch_input, batch_ouput):
 	return batch_input, batch_ouput
 
 if __name__ == '__main__':
-	use_network(argv[1])
+	use_network(0)
