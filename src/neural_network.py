@@ -291,13 +291,14 @@ def use_network(input):
 	test_input_batch = one_hot_input_batch(test_input)
 	feed_dict_test = {training_input: test_input_batch, keep_prob: KEEP_ALL_PROBABILITY}
 
-	output = sess.run(tf_output, feed_dict=feed_dict_test)
-	print (output)
+	output = sess.run(tf.nn.softmax(tf_output), feed_dict=feed_dict_test)
+	#print (output[0])
 	winner = get_winner(output[0])
-	print (winner)
-	difference = get_difference(output[0])
-	print (difference)
-	scale_difference(difference)
+	#print (winner)
+	get_use_output(winner, output[0])
+	#difference = get_difference(output[0])
+	#print (difference)
+	#scale_difference(difference)
 
 
 def get_winner(output):
@@ -309,11 +310,14 @@ def get_winner(output):
 	else:
 		return 1
 
-def get_difference(output):
-	return abs(output[0] - output[1])
+#def get_difference(output):
+#	return abs(output[0] - output[1])
 
-def scale_difference(difference):
-	return 1
+#def scale_difference(difference):
+#	return 1
+
+def get_use_output(winner, output):
+	print ([winner, max(output)])
 
 def print_debug_outputs(amount, train_output_batch, debug_outputs):
 	print("---")
