@@ -303,7 +303,8 @@ def use_network(input):
 def get_winner(output):
 	max_value = max(output)
 	winner = numpy.where(output == max_value)
-	if winner == 0:
+	# Verify why [0][0] is required
+	if winner[0][0] == 0:
 		return -1
 	else:
 		return 1
