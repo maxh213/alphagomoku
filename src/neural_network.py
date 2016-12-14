@@ -5,6 +5,8 @@ import random
 from random import randrange
 from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
+from tensorflow.python.framework.errors import NotFoundError
+
 from sys import argv
 
 #---FILE BASED CONSTANTS---
@@ -185,8 +187,9 @@ def neural_network_train(should_use_save_data):
 		try:
 			saver.restore(sess, MODEL_SAVE_FILE_PATH)
 			print("TensorFlow model loaded from last session.")
-		except ValueError as error:
+		except NotFoundError as e:
 			print("Could not load a TensorFlow model from the last session because none was found.")
+			raise e
 	else:
 		print("Previous save data not loaded! If you wish to load the previous save data run: python3 main.py True")
 	print("---")
