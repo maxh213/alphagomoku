@@ -6,8 +6,6 @@ from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
 
 #---FILE BASED CONSTANTS---
-#This is how many times each batch will be trained on
-TRAINING_ITERATIONS = 10
 DEBUG_PRINT_SIZE = 5
 '''
 	It's very possible the program will crash if you decrease NUMBER_OF_BATCHES due to an out of memory.
@@ -19,6 +17,8 @@ DEBUG_PRINT_SIZE = 5
 '''
 NUMBER_OF_BATCHES = 1000
 NUMBER_OF_BATCHES_TO_TRAIN_ON = 5
+#This is how many times each batch will be trained on
+TRAINING_ITERATIONS = 100
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
@@ -30,7 +30,7 @@ LEARNING_RATE = 1e-4
 #DECAY_RATE = 0.96
 
 # The rate at which neurons are kept after learning
-KEEP_SOME_PROBABILITY = 0.7
+KEEP_SOME_PROBABILITY = 0.5
 KEEP_ALL_PROBABILITY = 1.0
 
 #Setting the below to None means load all of them
@@ -85,6 +85,7 @@ def convert_training_to_batch(training_data, number_of_batches):
 				# If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
 				# Our nn just has to mimic this
 				train_output.append([0, training_data[i][j][1]])
+	train_input, train_output = shuffle(train_input, train_output)
 	if number_of_batches == 1:
 		return train_input, train_output
 	else:
@@ -101,7 +102,6 @@ def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
 
 	print("Loading training data...")
-	# Get training data
 	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 	print("Training data loaded!")
@@ -121,7 +121,6 @@ def neural_network_train(should_use_save_data):
 
 	convolution1 = tf.nn.tanh(conv2d(input_image, conv_weights1) + conv_bias1)
 
-	# second layer
 	conv_weights2 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_FEATURES, CONV_WEIGHT_2_FEATURES])
 	conv_bias2 = get_bias_variable([CONV_WEIGHT_2_FEATURES])
 
@@ -148,7 +147,6 @@ def neural_network_train(should_use_save_data):
 	layer_4_weights_histogram = tf.histogram_summary("fully_connected_weights2", fully_connected_weights2)
 	layer_4_bias_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
 
-	#TODO: MAKE THIS TAHN???
 	tf_output = tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
@@ -196,7 +194,7 @@ def neural_network_train(should_use_save_data):
 	feed_dict_train = []
 	feed_dict_train_keep_all = []
 	feed_dict_test = []
-	for i in range (len(train_input_batch)):
+	for i in range (NUMBER_OF_BATCHES):
 		train_input_batch[i] = one_hot_input_batch(train_input_batch[i])
 		test_input_batch[i] = one_hot_input_batch(test_input_batch[i])
 		feed_dict_train.append({training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY})
@@ -211,9 +209,9 @@ def neural_network_train(should_use_save_data):
 			entropy, _, train_step_accuracy = sess.run([cross_entropy,train_step, accuracy], feed_dict=feed_dict_train[i])
 			print("Entropy: " + str(entropy))
 			print("Training Step Result Accuracy: " + str(train_step_accuracy))
-			train_input_batch[i], train_output_batch[i] = shuffle_batch_inputs_and_outputs(train_input_batch[i], train_output_batch[i])
+			train_input_batch[i], train_output_batch[i] = shuffle(train_input_batch[i], train_output_batch[i])
 			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY}		
-		print("Testing Accuracy if training were to finish now: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
+		print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
 
 	debug_outputs = sess.run(tf_output, feed_dict=feed_dict_train_keep_all[0])
 	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch[0], debug_outputs)
@@ -257,7 +255,7 @@ def print_accuracy_percentage(training_accuracy, testing_accuracy):
 	print("Testing Accuracy: " + str(testing_accuracy) + "%")
 	print("-----")
 
-def shuffle_batch_inputs_and_outputs(batch_input, batch_ouput):
+def shuffle(batch_input, batch_ouput):
 	#combine the lists (so they keep the same shuffle order), shuffle them, then split them
 	#zipping will make the two lists [a, b] and [1, 2] = [(a, 1), (b, 2)]
 	combined_batch = list(zip(batch_input, batch_ouput))
