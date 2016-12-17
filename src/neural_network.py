@@ -19,38 +19,39 @@ DEBUG_PRINT_SIZE = 5
 	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
 	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
 '''
-NUMBER_OF_BATCHES = 2000
-NUMBER_OF_BATCHES_TO_TRAIN_ON = 5
+NUMBER_OF_BATCHES = 2
+NUMBER_OF_BATCHES_TO_TRAIN_ON = 1
 #This is how many times each batch will be trained on
-TRAINING_ITERATIONS = 5
+TRAINING_ITERATIONS = 100
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 
 #---HYPER PARAMETERS ---
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 0.03
 #below is only needed for gradient decent
 #DECAY_LEARNING_RATE_EVERY_N = math.ceil(TRAINING_ITERATIONS/4)
 #DECAY_RATE = 0.96
 
 # The rate at which neurons are kept after learning
-KEEP_SOME_PROBABILITY = 0.7
+KEEP_SOME_PROBABILITY = 0.5
 KEEP_ALL_PROBABILITY = 1.0
 
 #Setting the below to None means load all of them
-TRAINING_DATA_FILE_COUNT = None 
-TEST_DATA_FILE_COUNT = None
+TRAINING_DATA_FILE_COUNT = 2500
+TEST_DATA_FILE_COUNT = 1000
 
 #--- LAYER/WEIGHT/BIAS CONSTANTS---
 INPUT_SIZE = BOARD_SIZE ** 2
 OUTPUT_SIZE = 2
 CONV_SIZE = 5
 CONV_WEIGHT_1_INPUT_CHANNELS = 1
-CONV_WEIGHT_1_FEATURES = 30
-CONV_WEIGHT_2_FEATURES = 30
-#The board size in the below conv outbout size is usually divided by 4 because of 2x2 pooling but we don't do that which means we have a huge amount of neurons
-CONV_2_OUTPUT_SIZE = BOARD_SIZE * BOARD_SIZE * CONV_WEIGHT_2_FEATURES 
-FC_LAYER_1_WEIGHTS = 10000
+CONV_WEIGHT_1_FEATURES = 5
+CONV_WEIGHT_2_FEATURES = 10
+#POOL MULTPLICATION SIZE = 5 BECAUSE IT REPRESENTS BOARD_SIZE / 4 CAUSE WE DO 2x2 POOLING
+POOL_MULTIPLICATION_SIZE = 5
+CONV_2_OUTPUT_SIZE = POOL_MULTIPLICATION_SIZE * POOL_MULTIPLICATION_SIZE * CONV_WEIGHT_2_FEATURES 
+FC_LAYER_1_WEIGHTS = CONV_WEIGHT_2_FEATURES * 16
 STRIDE_SIZE = 1 #this probably won't need changing
 COLOUR_CHANNELS_USED = 1 #We are not feeding our network a colour image so this is always 1
 
@@ -103,6 +104,9 @@ def split_list_into_n_lists(list, n):
 def conv2d(image, weights):
 	return tf.nn.conv2d(image, weights, strides=[STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE], padding='SAME')
 
+def pool2x2(conv_image):
+	return tf.nn.avg_pool(conv_image, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
 
@@ -110,6 +114,8 @@ def neural_network_train(should_use_save_data):
 	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 	print("Training data loaded!")
+
+	#print(testing_data[10][len(testing_data[0])][0])
 
 	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
 	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
@@ -125,6 +131,7 @@ def neural_network_train(should_use_save_data):
 	input_image = tf.reshape(training_input, [-1, BOARD_SIZE, BOARD_SIZE, COLOUR_CHANNELS_USED])
 
 	convolution1 = tf.nn.tanh(conv2d(input_image, conv_weights1) + conv_bias1)
+	pool1 = pool2x2(convolution1)
 
 	conv_weights2 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_FEATURES, CONV_WEIGHT_2_FEATURES])
 	conv_bias2 = get_bias_variable([CONV_WEIGHT_2_FEATURES])
@@ -132,7 +139,8 @@ def neural_network_train(should_use_save_data):
 	layer_2_weights_histogram = tf.histogram_summary("conv_weights2", conv_weights2)
 	layer_2_bias_histogram = tf.histogram_summary("conv_bias2", conv_bias2)
 
-	convolution2 = tf.nn.tanh(conv2d(convolution1, conv_weights2) + conv_bias2)
+	convolution2 = tf.nn.tanh(conv2d(pool1, conv_weights2) + conv_bias2)
+	pool2 = pool2x2(convolution2)
 
 	fully_connected_weights1 = get_weight_variable([CONV_2_OUTPUT_SIZE, FC_LAYER_1_WEIGHTS])
 	fully_connected_bias1 = get_bias_variable([FC_LAYER_1_WEIGHTS])
@@ -140,8 +148,8 @@ def neural_network_train(should_use_save_data):
 	layer_3_weights_histogram = tf.histogram_summary("fully_connected_weights1", fully_connected_weights1)
 	layer_3_bias_histogram = tf.histogram_summary("fully_connected_bias1", fully_connected_bias1)
 
-	conv2_flat = tf.reshape(convolution2, [-1, CONV_2_OUTPUT_SIZE])
-	fully_connected_output1 = tf.nn.tanh(tf.matmul(conv2_flat, fully_connected_weights1) + fully_connected_bias1)
+	pool2_flat = tf.reshape(pool2, [-1, CONV_2_OUTPUT_SIZE])
+	fully_connected_output1 = tf.nn.tanh(tf.matmul(pool2_flat, fully_connected_weights1) + fully_connected_bias1)
 
 	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
@@ -152,7 +160,7 @@ def neural_network_train(should_use_save_data):
 	layer_4_weights_histogram = tf.histogram_summary("fully_connected_weights2", fully_connected_weights2)
 	layer_4_bias_histogram = tf.histogram_summary("fully_connected_bias2", fully_connected_bias2)
 
-	tf_output = tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2
+	tf_output = tf.nn.softmax(tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 	tf.histogram_summary("cross_entropy", cross_entropy)
@@ -207,9 +215,8 @@ def neural_network_train(should_use_save_data):
 		feed_dict_train_keep_all.append({training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_ALL_PROBABILITY})
 		feed_dict_test.append({training_input: test_input_batch[i], training_output: test_output_batch[i], keep_prob: KEEP_ALL_PROBABILITY})
 
-
-	for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):
-		for j in range(TRAINING_ITERATIONS):
+	for j in range(TRAINING_ITERATIONS):
+		for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):		
 			print("-")
 			print("Batch number: " + str(i+1) + "/" + str(NUMBER_OF_BATCHES_TO_TRAIN_ON) + " Training step: " + str(j+1) + "/" + str(TRAINING_ITERATIONS) +  " Global step: " + str(sess.run(global_step)))
 			entropy, _, train_step_accuracy = sess.run([cross_entropy,train_step, accuracy], feed_dict=feed_dict_train[i])
@@ -217,7 +224,8 @@ def neural_network_train(should_use_save_data):
 			print("Training Step Result Accuracy: " + str(train_step_accuracy))
 			train_input_batch[i], train_output_batch[i] = shuffle(train_input_batch[i], train_output_batch[i])
 			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY}		
-		print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=feed_dict_test[i])))
+		if j % 10 == 0:
+			print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=random.choice(feed_dict_test))))
 
 	debug_outputs = sess.run(tf_output, feed_dict=feed_dict_train_keep_all[0])
 	print_debug_outputs(DEBUG_PRINT_SIZE, train_output_batch[0], debug_outputs)
@@ -244,7 +252,6 @@ def neural_network_train(should_use_save_data):
 
 
 def use_network(input):
-	input = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
 	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
 	keep_prob = tf.placeholder(tf.float32)
@@ -349,5 +356,93 @@ def shuffle(batch_input, batch_ouput):
 	batch_input[:], batch_ouput[:] = zip(*combined_batch)
 	return batch_input, batch_ouput
 
+'''
+	return [ 
+		# Player -1 array [
+			[Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row]
+		],
+		# Player 1 array [
+			[Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row]
+		]
+	]
+'''
+def get_number_in_a_row_heuristic_for_move():
+	#REMEMBER TO TURN 2 BACK TO -1
+	move = [
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 1, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 1, 2, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 2, 1, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 1, 1, 2, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 2, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	]
+	player_m1_2_count = 0
+	player_m1_3_count = 0
+	player_m1_4_count = 0
+	player_1_2_count = 0
+	player_1_3_count = 0
+	player_1_4_count = 0
+
+	player_m1_horizontal_count = count_in_a_row_horizontally(move, 2)
+	player_m1_2_count += player_m1_horizontal_count[0]
+	player_m1_3_count += player_m1_horizontal_count[1]
+	player_m1_4_count += player_m1_horizontal_count[2]
+
+	player_1_horizontal_count = count_in_a_row_horizontally(move, 1)
+	player_1_2_count += player_1_horizontal_count[0]
+	player_1_3_count += player_1_horizontal_count[1]
+	player_1_4_count += player_1_horizontal_count[2]
+
+	rotated_move = [[i[j] for i in move] for j in range(len(move[0]))]
+	player_m1_vertical_count = count_in_a_row_horizontally(rotated_move, 2)
+	player_m1_2_count += player_m1_vertical_count[0]
+	player_m1_3_count += player_m1_vertical_count[1]
+	player_m1_4_count += player_m1_vertical_count[2]
+
+	player_1_vertical_count = count_in_a_row_horizontally(rotated_move, 1)
+	player_1_2_count += player_1_vertical_count[0]
+	player_1_3_count += player_1_vertical_count[1]
+	player_1_4_count += player_1_vertical_count[2]
+
+	return [
+		[player_m1_2_count, player_m1_3_count, player_m1_4_count],
+		[player_1_2_count, player_1_3_count, player_1_4_count]
+	]
+
+def count_in_a_row_horizontally(move, player):
+	count_2 = 0
+	count_3 = 0
+	count_4 = 0
+	for row in move:
+		in_a_row_count = 0
+		for cell in row:
+			if player == cell:
+				in_a_row_count += 1
+			else:
+				if in_a_row_count == 2:
+					count_2 += 1
+				elif in_a_row_count == 3:
+					count_3 += 1
+				elif in_a_row_count == 4:
+					count_4 += 1
+				in_a_row_count = 0
+	return [count_2, count_3, count_4]
+
+
 if __name__ == '__main__':
-	use_network(0)
+	input = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+	use_network(input)
