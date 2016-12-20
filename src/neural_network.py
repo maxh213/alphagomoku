@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy
 import tensorflow as tf
 import math
@@ -357,91 +359,65 @@ def shuffle(batch_input, batch_ouput):
 	batch_input[:], batch_ouput[:] = zip(*combined_batch)
 	return batch_input, batch_ouput
 
-'''
-	return [ 
-		# Player -1 array [
-			[Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row]
-		],
-		# Player 1 array [
-			[Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row]
-		]
-	]
-'''
+
 def get_number_in_a_row_heuristic_for_move(move):
-	player_m1_2_count = 0
-	player_m1_3_count = 0
-	player_m1_4_count = 0
-	player_1_2_count = 0
-	player_1_3_count = 0
-	player_1_4_count = 0
+	"""
+		return [
+			# Player -1 array [
+				[Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row]
+			],
+			# Player 1 array [
+				[Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row]
+			]
+		]
+	"""
+	player_m1_counts = [0] * 3
+	player_1_counts = [0] * 3
 
 	player_m1_horizontal_count = count_in_a_row_horizontally(move, -1)
-	player_m1_2_count += player_m1_horizontal_count[0]
-	player_m1_3_count += player_m1_horizontal_count[1]
-	player_m1_4_count += player_m1_horizontal_count[2]
+	player_m1_counts = [x + y for x, y in zip(player_m1_counts, player_m1_horizontal_count)]
 
 	player_1_horizontal_count = count_in_a_row_horizontally(move, 1)
-	player_1_2_count += player_1_horizontal_count[0]
-	player_1_3_count += player_1_horizontal_count[1]
-	player_1_4_count += player_1_horizontal_count[2]
-
-	rotated_move = [[i[j] for i in move] for j in range(len(move[0]))]
-	player_m1_vertical_count = count_in_a_row_horizontally(rotated_move, -1)
-	player_m1_2_count += player_m1_vertical_count[0]
-	player_m1_3_count += player_m1_vertical_count[1]
-	player_m1_4_count += player_m1_vertical_count[2]
-
-	player_1_vertical_count = count_in_a_row_horizontally(rotated_move, 1)
-	player_1_2_count += player_1_vertical_count[0]
-	player_1_3_count += player_1_vertical_count[1]
-	player_1_4_count += player_1_vertical_count[2]
-	
-	player_m1_diagonal_count = count_in_a_row_diagonally(move, -1)
-	player_m1_2_count += player_m1_diagonal_count[0]
-	player_m1_3_count += player_m1_diagonal_count[1]
-	player_m1_4_count += player_m1_diagonal_count[2]
+	player_1_counts = [x + y for x, y in zip(player_1_counts, player_1_horizontal_count)]
 
 	player_1_diagonal_count = count_in_a_row_diagonally(move, 1)
-	player_1_2_count += player_1_diagonal_count[0]
-	player_1_3_count += player_1_diagonal_count[1]
-	player_1_4_count += player_1_diagonal_count[2]
+	player_1_counts = [x + y for x, y in zip(player_1_counts, player_1_diagonal_count)]
+
+	rotated_move = [[i[j] for i in move] for j in range(len(move[0]))]
+
+	player_m1_vertical_count = count_in_a_row_horizontally(rotated_move, -1)
+	player_m1_counts = [x + y for x, y in zip(player_m1_counts, player_m1_vertical_count)]
+
+	player_1_vertical_count = count_in_a_row_horizontally(rotated_move, 1)
+	player_1_counts = [x + y for x, y in zip(player_1_counts, player_1_vertical_count)]
+
+	player_m1_diagonal_count = count_in_a_row_diagonally(move, -1)
+	player_m1_counts = [x + y for x, y in zip(player_m1_counts, player_m1_diagonal_count)]
+
 	count_in_a_row_diagonally(move, 2)
 	
-	return [
-		[player_m1_2_count, player_m1_3_count, player_m1_4_count],
-		[player_1_2_count, player_1_3_count, player_1_4_count]
-	]
+	return player_m1_counts, player_1_counts
 
-def count_in_a_row_horizontally(move, player):
-	count_2 = 0
-	count_3 = 0
-	count_4 = 0
+
+def count_in_a_row_horizontally(move, player: int) -> List[int]:
+	counts = [0]*3
 	for row in move:
 		in_a_row_count = 0
 		for cell in row:
 			if player == cell:
 				in_a_row_count += 1
 			else:
-				if in_a_row_count == 2:
-					count_2 += 1
-				elif in_a_row_count == 3:
-					count_3 += 1
-				elif in_a_row_count == 4:
-					count_4 += 1
+				if 2 <= in_a_row_count <= 4:
+					counts[in_a_row_count - 2] += 1
 				in_a_row_count = 0
-		if in_a_row_count == 2:
-				count_2 += 1
-		elif in_a_row_count == 3:
-			count_3 += 1
-		elif in_a_row_count == 4:
-			count_4 += 1
+		if 2 <= in_a_row_count <= 4:
+			counts[in_a_row_count - 2] += 1
 
-	return [count_2, count_3, count_4]
+	return counts
+
 
 def count_in_a_row_diagonally(move, player):
-	count_2 = 0
-	count_3 = 0
-	count_4 = 0
+	counts = [0]*3
 	move_array = numpy.asarray(move)
 
 	#Going through an array diagonally basically only iterates through half of it so we rotate the array and do it twice
@@ -451,19 +427,11 @@ def count_in_a_row_diagonally(move, player):
 			if player == cell:
 				in_a_row_count += 1
 			else:
-				if in_a_row_count == 2:
-					count_2 += 1
-				elif in_a_row_count == 3:
-					count_3 += 1
-				elif in_a_row_count == 4:
-					count_4 += 1
+				if 2 <= in_a_row_count <= 4:
+					counts[in_a_row_count - 2] += 1
 				in_a_row_count = 0
-		if in_a_row_count == 2:
-				count_2 += 1
-		elif in_a_row_count == 3:
-			count_3 += 1
-		elif in_a_row_count == 4:
-			count_4 += 1
+		if 2 <= in_a_row_count <= 4:
+			counts[in_a_row_count - 2] += 1
 
 	#Going through an array diagonally basically only iterates through half of it so we flip the array upside down and do it twice
 	rotated_move_array = numpy.flipud(move_array)
@@ -473,19 +441,11 @@ def count_in_a_row_diagonally(move, player):
 			if player == cell:
 				in_a_row_count += 1
 			else:
-				if in_a_row_count == 2:
-					count_2 += 1
-				elif in_a_row_count == 3:
-					count_3 += 1
-				elif in_a_row_count == 4:
-					count_4 += 1
+				if 2 <= in_a_row_count <= 4:
+					counts[in_a_row_count - 2] += 1
 				in_a_row_count = 0
-		if in_a_row_count == 2:
-				count_2 += 1
-		elif in_a_row_count == 3:
-			count_3 += 1
-		elif in_a_row_count == 4:
-			count_4 += 1
+		if 2 <= in_a_row_count <= 4:
+			counts[in_a_row_count - 2] += 1
 
 	rotated_move_array = numpy.rot90(rotated_move_array, 2)
 	for i in range(len(rotated_move_array)):
@@ -495,19 +455,11 @@ def count_in_a_row_diagonally(move, player):
 				if player == cell:
 					in_a_row_count += 1
 				else:
-					if in_a_row_count == 2:
-						count_2 += 1
-					elif in_a_row_count == 3:
-						count_3 += 1
-					elif in_a_row_count == 4:
-						count_4 += 1
+					if 2 <= in_a_row_count <= 4:
+						counts[in_a_row_count - 2] += 1
 					in_a_row_count = 0
-			if in_a_row_count == 2:
-					count_2 += 1
-			elif in_a_row_count == 3:
-				count_3 += 1
-			elif in_a_row_count == 4:
-				count_4 += 1
+			if 2 <= in_a_row_count <= 4:
+				counts[in_a_row_count - 2] += 1
 
 	rotated_move_array = numpy.rot90(rotated_move_array, 1)
 	for i in range(len(rotated_move_array)):
@@ -517,23 +469,13 @@ def count_in_a_row_diagonally(move, player):
 				if player == cell:
 					in_a_row_count += 1
 				else:
-					if in_a_row_count == 2:
-						count_2 += 1
-					elif in_a_row_count == 3:
-						count_3 += 1
-					elif in_a_row_count == 4:
-						count_4 += 1
+					if 2 <= in_a_row_count <= 4:
+						counts[in_a_row_count - 2] += 1
 					in_a_row_count = 0
-			if in_a_row_count == 2:
-					count_2 += 1
-			elif in_a_row_count == 3:
-				count_3 += 1
-			elif in_a_row_count == 4:
-				count_4 += 1
+			if 2 <= in_a_row_count <= 4:
+				counts[in_a_row_count - 2] += 1
 
-	return [count_2, count_3, count_4]
-
-
+	return counts
 
 
 if __name__ == '__main__':
