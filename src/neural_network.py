@@ -371,32 +371,23 @@ def get_number_in_a_row_heuristic_for_move(move):
 			]
 		]
 	"""
-	player_m1_counts = [0] * 3
-	player_1_counts = [0] * 3
 
-	player_m1_horizontal_count = count_in_a_row_horizontally(move, -1)
-	player_m1_counts = [x + y for x, y in zip(player_m1_counts, player_m1_horizontal_count)]
-
-	player_1_horizontal_count = count_in_a_row_horizontally(move, 1)
-	player_1_counts = [x + y for x, y in zip(player_1_counts, player_1_horizontal_count)]
-
-	player_1_diagonal_count = count_in_a_row_diagonally(move, 1)
-	player_1_counts = [x + y for x, y in zip(player_1_counts, player_1_diagonal_count)]
+	player_counts = [[0] * 3 for _ in range(2)]
 
 	rotated_move = [[i[j] for i in move] for j in range(len(move[0]))]
 
-	player_m1_vertical_count = count_in_a_row_horizontally(rotated_move, -1)
-	player_m1_counts = [x + y for x, y in zip(player_m1_counts, player_m1_vertical_count)]
-
-	player_1_vertical_count = count_in_a_row_horizontally(rotated_move, 1)
-	player_1_counts = [x + y for x, y in zip(player_1_counts, player_1_vertical_count)]
-
-	player_m1_diagonal_count = count_in_a_row_diagonally(move, -1)
-	player_m1_counts = [x + y for x, y in zip(player_m1_counts, player_m1_diagonal_count)]
+	for f, m in [
+		(count_in_a_row_horizontally, move),
+		(count_in_a_row_diagonally, move),
+		(count_in_a_row_horizontally, rotated_move)
+	]:
+		for p in range(2):
+			tplayer_count = f(move, (p * 2) - 1)
+			player_counts[p] = [x + y for x, y in zip(player_counts[p], tplayer_count)]
 
 	count_in_a_row_diagonally(move, 2)
 	
-	return player_m1_counts, player_1_counts
+	return player_counts
 
 
 def count_in_a_row_horizontally(move, player: int) -> List[int]:
