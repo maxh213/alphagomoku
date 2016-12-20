@@ -1,16 +1,16 @@
 from typing import List
 
+import os
+import sys
 import numpy
 import tensorflow as tf
-import math
+from tensorflow import Session
 import random
 from random import randrange
 from training_data import get_training_data, get_test_data
 from board import BOARD_SIZE
 from tensorflow.python.framework.errors import NotFoundError
 
-
-from sys import argv
 
 #---FILE BASED CONSTANTS---
 DEBUG_PRINT_SIZE = 5
@@ -66,10 +66,11 @@ def get_weight_variable(shape):
 def get_bias_variable(shape):
 	return tf.Variable(tf.constant(0.1, shape=shape))
 
-'''
-	This only works on batched_inputs
-'''
+
 def one_hot_input_batch(input_batch):
+	"""
+		This only works on batched_inputs
+	"""
 	one_hotted_input_batch = []
 	for board in input_batch:
 		one_hotted_move = []
@@ -79,10 +80,11 @@ def one_hot_input_batch(input_batch):
 		one_hotted_input_batch.append(one_hotted_move)
 	return one_hotted_input_batch
 
-'''
-	returns the training data in a batch format which can be argmaxed by tensorflow
-'''
+
 def convert_training_to_batch(training_data, number_of_batches):
+	"""
+		returns the training data in a batch format which can be argmaxed by tensorflow
+	"""
 	train_input = []
 	train_output = []
 	for i in range(len(training_data)):
@@ -100,6 +102,7 @@ def convert_training_to_batch(training_data, number_of_batches):
 	else:
 		return split_list_into_n_lists(train_input, number_of_batches), split_list_into_n_lists(train_output, number_of_batches)
 
+
 def split_list_into_n_lists(list, n):
 	return [list[i::n] for i in range(n)]
 
@@ -107,8 +110,40 @@ def split_list_into_n_lists(list, n):
 def conv2d(image, weights):
 	return tf.nn.conv2d(image, weights, strides=[STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE, STRIDE_SIZE], padding='SAME')
 
+
 def pool2x2(conv_image):
 	return tf.nn.avg_pool(conv_image, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+
+def restore(sess: Session, file_path: str):
+	saver = tf.train.Saver()
+
+	try:
+		saver.restore(sess, file_path)
+	except NotFoundError as e:
+		print('Could not load a TensorFlow model from \'%s\' because none was found.' % file_path, file=sys.stderr)
+		print('Current dir: %s' % os.path.abspath('.'), file=sys.stderr)
+		raise e
+
+
+def save(sess: Session, file_path: str, overwrite: bool=False) -> bool:
+
+	file_exists = os.path.exists(file_path)
+
+	if file_exists and not overwrite:
+		return True
+
+	if not file_exists:
+		dir_path = os.path.dirname(file_path)
+		dir_exists = os.path.exists(dir_path)
+		if not dir_exists:
+			os.makedirs(dir_path)
+
+	saver = tf.train.Saver()
+
+	save_path = saver.save(sess, file_path)
+	print('TensorFlow model saved in file: %s' % save_path)
+
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
@@ -177,9 +212,6 @@ def neural_network_train(should_use_save_data):
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 	tf.histogram_summary("accuracy", accuracy)
 
-	# Allows saving the state of all tf variables
-	saver = tf.train.Saver()
-	
 	merged_summary_op = tf.merge_all_summaries()
 	
 	sess = tf.Session()
@@ -187,20 +219,15 @@ def neural_network_train(should_use_save_data):
 	#This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
 	try:
 		sess.run(tf.global_variables_initializer())
-	except AttributeError as error:
+	except AttributeError:
 		sess.run(tf.initialize_all_variables())
 	
 	summary_writer = tf.train.SummaryWriter(GRAPH_LOGS_SAVE_FILE_PATH, graph=sess.graph)
 
 	print("---")
 	if should_use_save_data:
-		#Try load the weights and biases from when the network was last run
-		try:
-			saver.restore(sess, MODEL_SAVE_FILE_PATH)
-			print("TensorFlow model loaded from last session.")
-		except NotFoundError as e:
-			print("Could not load a TensorFlow model from the last session because none was found.")
-			raise e
+		restore(sess, MODEL_SAVE_FILE_PATH)
+		print("TensorFlow model loaded from last session.")
 	else:
 		print("Previous save data not loaded! If you wish to load the previous save data run: python3 main.py True")
 	print("---")
@@ -247,8 +274,7 @@ def neural_network_train(should_use_save_data):
 	testing_average = sum(testing_accuracy)/len(testing_accuracy)
 	print_accuracy_percentage(training_average, testing_average)
 
-	save_path = saver.save(sess, MODEL_SAVE_FILE_PATH)
-	print("TensorFlow model saved in file: %s" % save_path)
+	save(sess, MODEL_SAVE_FILE_PATH, True)
 
 	print("Run the following command to see the graphs produced from this training:")
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
@@ -286,9 +312,6 @@ def use_network(input):
 
 	tf_output = tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2
 
-	# Allows saving the state of all tf variables
-	saver = tf.train.Saver()
-
 	sess = tf.Session()
 
 	# This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
@@ -297,7 +320,7 @@ def use_network(input):
 	except AttributeError as error:
 		sess.run(tf.initialize_all_variables())
 
-	saver.restore(sess, MODEL_SAVE_FILE_PATH)
+	restore(sess, MODEL_SAVE_FILE_PATH)
 
 	test_input = []
 	test_input.append(input)
@@ -309,9 +332,6 @@ def use_network(input):
 	winner = get_winner(output[0])
 	#print (winner)
 	get_use_output(winner, output[0])
-	#difference = get_difference(output[0])
-	#print (difference)
-	#scale_difference(difference)
 
 
 def get_winner(output):
@@ -323,14 +343,10 @@ def get_winner(output):
 	else:
 		return 1
 
-#def get_difference(output):
-#	return abs(output[0] - output[1])
-
-#def scale_difference(difference):
-#	return 1
 
 def get_use_output(winner, output):
 	print ([winner, max(output)])
+
 
 def print_debug_outputs(amount, train_output_batch, debug_outputs):
 	print("---")
@@ -342,6 +358,7 @@ def print_debug_outputs(amount, train_output_batch, debug_outputs):
 		print("Actual output: " + str(train_output_batch[random_move_index]))
 	print("---")
 
+
 def print_accuracy_percentage(training_accuracy, testing_accuracy):
 	training_accuracy = "%.2f" % (training_accuracy * 100)
 	testing_accuracy = "%.2f" % (testing_accuracy * 100)
@@ -350,14 +367,15 @@ def print_accuracy_percentage(training_accuracy, testing_accuracy):
 	print("Testing Accuracy: " + str(testing_accuracy) + "%")
 	print("-----")
 
-def shuffle(batch_input, batch_ouput):
+
+def shuffle(batch_input, batch_output):
 	#combine the lists (so they keep the same shuffle order), shuffle them, then split them
 	#zipping will make the two lists [a, b] and [1, 2] = [(a, 1), (b, 2)]
-	combined_batch = list(zip(batch_input, batch_ouput))
+	combined_batch = list(zip(batch_input, batch_output))
 	random.shuffle(combined_batch)
 	#[:] just essentially casts the tuple result from zip into the same list variables we already used
-	batch_input[:], batch_ouput[:] = zip(*combined_batch)
-	return batch_input, batch_ouput
+	batch_input[:], batch_output[:] = zip(*combined_batch)
+	return batch_input, batch_output
 
 
 def get_number_in_a_row_heuristic_for_move(move):
