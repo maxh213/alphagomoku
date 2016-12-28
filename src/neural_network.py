@@ -434,10 +434,15 @@ def count_in_a_row_horizontally(move, player: int) -> List[int]:
 						counts[in_a_row_count - 2] += 1
 				in_a_row_count = 0
 		if 2 <= in_a_row_count <= 4:
-			if (cell_index-1)-in_a_row_count < 0:
-				if (row[cell_index] == 0):
-					counts[in_a_row_count - 2] += 1
-			elif (row[(cell_index-1)-in_a_row_count] == 0) and (row[cell_index] == 0):
+			'''
+			print(row)
+			print("cell_index: "+ str(cell_index))
+			print("row count: " + str(in_a_row_count))
+			print(row[(cell_index)-in_a_row_count])
+			print((cell_index)-in_a_row_count)
+			print(row[cell_index])
+			'''
+			if (row[(cell_index)-in_a_row_count] == 0):
 				counts[in_a_row_count - 2] += 1
 
 	return counts
