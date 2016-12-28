@@ -402,28 +402,45 @@ def get_number_in_a_row_heuristic_for_move(move):
 		for p in range(2):
 			tplayer_count = f(move, (p * 2) - 1)
 			player_counts[p] = [x + y for x, y in zip(player_counts[p], tplayer_count)]
-
-	count_in_a_row_diagonally(move, 2)
 	
 	return player_counts
-
 
 def count_in_a_row_horizontally(move, player: int) -> List[int]:
 	counts = [0]*3
 	for row in move:
 		in_a_row_count = 0
-		for cell in row:
-			if player == cell:
+		for cell_index in range(len(row)):
+			if (player == row[cell_index]):
 				in_a_row_count += 1
 			else:
 				if 2 <= in_a_row_count <= 4:
-					counts[in_a_row_count - 2] += 1
+					'''
+					The below code is used for testing, i'm commiting it currently because I want to be 100% it works and i'm not yet
+					print(row)
+					print("cell_index: "+ str(cell_index))
+					print("row count: " + str(in_a_row_count))
+					print(row[(cell_index-1)-in_a_row_count])
+					print((cell_index-1)-in_a_row_count)
+					print(row[cell_index-1])
+					print(row[cell_index])
+
+					test this with the command:
+					python3 -c 'import neural_network; print(neural_network.count_in_a_row_horizontally([[1,1,0,1,1], [0,0,0,0,0]], 1))'
+					'''
+					if (cell_index-1)-in_a_row_count < 0:
+						if (row[cell_index] == 0):
+							counts[in_a_row_count - 2] += 1
+					elif (row[(cell_index-1)-in_a_row_count] == 0) and (row[cell_index] == 0):
+						counts[in_a_row_count - 2] += 1
 				in_a_row_count = 0
 		if 2 <= in_a_row_count <= 4:
-			counts[in_a_row_count - 2] += 1
+			if (cell_index-1)-in_a_row_count < 0:
+				if (row[cell_index] == 0):
+					counts[in_a_row_count - 2] += 1
+			elif (row[(cell_index-1)-in_a_row_count] == 0) and (row[cell_index] == 0):
+				counts[in_a_row_count - 2] += 1
 
 	return counts
-
 
 def count_in_a_row_diagonally(move, player):
 	counts = [0]*3
