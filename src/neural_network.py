@@ -396,11 +396,12 @@ def get_number_in_a_row_heuristic_for_move(move):
 
 	for f, m in [
 		(count_in_a_row_horizontally, move),
-		(count_in_a_row_diagonally, move),
+		#Ignoring diagonally until the method can be made more efficient and completed
+		#(count_in_a_row_diagonally, move),
 		(count_in_a_row_horizontally, rotated_move)
 	]:
 		for p in range(2):
-			tplayer_count = f(move, (p * 2) - 1)
+			tplayer_count = f(m, (p * 2) - 1)
 			player_counts[p] = [x + y for x, y in zip(player_counts[p], tplayer_count)]
 	
 	return player_counts
