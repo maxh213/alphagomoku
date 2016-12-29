@@ -30,14 +30,28 @@ _TEST_DATA_FILES += glob.glob("../resources/training/freestyle/new_training_data
 _TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
 _TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
 
+def check_source(lines):
+	return True if len(lines[0]) > 6 else False
 
 def parse_training_file(path: str) -> MovesStruct:
 	with open(path) as f:
 		ls = f.readlines()
 
-	ls = ls[1:-3]
+	"""
+		Check the format of the file being parsed
+		True: Original format
+		False: Faster, dumber format
+		"""
+	original_source = check_source(ls)
+
 	ls = [l.strip() for l in ls]
-	ls = [l.split(',')[:2] for l in ls]
+	if original_source:
+		ls = ls[1:-3]
+		ls = [l.split(',')[:2] for l in ls]
+	else:
+		ls = ls[:-19]
+		ls = [l.split(",") for l in ls]
+
 	return [(int(m[0]) - 1, int(m[1]) - 1) for m in ls]
 
 
@@ -128,11 +142,11 @@ def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int=
 	:param file_count: The amount of training data to return.
 	:return: Parsed training data, one way or another.
 	'''
-	if isfile(save_path):
-		data = _load_data(save_path)
-	else:
-		data = process_training_data(parse_paths)
-		_save_data(save_path, data)
+	#if isfile(save_path):
+	#	data = _load_data(save_path)
+	#else:
+	data = process_training_data(parse_paths)
+	_save_data(save_path, data)
 
 	if file_count is None:
 		return data
