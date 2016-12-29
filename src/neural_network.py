@@ -35,9 +35,6 @@ GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 
 #---HYPER PARAMETERS ---
 LEARNING_RATE = 0.03
-#below is only needed for gradient decent
-#DECAY_LEARNING_RATE_EVERY_N = math.ceil(TRAINING_ITERATIONS/4)
-#DECAY_RATE = 0.96
 
 # The rate at which neurons are kept after learning
 KEEP_SOME_PROBABILITY = 0.6
@@ -136,7 +133,7 @@ def restore(sess: Session, file_path: str):
 		raise e
 
 
-def save(sess: Session, file_path: str, overwrite: bool=False) -> bool:
+def save_network_weights(sess: Session, file_path: str, overwrite: bool=False) -> bool:
 
 	file_exists = os.path.exists(file_path)
 
@@ -190,33 +187,19 @@ def network_layers(training_input, heuristic, keep_prob):
 	tf_output = tf.nn.softmax(tf.matmul(fully_connected_drop_output_with_heuristic, fully_connected_weights2) + fully_connected_bias2)
 	return tf_output, convolution1, convolution2, pool2
 
-
-def neural_network_train(should_use_save_data):
-	print("Convolutional Neural Network training beginning...")
-
-	print("Loading training data...")
-	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
-	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
-	print("Training data loaded!")
-
-	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
-	heuristic = tf.placeholder(tf.float32, [None, HEURISTIC_SIZE])
-	keep_prob = tf.placeholder(tf.float32)
-	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
-	global_step = tf.Variable(0, trainable=False)
-
-	tf_output, convolution1, convolution2, pool2 = network_layers(training_input, heuristic, keep_prob)
-
+def evaluate_network_layers(tf_output, training_output, global_step):
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 
-	#learning_rate = tf.train.exponential_decay(LEARNING_RATE, global_step, DECAY_LEARNING_RATE_EVERY_N, DECAY_RATE, staircase=True)
-	#train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy, global_step=global_step)
 	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy, global_step=global_step)
 
 	correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(tf_output),1), tf.argmax(training_output,1))
 	
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-	
+
+	return cross_entropy, train_step, accuracy
+
+
+def init_sess_and_variables():
 	sess = tf.Session()
 
 	#This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
@@ -225,6 +208,9 @@ def neural_network_train(should_use_save_data):
 	except AttributeError:
 		sess.run(tf.initialize_all_variables())
 
+	return sess
+
+def restore_session_if_needed(sess, should_use_save_data):
 	print("---")
 	if should_use_save_data:
 		restore(sess, MODEL_SAVE_FILE_PATH)
@@ -232,9 +218,8 @@ def neural_network_train(should_use_save_data):
 	else:
 		print("Previous save data not loaded! If you wish to load the previous save data run: python3 main.py True")
 	print("---")
-	print("Setting up variables and heuristics...")
-	train_input_batch, train_output_batch, train_heuristics = convert_training_to_batch(training_data, NUMBER_OF_BATCHES)
-	test_input_batch, test_output_batch, test_heuristics = convert_training_to_batch(testing_data, NUMBER_OF_BATCHES)
+
+def init_feed_dict(train_input_batch, train_output_batch, train_heuristics, training_input, test_input_batch, test_output_batch, test_heuristics, training_output, keep_prob, heuristic):
 	feed_dict_train = []
 	feed_dict_train_keep_all = []
 	feed_dict_test = []
@@ -244,7 +229,48 @@ def neural_network_train(should_use_save_data):
 		feed_dict_train.append({training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY, heuristic: train_heuristics[i]})
 		feed_dict_train_keep_all.append({training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_ALL_PROBABILITY, heuristic: train_heuristics[i]})
 		feed_dict_test.append({training_input: test_input_batch[i], training_output: test_output_batch[i], keep_prob: KEEP_ALL_PROBABILITY, heuristic: test_heuristics[i]})
+	return feed_dict_train, feed_dict_train_keep_all, feed_dict_test
 
+def neural_network_test_loop(sess, accuracy, feed_dict_test, feed_dict_train_keep_all):
+	training_accuracy = []
+	testing_accuracy = []
+	for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):
+		training_accuracy.append(sess.run(accuracy, feed_dict=feed_dict_train_keep_all[i]))
+		testing_accuracy.append(sess.run(accuracy, feed_dict=feed_dict_test[i]))
+	training_average = sum(training_accuracy)/len(training_accuracy)
+	testing_average = sum(testing_accuracy)/len(testing_accuracy)
+	print_accuracy_percentage(training_average, testing_average)
+
+def init_nn_variables_and_placeholders():
+	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
+	heuristic = tf.placeholder(tf.float32, [None, HEURISTIC_SIZE])
+	keep_prob = tf.placeholder(tf.float32)
+	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
+	global_step = tf.Variable(0, trainable=False)
+	return training_input, heuristic, keep_prob, training_output, global_step
+
+def neural_network_train(should_use_save_data):
+	print("Convolutional Neural Network training beginning...")
+	print("Loading training data...")
+	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
+	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
+	print("Training data loaded!")
+
+	training_input, heuristic, keep_prob, training_output, global_step = init_nn_variables_and_placeholders()
+
+	tf_output, convolution1, convolution2, pool2 = network_layers(training_input, heuristic, keep_prob)
+
+	cross_entropy, train_step, accuracy = evaluate_network_layers(tf_output, training_output, global_step)
+	
+	sess = init_sess_and_variables()
+
+	restore_session_if_needed(sess, should_use_save_data)
+
+	print("Batching inputs and setting up variables and heuristics...")
+	train_input_batch, train_output_batch, train_heuristics = convert_training_to_batch(training_data, NUMBER_OF_BATCHES)
+	test_input_batch, test_output_batch, test_heuristics = convert_training_to_batch(testing_data, NUMBER_OF_BATCHES)
+	feed_dict_train, feed_dict_train_keep_all, feed_dict_test = init_feed_dict(train_input_batch, train_output_batch, train_heuristics, training_input, test_input_batch, test_output_batch, test_heuristics, training_output, keep_prob, heuristic)
+	
 	print("Network training starting!")
 	for j in range(TRAINING_ITERATIONS):
 		for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):		
@@ -270,31 +296,9 @@ def neural_network_train(should_use_save_data):
 
 	print("NN training complete, moving on to testing.")
 
-	training_accuracy = []
-	testing_accuracy = []
-	for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):
-		training_accuracy.append(sess.run(accuracy, feed_dict=feed_dict_train_keep_all[i]))
-		testing_accuracy.append(sess.run(accuracy, feed_dict=feed_dict_test[i]))
-	training_average = sum(training_accuracy)/len(training_accuracy)
-	testing_average = sum(testing_accuracy)/len(testing_accuracy)
-	print_accuracy_percentage(training_average, testing_average)
+	neural_network_test_loop(sess, accuracy, feed_dict_test, feed_dict_train_keep_all)
 
-	save(sess, MODEL_SAVE_FILE_PATH, True)
-
-	print("Run the following command to see the graphs produced from this training:")
-	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
-
-def get_winner(output):
-	max_value = max(output)
-	winner = numpy.where(output == max_value)
-	# Verify why [0][0] is required
-	if winner[0][0] == 0:
-		return -1
-	else:
-		return 1
-
-def get_use_output(winner, output):
-	print ([winner, max(output)])
+	save_network_weights(sess, MODEL_SAVE_FILE_PATH, True)
 
 def print_debug_outputs(amount, train_output_batch, debug_outputs):
 	print("---")
@@ -453,22 +457,24 @@ def count_in_a_row_diagonally(move, player):
 
 	return counts
 
+def get_winner(output):
+	max_value = max(output)
+	winner = numpy.where(output == max_value)
+	# Verify why [0][0] is required
+	if winner[0][0] == 0:
+		return -1
+	else:
+		return 1
+
+def get_use_output(winner, output):
+	print ([winner, max(output)])
+
 def use_network(input):
-	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
-	heuristic = tf.placeholder(tf.float32, [None, HEURISTIC_SIZE])
-	keep_prob = tf.placeholder(tf.float32)
-	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
-	global_step = tf.Variable(0, trainable=False)
+	training_input, heuristic, keep_prob, training_output, global_step = init_nn_variables_and_placeholders()
 
 	tf_output, _, _, _ = network_layers(training_input, heuristic, keep_prob)
 
-	sess = tf.Session()
-
-	# This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
-	try:
-		sess.run(tf.global_variables_initializer())
-	except AttributeError as error:
-		sess.run(tf.initialize_all_variables())
+	sess = init_sess_and_variables()
 
 	restore(sess, MODEL_SAVE_FILE_PATH)
 
