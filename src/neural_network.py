@@ -22,8 +22,8 @@ DEBUG_PRINT_SIZE = 5
 	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
 	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
 '''
-NUMBER_OF_BATCHES = 11
-NUMBER_OF_BATCHES_TO_TRAIN_ON = 10
+NUMBER_OF_BATCHES = 1000
+NUMBER_OF_BATCHES_TO_TRAIN_ON = 1000
 #This is how many times each batch will be trained on
 TRAINING_ITERATIONS = 1
 
@@ -31,7 +31,7 @@ MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
 
 #---HYPER PARAMETERS ---
-LEARNING_RATE = 0.3
+LEARNING_RATE = 0.03
 #below is only needed for gradient decent
 #DECAY_LEARNING_RATE_EVERY_N = math.ceil(TRAINING_ITERATIONS/4)
 #DECAY_RATE = 0.96
@@ -92,16 +92,17 @@ def convert_training_to_batch(training_data, number_of_batches):
 			# if the move number is less than 5 and the game lasts more than 5 moves don't bother
 			if not (j < 5 and len(training_data[i]) > 5):
 				heuristic_ = get_number_in_a_row_heuristic_for_move(training_data[i][j][0])
-				if heuristic_ != [0] * len(heuristic_):
+				#if heuristic_ != [0] * len(heuristic_):
+				if heuristic_ != 0:
 					train_input.append(training_data[i][j][0])
 					# If training_data[i][j][1] == -1 then an argmax function would identify the first index 0 as the highest
 					# If training_data[i][j][1] == 1 then the argmax function would identify index 1 as the highest
 					# Our nn just has to mimic this
 					train_output.append([0, training_data[i][j][1]])
-					heuristics.append(heuristic_)
+					heuristics.append([heuristic_])
 	train_input, train_output, heuristics = shuffle_lists_together(train_input, train_output, heuristics)
 	if number_of_batches == 1:
-		return train_input, train_output, heuristics
+		return [train_input], [train_output], [heuristics]
 	else:
 		return split_list_into_n_lists(train_input, number_of_batches), split_list_into_n_lists(train_output, number_of_batches), split_list_into_n_lists(heuristics, number_of_batches)
 
@@ -222,11 +223,16 @@ def neural_network_train(should_use_save_data):
 		for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):		
 			print("-")
 			print("Batch number: " + str(i+1) + "/" + str(NUMBER_OF_BATCHES_TO_TRAIN_ON) + " Training step: " + str(j+1) + "/" + str(TRAINING_ITERATIONS) +  " Global step: " + str(sess.run(global_step)))
-			entropy, _, train_step_accuracy, h, to = sess.run([cross_entropy,train_step, accuracy, heuristic, training_output], feed_dict=feed_dict_train[i])
+			entropy, _, train_step_accuracy, h, to, c1, c2, p2 = sess.run([cross_entropy,train_step, accuracy, heuristic, training_output, convolution1, convolution2, pool2], feed_dict=feed_dict_train[i])
 			print("Entropy: " + str(entropy))
 			print("Training Step Result Accuracy: " + str(train_step_accuracy))
-			print(h[0])
-			print(to[0])
+			#print(h[0])
+			#print(to[0])
+			#print(c1[0][0])
+			#print("--")
+			#print(c2[0][0])
+			#print("--")
+			#print(p2[0])
 			train_input_batch[i], train_output_batch[i], train_heuristics[i] = shuffle_lists_together(train_input_batch[i], train_output_batch[i], train_heuristics[i])
 			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY, heuristic: train_heuristics[i]}		
 		if j % 10 == 0:
@@ -260,12 +266,6 @@ def get_winner(output):
 		return -1
 	else:
 		return 1
-
-#def get_difference(output):
-#	return abs(output[0] - output[1])
-
-#def scale_difference(difference):
-#	return 1
 
 def get_use_output(winner, output):
 	print ([winner, max(output)])
@@ -313,6 +313,7 @@ def get_number_in_a_row_heuristic_for_move(move):
 			tplayer_count = f(m, (p * 2) - 1)
 			player_counts[p] = [x + y for x, y in zip(player_counts[p], tplayer_count)]
 	
+	
 	sum_heuristic = 0
 	sum_heuristic -= player_counts[0][0]
 	sum_heuristic -= player_counts[0][1] * 2
@@ -320,7 +321,8 @@ def get_number_in_a_row_heuristic_for_move(move):
 	sum_heuristic += player_counts[1][0]
 	sum_heuristic += player_counts[1][1] * 2
 	sum_heuristic += player_counts[1][2] * 3
-	return [sum_heuristic] #player_counts[0] + player_counts[1]
+	return sum_heuristic
+	#return player_counts[0] + player_counts[1]
 
 def count_in_a_row_horizontally(move, player: int) -> List[int]:
 	counts = [0]*3
