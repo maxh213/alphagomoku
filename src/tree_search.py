@@ -3,15 +3,14 @@ nn : Board -> [-1 to 1]
 moves : Board -> list[Board]
 moves(b) = [] Person to move last.
 """
-from random import Random
 from typing import List, Tuple
-
+from neural_network import use_network
 from board import Board
 
-r = Random()
+
 def nn(board) -> float:
 	# Will return value between -1 and 1. Needs to hook up with the neural network when it's ready.
-	return r.uniform(0.6,0.71)
+	return use_network(board)
 
 
 def moves(board: Board) -> List[Tuple[int, int]]:
