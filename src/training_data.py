@@ -31,7 +31,7 @@ _TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
 _TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
 
 def check_source(lines):
-	return True if len(lines[0]) > 6 else False
+	return len(lines[0]) > 6
 
 def parse_training_file(path: str) -> MovesStruct:
 	with open(path) as f:
