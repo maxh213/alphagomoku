@@ -37,11 +37,10 @@ def parse_training_file(path: str) -> MovesStruct:
 	with open(path) as f:
 		ls = f.readlines()
 
-	"""
-		Check the format of the file being parsed
-		True: Original format
-		False: Faster, dumber format
-		"""
+	# Check the format of the file being parsed
+	# True: Original format
+	# False: Faster, dumber format
+
 	original_source = check_source(ls)
 
 	ls = [l.strip() for l in ls]
@@ -92,37 +91,25 @@ def process_training_data(paths: List[str], should_print=False):
 	return training_data
 
 
-'''
-Training data format:
-training_data[0] = first game
-training_data[0][1][0] = first move of first game
-training_data[0][2][0] = second move of first game
-training_data[0][0][1] = winner of first game
-training_data[0][1][0][0] = first line of first move of first game
-training_data[0][1][0][0][0] = first tile on first line of first move of first game
-
-After the training data has been shuffled training data loses the first index above and they're just random moves from any given game
-For example:
-training_data[0][0] = a move of a random game
-training_data[0][1] = winner of the game which the random move was taken from
-training_data[1][0] = another move of a random game
-and so on...
-'''
-
-
 def _save_data(file_path: str, data: List[TrainingDataStruct]) -> None:
-	'''
+	"""
 	Takes a list of pre-parsed training data, and stores it at the given path, for quicker access.
-	'''
+
+	:param file_path:
+	:return:
+	"""
 	file = open(file_path, 'wb')
 	pickle.dump(data, file)
 	file.close()
 
 
 def _load_data(file_path: str) -> List[TrainingDataStruct]:
-	'''
+	"""
 	Takes a file path, and returns the list of training data stored there.
-	'''
+
+	:param file_path:
+	:return:
+	"""
 	f = open(file_path, 'rb')
 	data = pickle.load(f)
 	f.close()
@@ -130,7 +117,7 @@ def _load_data(file_path: str) -> List[TrainingDataStruct]:
 
 
 def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int=None) -> List[TrainingDataStruct]:
-	'''
+	"""
 	If the given save path already exists, attempts to extract a list of training data from it.
 	Otherwise, the parse paths are used to generate data, which is stored at the given save path, and then returned.
 
@@ -141,7 +128,7 @@ def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int=
 	:param save_path: A path that may or may not contain pre-parsed training data; written to, in the latter case.
 	:param file_count: The amount of training data to return.
 	:return: Parsed training data, one way or another.
-	'''
+	"""
 	if isfile(save_path):
 		data = _load_data(save_path)
 	else:

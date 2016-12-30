@@ -28,11 +28,6 @@ COUNT_NEEDED = 5
 
 
 class Board:
-	"""
-	Access the PLAYER_CODES array to determine which code
-	should be used
-	"""
-
 	def __init__(self, board_struct: BoardStruct = None):
 		if board_struct is not None:
 			self._init_from_board_struct(board_struct)
