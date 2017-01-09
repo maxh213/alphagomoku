@@ -92,6 +92,11 @@ def process_training_data(paths: List[str], should_print=False):
 			training_data.append(path_data)
 	return training_data
 
+def split_list_into_n_lists(list, n):
+	return [list[i::n] for i in range(n)]
+
+def merge_lists_into_one_list(list_one, list_two):
+	return [j for i in zip(list_one, list_two) for j in i]
 
 def _save_data(file_path: str, data: List[TrainingDataStruct]) -> None:
 	"""
