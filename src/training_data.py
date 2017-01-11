@@ -15,21 +15,19 @@ TrainingDataStruct = Tuple[List[BoardStruct], int]
 All files from freestyle 1 and 3, and only the first 500 from freestyle 2.
 _TEST_DATA_FILES uses the rest of freestyle2.
 """
-_TRAINING_DATA_FILES = glob.glob("../resources/training/freestyle/fast_training_data/*.psq")[:3700]
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/2016-12-29/*")[:2000]
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle1/*.psq")
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle3/*.psq")
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/new_training_data/*.psq")[:2467] #2467 * 2 is the number of files in the folder
+_TRAINING_DATA_FILES = glob.glob("../resources/training/2016-12-29/*")[:7500]
+_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle1/*.psq")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle3/*.psq")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/new_training_data/*.psq")[:2467] #2467 * 2 is the number of files in the folder
 
 
 """
 All but the first 500 files from freestyle 2.
 _TRAINING_DATA_FILES uses the other 500.
 """
-_TEST_DATA_FILES = glob.glob("../resources/training/freestyle/fast_training_data/*.psq")[-2500:]
-#_TEST_DATA_FILES += glob.glob("../resources/training/2016-12-29/*")[-500:]
-#_TEST_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle2/*.psq")
-#_TEST_DATA_FILES += glob.glob("../resources/training/freestyle/new_training_data/*.psq")[-2467:]
+_TEST_DATA_FILES = glob.glob("../resources/training/2016-12-29/*")[:2500]
+_TEST_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle2/*.psq")
+_TEST_DATA_FILES += glob.glob("../resources/training/freestyle/new_training_data/*.psq")[2467:]
 
 _TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
 _TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
@@ -107,9 +105,19 @@ def _save_data(file_path: str, data: List[TrainingDataStruct]) -> None:
 	:param file_path:
 	:return:
 	"""
-	file = open(file_path, 'wb')
+	lists = split_list_into_n_lists(data, 2)
+	data1 = lists[0]
+	data2 = lists[1]
+	file1 = open(file_path, 'wb')
+	pickle.dump(data1, file1)
+	file1.close()
+	file2 = open(file_path + "2", 'wb')
+	pickle.dump(data2, file2)
+	file2.close()
+
+	"""file = open(file_path, 'wb')
 	pickle.dump(data, file)
-	file.close()
+	file.close()"""
 
 
 def _load_data(file_path: str) -> List[TrainingDataStruct]:
@@ -119,9 +127,13 @@ def _load_data(file_path: str) -> List[TrainingDataStruct]:
 	:param file_path:
 	:return:
 	"""
-	f = open(file_path, 'rb')
-	data = pickle.load(f)
-	f.close()
+	f1 = open(file_path, 'rb')
+	data1 = pickle.load(f1)
+	f1.close()
+	f2 = open(file_path + "2", 'rb')
+	data2 = pickle.load(f2)
+	f2.close()
+	data = merge_lists_into_one_list(data1, data2)
 	return data
 
 
