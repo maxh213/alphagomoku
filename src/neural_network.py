@@ -25,7 +25,7 @@ DEBUG_PRINT_SIZE = 5
 	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
 	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
 '''
-NUMBER_OF_BATCHES = 100
+NUMBER_OF_BATCHES = 250
 NUMBER_OF_BATCHES_TO_TRAIN_ON = NUMBER_OF_BATCHES
 #This is how many times each batch will be trained on
 TRAINING_ITERATIONS = 1
@@ -251,10 +251,10 @@ def init_nn_variables_and_placeholders():
 
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
-	print("Loading training data...")
+	print("Loading training and testing data...")
 	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
-	print("Training data loaded!")
+	print("Training and testing data loaded!")
 
 	training_input, heuristic, keep_prob, training_output, global_step = init_nn_variables_and_placeholders()
 
@@ -335,22 +335,20 @@ def get_number_in_a_row_heuristic_for_move(move):
 
 	for f, m in [
 		(count_in_a_row_horizontally, move),
-		#Ignoring diagonally until the method can be made more efficient and completed
-		#(count_in_a_row_diagonally, move),
+		(count_in_a_row_diagonally, move),
 		(count_in_a_row_horizontally, rotated_move)
 	]:
 		for p in range(2):
 			tplayer_count = f(m, (p * 2) - 1)
 			player_counts[p] = [x + y for x, y in zip(player_counts[p], tplayer_count)]
 	
-	
 	sum_heuristic = 0
 	sum_heuristic -= player_counts[0][0]
 	sum_heuristic -= player_counts[0][1] * 2
-	sum_heuristic -= player_counts[0][2] * 3
+	sum_heuristic -= player_counts[0][2] * 10
 	sum_heuristic += player_counts[1][0]
 	sum_heuristic += player_counts[1][1] * 2
-	sum_heuristic += player_counts[1][2] * 3
+	sum_heuristic += player_counts[1][2] * 10
 	return sum_heuristic
 	#return player_counts[0] + player_counts[1]
 
@@ -400,62 +398,17 @@ def count_in_a_row_diagonally(move, player):
 	counts = [0]*3
 	move_array = numpy.asarray(move)
 
-	#Going through an array diagonally basically only iterates through half of it so we rotate the array and do it twice
-	for i in range(len(move_array)):
-		in_a_row_count = 0
-		for cell in move_array.diagonal(i):
-			if player == cell:
-				in_a_row_count += 1
-			else:
-				if 2 <= in_a_row_count <= 4:
-					counts[in_a_row_count - 2] += 1
-				in_a_row_count = 0
-		if 2 <= in_a_row_count <= 4:
-			counts[in_a_row_count - 2] += 1
+	'''
+		I referenced code from this stack-overflow answer in order to get a list of all the diagonals in a 2D numpy array
+		http://stackoverflow.com/a/6313414/4204337
+	'''
+	diagonals = [move_array[::-1,:].diagonal(i) for i in range(-move_array.shape[0]+1,move_array.shape[1])]
+	#get diagonals from the other direction
+	diagonals.extend(move_array.diagonal(i) for i in range(move_array.shape[1]-1,-move_array.shape[0],-1))
 
-	#Going through an array diagonally basically only iterates through half of it so we flip the array upside down and do it twice
-	rotated_move_array = numpy.flipud(move_array)
-	for i in range(len(rotated_move_array)):
-		in_a_row_count = 0
-		for cell in rotated_move_array.diagonal(i)[::-1]:
-			if player == cell:
-				in_a_row_count += 1
-			else:
-				if 2 <= in_a_row_count <= 4:
-					counts[in_a_row_count - 2] += 1
-				in_a_row_count = 0
-		if 2 <= in_a_row_count <= 4:
-			counts[in_a_row_count - 2] += 1
+	all_diagonals_in_move = [n.tolist() for n in diagonals]
 
-	rotated_move_array = numpy.rot90(rotated_move_array, 2)
-	for i in range(len(rotated_move_array)):
-		in_a_row_count = 0
-		if i != 0:
-			for cell in rotated_move_array.diagonal(i)[::-1]:
-				if player == cell:
-					in_a_row_count += 1
-				else:
-					if 2 <= in_a_row_count <= 4:
-						counts[in_a_row_count - 2] += 1
-					in_a_row_count = 0
-			if 2 <= in_a_row_count <= 4:
-				counts[in_a_row_count - 2] += 1
-
-	rotated_move_array = numpy.rot90(rotated_move_array, 1)
-	for i in range(len(rotated_move_array)):
-		in_a_row_count = 0
-		if i != 0:
-			for cell in rotated_move_array.diagonal(i)[::-1]:
-				if player == cell:
-					in_a_row_count += 1
-				else:
-					if 2 <= in_a_row_count <= 4:
-						counts[in_a_row_count - 2] += 1
-					in_a_row_count = 0
-			if 2 <= in_a_row_count <= 4:
-				counts[in_a_row_count - 2] += 1
-
-	return counts
+	return count_in_a_row_horizontally(all_diagonals_in_move, player)
 
 def get_winner(output):
 	max_value = max(output)

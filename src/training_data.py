@@ -11,18 +11,10 @@ Training data is represented as a list of moves/boards, and the winner for that 
 """
 TrainingDataStruct = Tuple[List[BoardStruct], int]
 
-"""
-All files from freestyle 1 and 3, and only the first 500 from freestyle 2.
-_TEST_DATA_FILES uses the rest of freestyle2.
-"""
 _TRAINING_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[:3700]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[:2800]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[:4000]
 
-"""
-All but the first 500 files from freestyle 2.
-_TRAINING_DATA_FILES uses the other 500.
-"""
 _TEST_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[-2500:]
 _TEST_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[-1400:]
 _TEST_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[-2000:]
