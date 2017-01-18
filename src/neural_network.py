@@ -331,12 +331,9 @@ def get_number_in_a_row_heuristic_for_move(move):
 
 	player_counts = [[0] * 3 for _ in range(2)]
 
-	rotated_move = [[i[j] for i in move] for j in range(len(move[0]))]
-
 	for f, m in [
-		(count_in_a_row_horizontally, move),
+		(count_in_a_row_horizontally_and_vertically, move),
 		(count_in_a_row_diagonally, move),
-		(count_in_a_row_horizontally, rotated_move)
 	]:
 		for p in range(2):
 			tplayer_count = f(m, (p * 2) - 1)
@@ -391,6 +388,84 @@ def count_in_a_row_horizontally(move, player: int) -> List[int]:
 			'''
 			if (row[(cell_index)-in_a_row_count] == 0):
 				counts[in_a_row_count - 2] += 1
+
+	return counts
+
+def count_in_a_row_horizontally_and_vertically(move, player: int) -> List[int]:
+	rotated_move = [[i[j] for i in move] for j in range(len(move[0]))]
+	counts = [0]*3
+	for row, column in zip(move, rotated_move):
+		in_a_row_count_horizontal, in_a_row_count_vertical = 0
+		for cell_index_horizontal, cell_index_vertical in zip(range(len(row), range(len(column)))):
+			if (player == row[cell_index_horizontal]):
+				in_a_row_count_horizontal += 1
+			else:
+				if 2 <= in_a_row_count_horizontal <= 4:
+					'''
+					The below code is used for testing, i'm commiting it currently because I want to be 100% it works and i'm not yet
+					print(row)
+					print("cell_index: "+ str(cell_index))
+					print("row count: " + str(in_a_row_count))
+					print(row[(cell_index-1)-in_a_row_count])
+					print((cell_index-1)-in_a_row_count)
+					print(row[cell_index-1])
+					print(row[cell_index])
+
+					test this with the command:
+					python3 -c 'import neural_network; print(neural_network.count_in_a_row_horizontally([[1,1,0,1,1], [0,0,0,0,0]], 1))'
+					'''
+					if (cell_index_horizontal-1)-in_a_row_count_horizontal < 0:
+						if (row[cell_index_horizontal] == 0):
+							counts[in_a_row_count_horizontal - 2] += 1
+					elif (row[(cell_index_horizontal-1)-in_a_row_count_horizontal] == 0) and (row[cell_index_horizontal] == 0):
+						counts[in_a_row_count_horizontal - 2] += 1
+				in_a_row_count_horizontal = 0
+				if (player == row[cell_index_vertical]):
+					in_a_row_count_vertical += 1
+				else:
+					if 2 <= in_a_row_count_vertical <= 4:
+						'''
+						The below code is used for testing, i'm commiting it currently because I want to be 100% it works and i'm not yet
+						print(row)
+						print("cell_index: "+ str(cell_index))
+						print("row count: " + str(in_a_row_count))
+						print(row[(cell_index-1)-in_a_row_count])
+						print((cell_index-1)-in_a_row_count)
+						print(row[cell_index-1])
+						print(row[cell_index])
+
+						test this with the command:
+						python3 -c 'import neural_network; print(neural_network.count_in_a_row_horizontally([[1,1,0,1,1], [0,0,0,0,0]], 1))'
+						'''
+						if (cell_index_vertical - 1) - in_a_row_count_vertical < 0:
+							if (row[cell_index_vertical] == 0):
+								counts[in_a_row_count_vertical - 2] += 1
+						elif (row[(cell_index_vertical - 1) - in_a_row_count_vertical] == 0) and (
+							row[cell_index_vertical] == 0):
+							counts[in_a_row_count_vertical - 2] += 1
+							in_a_row_count_vertical = 0
+		if 2 <= in_a_row_count_horizontal <= 4:
+			'''
+			print(row)
+			print("cell_index: "+ str(cell_index))
+			print("row count: " + str(in_a_row_count))
+			print(row[(cell_index)-in_a_row_count])
+			print((cell_index)-in_a_row_count)
+			print(row[cell_index])
+			'''
+			if (row[(cell_index_horizontal)-in_a_row_count_horizontal] == 0):
+				counts[in_a_row_count_horizontal - 2] += 1
+		if 2 <= in_a_row_count_vertical <= 4:
+			'''
+			print(row)
+			print("cell_index: "+ str(cell_index))
+			print("row count: " + str(in_a_row_count))
+			print(row[(cell_index)-in_a_row_count])
+			print((cell_index)-in_a_row_count)
+			print(row[cell_index])
+			'''
+			if (row[(cell_index_vertical) - in_a_row_count_vertical] == 0):
+				counts[in_a_row_count_vertical - 2] += 1
 
 	return counts
 
