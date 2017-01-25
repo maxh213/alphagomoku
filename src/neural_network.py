@@ -22,7 +22,7 @@ DEBUG_PRINT_SIZE = 5
 	This is because NUMBER_OF_BATCHES is how many times the total training/testing data is split into separate batches,
 	so the lower the number the larger the batch amount.
 
-	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
+	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch.
 	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
 '''
 NUMBER_OF_BATCHES = 250
@@ -54,7 +54,7 @@ CONV_WEIGHT_1_FEATURES = 3
 CONV_WEIGHT_2_FEATURES = 3
 #POOL MULTPLICATION SIZE = 5 BECAUSE IT REPRESENTS BOARD_SIZE / 4 CAUSE WE DO 2x2 POOLING
 POOL_MULTIPLICATION_SIZE = 5
-CONV_2_OUTPUT_SIZE = POOL_MULTIPLICATION_SIZE * POOL_MULTIPLICATION_SIZE * CONV_WEIGHT_2_FEATURES 
+CONV_2_OUTPUT_SIZE = POOL_MULTIPLICATION_SIZE * POOL_MULTIPLICATION_SIZE * CONV_WEIGHT_2_FEATURES
 FC_LAYER_1_WEIGHTS = CONV_WEIGHT_2_FEATURES * 16
 STRIDE_SIZE = 1 #this probably won't need changing
 COLOUR_CHANNELS_USED = 1 #We are not feeding our network a colour image so this is always 1
@@ -193,7 +193,7 @@ def evaluate_network_layers(tf_output, training_output, global_step):
 	train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy, global_step=global_step)
 
 	correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(tf_output),1), tf.argmax(training_output,1))
-	
+
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 	return cross_entropy, train_step, accuracy
@@ -249,6 +249,22 @@ def init_nn_variables_and_placeholders():
 	global_step = tf.Variable(0, trainable=False)
 	return training_input, heuristic, keep_prob, training_output, global_step
 
+
+def compare_data(data):
+	without_dupes = [];
+	data_count = len(data)
+	print("Data count: %s" % (data_count))
+	for d in data:
+		if d not in without_dupes:
+			without_dupes.append(d)
+	without_dupes_count = len(without_dupes)
+	print("without_dupes count: %s" % (without_dupes_count))
+	if data_count > without_dupes_count:
+		no_of_dupes = data_count - without_dupes_count
+		print("Data has %s duplicates!" % (no_of_dupes))
+		print("This is %s%% of the data." % ((no_of_dupes / data_count) * 100))
+
+
 def neural_network_train(should_use_save_data):
 	print("Convolutional Neural Network training beginning...")
 	print("Loading training and testing data...")
@@ -256,12 +272,26 @@ def neural_network_train(should_use_save_data):
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 	print("Training and testing data loaded!")
 
+	#
+	# For debugging
+	# print("-----")
+	# print(training_data[0])
+	print("Training data has %s files" % (len(training_data)))
+	print("Examining training data for duplicates...")
+	compare_data(training_data)
+	print("Testing data has %s files" % (len(testing_data)))
+	print("Examining testing data for duplicates...")
+	compare_data(testing_data)
+	# print(testing_data[0])
+	# print("-----")
+	#
+
 	training_input, heuristic, keep_prob, training_output, global_step = init_nn_variables_and_placeholders()
 
 	tf_output, convolution1, convolution2, pool2 = network_layers(training_input, heuristic, keep_prob)
 
 	cross_entropy, train_step, accuracy = evaluate_network_layers(tf_output, training_output, global_step)
-	
+
 	sess = init_sess_and_variables()
 
 	restore_session_if_needed(sess, should_use_save_data)
@@ -270,10 +300,10 @@ def neural_network_train(should_use_save_data):
 	train_input_batch, train_output_batch, train_heuristics = convert_training_to_batch(training_data, NUMBER_OF_BATCHES)
 	test_input_batch, test_output_batch, test_heuristics = convert_training_to_batch(testing_data, NUMBER_OF_BATCHES)
 	feed_dict_train, feed_dict_train_keep_all, feed_dict_test = init_feed_dict(train_input_batch, train_output_batch, train_heuristics, training_input, test_input_batch, test_output_batch, test_heuristics, training_output, keep_prob, heuristic)
-	
+
 	print("Network training starting!")
 	for j in range(TRAINING_ITERATIONS):
-		for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):		
+		for i in range(NUMBER_OF_BATCHES_TO_TRAIN_ON):
 			print("-")
 			print("Batch number: " + str(i+1) + "/" + str(NUMBER_OF_BATCHES_TO_TRAIN_ON) + " Training step: " + str(j+1) + "/" + str(TRAINING_ITERATIONS) +  " Global step: " + str(sess.run(global_step)))
 			entropy, _, train_step_accuracy, h, to, c1, c2, p2 = sess.run([cross_entropy,train_step, accuracy, heuristic, training_output, convolution1, convolution2, pool2], feed_dict=feed_dict_train[i])
@@ -287,7 +317,7 @@ def neural_network_train(should_use_save_data):
 			#print("--")
 			#print(p2[0])
 			train_input_batch[i], train_output_batch[i], train_heuristics[i] = shuffle_lists_together(train_input_batch[i], train_output_batch[i], train_heuristics[i])
-			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY, heuristic: train_heuristics[i]}		
+			feed_dict_train[i]={training_input: train_input_batch[i], training_output: train_output_batch[i], keep_prob: KEEP_SOME_PROBABILITY, heuristic: train_heuristics[i]}
 		if j % 10 == 0:
 			print("Testing Accuracy on random testing batch: " + str(sess.run(accuracy, feed_dict=random.choice(feed_dict_test))))
 
@@ -321,9 +351,9 @@ def print_accuracy_percentage(training_accuracy, testing_accuracy):
 def get_number_in_a_row_heuristic_for_move(move):
 	"""
 		return [
-			# Player -1 
+			# Player -1
 				Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row,
-			# Player 1 
+			# Player 1
 				Amount of 2 in a row, Amount of 3 in a row, Amount of 4 in a row
 			]
 		]
@@ -338,7 +368,7 @@ def get_number_in_a_row_heuristic_for_move(move):
 		for p in range(2):
 			tplayer_count = f(m, (p * 2) - 1)
 			player_counts[p] = [x + y for x, y in zip(player_counts[p], tplayer_count)]
-	
+
 	sum_heuristic = 0
 	sum_heuristic -= player_counts[0][0]
 	sum_heuristic -= player_counts[0][1] * 2
