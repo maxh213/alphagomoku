@@ -1,23 +1,18 @@
 import re
-import sys
-from typing import Callable
-from gomoku_app.gomoku import Gomoku
 
-class String_Parser:
 
+class StringParser:
 	def __init__(self):
 		self.game = None
 		self.user_input = None
-
 
 	"""
 		"Brain" refers to the Neural Network/application.
 		"Manager" refers to the third-party brokering the games.
 	"""
 
-
-	def read(self, input: str) -> (str):
-		if input == "START 20":
+	def read(self, command: str) -> None:
+		if command == "START 20":
 			"""
 			When it receives this command (99% of the time it will be 20, but not always),
 			the brain will create a new board of whatever size is defined in the command,
@@ -25,19 +20,16 @@ class String_Parser:
 			If the brain doesn't like the size, respond with "ERROR". There can be a message
 			after that. The manager can try other sizes, or it can display a message to the
 			user. Respond OK if the board is initialized successfully.
-			The brain will respond with "OK" if the board initiatites correctly.
+			The brain will respond with "OK" if the board initialises correctly.
 			The brain will respond with "ERROR" (and an optional message) if it does not.
 			"""
-			if self.game != None:
+			if self.game is not None:
 				print("ERROR")
-				return "ERROR"
 			print("OK")
-			self.game = Gomoku()
-			return "OK"
-		if re.search('START', input):
+		# self.game = Gomoku()
+		if re.search('START', command):
 			print("ERROR")
-			return "ERROR"
-		if input == "BEGIN":
+		if command == "BEGIN":
 			"""
 			After receiving a START command and initiating the board, "BEGIN" states that the
 			brain gets the first move.
@@ -55,8 +47,7 @@ class String_Parser:
 			"""
 			"""self.game.make_move(10,12)"""
 			print("10,12")
-			return "10,12"
-		if re.search('TURN\s', input):
+		if re.search('TURN\s', command):
 			"""
 			X and Y represent the X and Y coordinates of the opponent's move.
 			The brain will respond with the X and Y coordinates of its move.
@@ -77,29 +68,26 @@ class String_Parser:
 				Try-Catch-like thing because someone's gonna say TURN hello,goodbye or some garbage.
 			"""
 			try:
-				two_digit_x_coord = re.search('\s[0-9][0-9],', input)
-				two_digit_y_coord = re.search(',[0-9][0-9]', input)
-				opponent_x_coord = None
-				opponent_y_coord = None
+				two_digit_x_coord = re.search('\s[0-9][0-9],', command)
+				two_digit_y_coord = re.search(',[0-9][0-9]', command)
 				if two_digit_y_coord:
-					opponent_y_coord = (input[len(input) - 2]) + (input[len(input) - 1])
+					opponent_y_coord = (command[len(command) - 2]) + (command[len(command) - 1])
 					if two_digit_x_coord:
-						opponent_x_coord = (input[len(input) - 5]) + (input[len(input) - 4])
+						opponent_x_coord = (command[len(command) - 5]) + (command[len(command) - 4])
 					else:
-						opponent_x_coord = (input[len(input) - 4])
+						opponent_x_coord = (command[len(command) - 4])
 				else:
-					opponent_y_coord = (input[len(input) - 1])
+					opponent_y_coord = (command[len(command) - 1])
 					if two_digit_x_coord:
-						opponent_x_coord = (input[len(input) - 4]) + (input[len(input) - 3])
+						opponent_x_coord = (command[len(command) - 4]) + (command[len(command) - 3])
 					else:
-						opponent_x_coord = (input[len(input) - 3])
-				print (str(opponent_x_coord) + "," + str(opponent_y_coord))
+						opponent_x_coord = (command[len(command) - 3])
+				print(str(opponent_x_coord) + "," + str(opponent_y_coord))
 				"""self.game.make_move(opponent_x_coord, opponent_y_coord, 0)"""
 			except RuntimeError:
 				print("ERROR")
-				return "ERROR"
 
-		if input == "BOARD":
+		if command == "BOARD":
 			"""
 			"BOARD" creates a new match, but with the potential to set the board to however the
 			manager wishes it to be. After receiving the command, new lines will be of format
@@ -116,33 +104,33 @@ class String_Parser:
 			(This assumes the brain is player 2 I assume)
 			PS: Moves aren't necessarily sent in the order they were played in, unless using Renju rules.
 			"""
-		if input == "INFO [key] [value]":
-				"""
-			"INFO" sends the brain some information about the game so everyone knows the rules.
-			For instance, "INTO timeout_match 300000" sets the time limit for the whole match
-			to be 300,000 milliseconds, or about 5 minutes.
-			Full key of INFO commands:
-			timeout_turn  - time limit for each move (milliseconds, 0=play as fast as possible)
-			timeout_match - time limit of a whole match (milliseconds, 0=no limit)
-			max_memory    - memory limit (bytes, 0=no limit)
-			time_left     - remaining time limit of a whole match (milliseconds)
-			game_type     - 0=opponent is human, 1=opponent is brain, 2=tournament, 3=network tournament
-			rule          - bitmask or sum of 1=exactly five in a row win, 2=continuous game, 4=renju
-			evaluate      - coordinates X,Y representing current position of the mouse cursor
-			folder        - folder for persistent files [Used to determine a folder for persistent data.
-							Because this folder is common for all the brains, the brain must create
-							its own subfolder with a name exactly matching the brain's name. If the manager
-							never sends a folder command, then the brain cannot save permenant files.]
-			Manager:
-				INFO timeout_milliseconds 300000
-			Brain:
-				<no answer expected, just store the value somewhere>
+		if command == "INFO [key] [value]":
 			"""
-		if input == "END":
+		"INFO" sends the brain some information about the game so everyone knows the rules.
+		For instance, "INTO timeout_match 300000" sets the time limit for the whole match
+		to be 300,000 milliseconds, or about 5 minutes.
+		Full key of INFO commands:
+		timeout_turn  - time limit for each move (milliseconds, 0=play as fast as possible)
+		timeout_match - time limit of a whole match (milliseconds, 0=no limit)
+		max_memory    - memory limit (bytes, 0=no limit)
+		time_left     - remaining time limit of a whole match (milliseconds)
+		game_type     - 0=opponent is human, 1=opponent is brain, 2=tournament, 3=network tournament
+		rule          - bit-mask or sum of 1=exactly five in a row win, 2=continuous game, 4=renju
+		evaluate      - coordinates X,Y representing current position of the mouse cursor
+		folder        - folder for persistent files [Used to determine a folder for persistent data.
+						Because this folder is common for all the brains, the brain must create
+						its own sub-folder with a name exactly matching the brain's name. If the manager
+						never sends a folder command, then the brain cannot save permanent files.]
+		Manager:
+			INFO timeout_milliseconds 300000
+		Brain:
+			<no answer expected, just store the value somewhere>
+		"""
+		if command == "END":
 			"""
 			The brain is not expected to answer to this instruction, but rather to delete all of its temporary files.
 			"""
-		if input == "ABOUT":
+		if command == "ABOUT":
 			"""
 			In the format key="value", the brain replies with some details about itself.
 			Manager:
@@ -150,14 +138,11 @@ class String_Parser:
 			Brain:
 				name="GroupProjectNN", version="1.0", author="#Banterbury", country="UK"
 			"""
-			print("name=\"GroupProjectNN\", version=\"0.1\", author=\"Banterbury\", country=\"UK\"")
-			return("name=\"GroupProjectNN\", version=\"0.1\", author=\"Banterbury\", country=\"UK\"")
+			print("name=\"GroupProjectNN\", version=\"0.1\", author=\"Alpha Gomoku\", country=\"UK\"")
 
-def test():
-	while(True):
-		user_input = input("")
-		parser = String_Parser()
-		parser.read(user_input)
 
 if __name__ == "__main__":
-	test()
+	parser = StringParser()
+	while True:
+		user_input = input("")
+		parser.read(user_input)
