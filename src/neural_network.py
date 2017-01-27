@@ -266,25 +266,21 @@ def compare_data(data):
 
 
 def neural_network_train(should_use_save_data):
+	duplicate_testing = False # True if want to test for duplicates
 	print("Convolutional Neural Network training beginning...")
 	print("Loading training and testing data...")
 	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 	print("Training and testing data loaded!")
 
-	#
-	# For debugging
-	# print("-----")
-	# print(training_data[0])
-	print("Training data has %s files" % (len(training_data)))
-	print("Examining training data for duplicates...")
-	compare_data(training_data)
-	print("Testing data has %s files" % (len(testing_data)))
-	print("Examining testing data for duplicates...")
-	compare_data(testing_data)
-	# print(testing_data[0])
-	# print("-----")
-	#
+	if(duplicate_testing):
+		print("Training data has %s files" % (len(training_data)))
+		print("Examining training data for duplicates...")
+		compare_data(training_data)
+		print("Testing data has %s files" % (len(testing_data)))
+		print("Examining testing data for duplicates...")
+		compare_data(testing_data)
+
 
 	training_input, heuristic, keep_prob, training_output, global_step = init_nn_variables_and_placeholders()
 
