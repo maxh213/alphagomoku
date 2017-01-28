@@ -1,5 +1,4 @@
 from sys import stdout
-from copy import deepcopy
 
 class Board:
 
@@ -13,9 +12,13 @@ class Board:
 	CHAR_NEUTRAL = '-'
 	PLAYER_CODES = [CHAR_PLAYER_1, CHAR_NEUTRAL, CHAR_PLAYER_2]
 
+
+
+	"""Access the PLAYER_CODES array to determine which code
+	should be used"""
+
 	def __init__(self):
 		self.board = [[0 for j in range(Board.BOARD_SIZE)] for i in range(Board.BOARD_SIZE)]
-		self.possibleMoves = deepcopy(self.board)
 		self.next_player = -1
 
 	def _decide_winner_line(self, x, y, dx, dy):
@@ -62,10 +65,3 @@ class Board:
 	def convert_player_char(player):
 		assert -1 <= player <= 1, "Invalid board cell contents"
 		return Board.PLAYER_CODES[player + 1]
-
-	def remove_move(self, x, y):
-		self.possibleMoves[x][y] = "X"
-		"""del(self.possibleMoves[x][y])"""
-		print(self.possibleMoves)
-
-

@@ -3,27 +3,38 @@ import numpy as np
 from processTrainingData import processTrainingData
 from getTrainingDataFiles import getFiles
 
-SIZE_OF_BOARD = 15
+#TODO: get this from the board file 
+BOARD_SIZE = 20
+
+
+'''
+Training data format:
+trainingData[0] = first game
+trainingData[0][1][0] = first move of first game
+trainingData[0][1][1] = winner of first game
+trainingData[0][1][0][0] = first line of first move of first game
+''' 
+def getTrainingData():
+	files = getFiles()
+	files = files[:1] #for dev purposes just use the first however many
+	return processTrainingData(files)
 
 def tensorMain():
-	files = getFiles()
-	files = files[:20] #for dev purposes just use the first however many
-	trainingData = processTrainingData(files)
-	#print(trainingData)
+	trainingData = getTrainingData()
+	move = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
+	nextMove = tf.placeholder("float", [len(trainingData[0][1][0]),len(trainingData[0][1][0][0])])
+	gameWinner = tf.placeholder("float", 1)
 
-	#Init NN variables
-	##trainingGamePlaceholder = tf.placeholder("
-	#this gets a list of random numbers between 0 - 1
-	##randomStartingWeights = np.random.randint(2, size=SIZE_OF_BOARD)
-
-
-	##LOGIC:
-	#WHEN LEARN OFF THE NEXT MOVE MADE BY THE WINNING PLAYER
-
-	#NEEDS:
-	#THE GOMOKU APP TO FEED IT A LIST OF PLAYABLE MOVES!
-	#Make a method which takes a board at any given state and returns any playable moves as a co-ordinate
-	#(moves which haven't already been played)
+	with tf.Session() as session:
+		tfMove = session.run(move, feed_dict={move: trainingData[0][1][0]})
+		tfNextMove = session.run(nextMove, feed_dict={nextMove: trainingData[0][2][0]})
+		tfGameWinner = session.run(gameWinner, feed_dict={gameWinner: [trainingData[0][1][1]]})
+		print(tfMove)
+		print("----")
+		print(tfNextMove)
+		print("----")
+		print(tfGameWinner)
+		#Next step: Make a loop which will take in all the training data and learn
 
 if __name__ == '__main__':
         tensorMain()
