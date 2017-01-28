@@ -50,7 +50,6 @@ def simulate(moves, should_print=False):
 	p = -1
 	for x, y in moves:
 		assert board.board[x][y] == 0
-		board.remove_move(x, y)
 		board.board[x][y] = p
 		all_boards.append(deepcopy(board.board))
 		if should_print:
@@ -61,17 +60,24 @@ def simulate(moves, should_print=False):
 		p = -p
 	raise ValueError('Winner still not determined after all moves have been made.')
 
-
-def main():
-	data = []
-	for path in argv[1:]:
+def processTrainingData(paths):
+	trainingData = []
+	for path in paths:
+		pathData = []
 		for filename in expand_dirs(path):
 			print('processing file', filename)
 			moves = parse_training_file(filename)
-			winner, boards = simulate(moves, should_print=True)
-			data.extend((b, winner) for b in boards)
-		print(data)
-
+			try:
+				winner, boards = simulate(moves, should_print=False)
+				pathData.extend((b, winner) for b in boards)
+			except ValueError as error:
+				print ("Caught the following error for file: ", filename, " Error: ", error)
+		if pathData == []:
+			#TODO: make it so if the winner is not determined this message changes
+			print("Can't read/find file ", path)
+		else:
+			trainingData.append(pathData)
+	return trainingData
 
 if __name__ == '__main__':
-	main()
+	processTrainingData(argv[1:])
