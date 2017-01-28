@@ -3,9 +3,14 @@ import math
 from training_data import process_training_data, get_files, get_test_files
 
 '''
--make the numbers make sense mathematically, and make it compile with said numbers
+-make the number make sense mathematically, and make it compile with said numbers
+-fix the inputs so they make sense
 -figure out trunticated normal should we use it???
--figure out what our output data should look like when we feed to to tensorflow.
+
+- Do we need 0 padding for the windows?
+- Which version of pooling do we need, seeing as max pooling doesn't sit with our input data
+	- It looks like average pooling might help!
+	- Actually no, because this is just going to return the player with the most moves in a patch
 '''
 
 #TODO: this should be got from the board file
@@ -16,8 +21,8 @@ LEARNING_RATE = 0.1
 #The rate at which neurons are kept after learning
 KEEP_PROBABILITY = 0.5
 
-TRAINING_DATA_FILE_COUNT = 500
-TEST_DATA_FILE_COUNT = 50
+TRAINING_DATA_FILE_COUNT = 25
+TEST_DATA_FILE_COUNT = 2
 
 # THIS BELONGS IN training_data.py
 def count_moves(data):
@@ -56,21 +61,22 @@ def get_bias_variable(shape):
 	#return tf.Variable(initial)
 
 def conv2d(x, W):
-  return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+	# [(Batch) 1, x, y, (Channels) 1]
+	# x was 2, y was 4
+	# Changed to match size of patch / window (5, 5)
+  	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
 
-def max_pool_2x2(x):
+def avg_pool_2x2(x):
 	#A 4-D Tensor with shape [batch, height, width, channels]
 	#ksize: A list of ints that has length >= 4. The size of the window for each dimension of the input tensor.
 	#strides: A list of ints that has length >= 4. The stride of the sliding window for each dimension of the input tensor.
-
-	'''
-	TODO:We should have a [1, 2, 2, 1] ksize/stride, I set it as [1,1,1,1] before because I thought it didn't matter because we hot footed it.
-	However it gets reshaped later to 20x20.
-	'''
-  return tf.nn.max_pool(x, ksize=[1, 1, 1, 1], 
-  		strides=[1, 1, 1, 1], padding='SAME')  
+  return tf.nn.avg_pool(x, ksize=[1, 2, 2, 1],
+  		strides=[1, 2, 2, 1], padding='SAME')
 
 
+
+
+#ARGMAX SHOULD JUST BE LOOKING FOR 111 OR 000
 #even_count = -1 winner
 #odd_count = 1 winner
 def get_winner_from_output(output, print_counts):
@@ -103,101 +109,55 @@ def conv_network():
 	testing_data = get_test_data()
 
 	# Set up placeholders for input and output
-	training_input = tf.placeholder(tf.float32, [BOARD_SIZE * BOARD_SIZE])
-	training_output = tf.placeholder(tf.float32, [BOARD_SIZE * BOARD_SIZE])
+	training_input = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
+	training_output = tf.placeholder(tf.float32, [BOARD_SIZE, BOARD_SIZE])
 
 	# Initialise weights and biases
 	#first layer
 	#looking at a 5x5 grid at each point in the board_size
 	#1 is the number of input channels so this shouldn't change
-	conv_weights1 = get_weight_variable([5, 5, 1, 20])
+	conv_weights1 = get_weight_variable([5, 5, 1, 32])
 	#bias is always the same as the last in the shape above
-	conv_bias1 = get_bias_variable([20])
+	conv_bias1 = get_bias_variable([32])
 
-	'''
-	TODO:
-	I assumed below previously that we'd only need one colour channel but should we need more?
-	The MNIST tutorial has two colours essentially, black and white
-	but a "pixel" on our board has 3 states:
-		-person to go next has made a move there
-		-person to get after has made a move there
-		-no one has made a move there
-
-	It might help?
-	'''
 	#-1 and 1 are meant to be the colour channels of the image so no need to change them
 	#20 by 20 is the boardsize
 	input_image = tf.reshape(training_input, [-1,20,20,1])
 
 
 	convolution1 = tf.nn.relu(conv2d(input_image, conv_weights1) + conv_bias1)
-	pool1 = max_pool_2x2(convolution1)
+	pool1 = avg_pool_2x2(convolution1)
 
 	#second layer
-	#here we'll have 40 features for each 5x5 patch and 20 input channels
-	conv_weights2 = get_weight_variable([5, 5, 20, 40])
-	conv_bias2 = get_bias_variable([40])
+	#here we'll have 40 features for each 5x5 patch and 20 input channels (one for each place on the board)
+	#not 100% on this
+	conv_weights2 = get_weight_variable([5, 5, 32, 64])
+	conv_bias2 = get_bias_variable([64])
 
 	convolution2 = tf.nn.relu(conv2d(pool1, conv_weights2) + conv_bias2)
-	pool2 = max_pool_2x2(convolution2)
+	pool2 = avg_pool_2x2(convolution2)
 
-	fully_connected_weights1 = get_weight_variable([5 * 5 * 40, 1000])
-	fully_connected_bias1 = get_bias_variable([1000])
+	fully_connected_weights1 = get_weight_variable([7 * 7 * 64, 1024])
+	fully_connected_bias1 = get_bias_variable([1024])
 
-	'''
-	TODO:
-	--Tutorial's
-	>>> 7*7*64
-	3136
-	>>> 28**2
-	784
-	>>> 3136/784
-	4.0
-	--Our's
-	>>> 20**2
-	400
-	>>> 5*5*40
-	1000
-	>>> 1000/400
-	2.5
-
-	--Should ours match?
-	'''
-	pool2_flat = tf.reshape(pool2, [-1, 5 * 5 * 40])
+	pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
 	fully_connected_output1 = tf.nn.relu(tf.matmul(pool2_flat, fully_connected_weights1) + fully_connected_bias1)
 
 	#get rid of some neurons
 	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
 
-	'''
-	TODO:
-	THE 25 BELOW SHOULD BE A 2 FOR US (-1, 1) BECAUSE IT'S 10 IN THE TUTORIAL (BECAUSE NUMBERS 0-9)
-
-	THE 1000 BELOW (1024 IN TUTORIAL) should match up with our 5*5 above (7*7 in tutorial):
-	>>> 1024/64
-	16.0
-	>>> 784/49
-	16.0
-	>>> 784/(7*7)
-	16.0
-	>>> 
-
-	1024 is just the number of neurons though, but it's probably improtant to have the correct amount of neurons for each feautre
-
-	'''
-	fully_connected_weights2 = get_weight_variable([1000, 25])
-	fully_connected_bias2 = get_bias_variable([25])
+	fully_connected_weights2 = get_weight_variable([1024, 10])
+	fully_connected_bias2 = get_bias_variable([10])
 
 	output = tf.nn.softmax(tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2, 0)
-	output = tf.reshape(output, [-1])
 	#output = tf.sigmoid(output)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(output, training_output))
 	train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 
-	#correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(training_output,1))
-	#accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+	correct_prediction = tf.equal(tf.argmax(output,1), tf.argmax(training_output,1))
+	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 	sess = tf.Session()
 	sess.run(tf.initialize_all_variables())
@@ -207,15 +167,17 @@ def conv_network():
 	for i in range (len(training_data)):
 		# For each move in the game
 		for j in range (len(training_data[i])):
-			batch_input = hotfoot(training_data[i][j][0])
-			batch_output = hotfoot(transform_training_output_for_tf(training_data[i][j][1]))
+			batch_input = training_data[i][j][0]
+			batch_output = transform_training_output_for_tf(training_data[i][j][1])
+			batch_input = onehot_input(batch_input)
+			batch_output = onehot_input(batch_output)
 			sess.run(train_step, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: KEEP_PROBABILITY})
 			print_counter = print_counter + 1
 			if print_counter % 1000 == 0:
 				printable_output = sess.run(output, feed_dict={training_input: batch_input, training_output: batch_output, keep_prob: 1})
-				print("Game number: " + str(i))
-				print("Output from network for assumed winner (200 or over = 1, less than 200 = -1:")
-				print(sess.run(tf.argmax(printable_output, 0)))
+				printable_output = get_winner_from_output(sess.run(tf.argmax(printable_output, 0)), True)
+				print("Output from network for assumed winner:")
+				print(printable_output)
 				print("Output from training data:")
 				print(training_data[i][j][1])
 				print("********************************")
@@ -228,15 +190,16 @@ def conv_network():
 	correct = 0
 	for i in range(0, len(testing_data)):
 		for j in range(0, len(testing_data[i])):
-			test_input = hotfoot(testing_data[i][j][0])
-			test_output = hotfoot(transform_training_output_for_tf(testing_data[i][j][1]))
+			test_input = testing_data[i][j][0]
+			test_output = transform_training_output_for_tf(testing_data[i][j][1])
+			test_input = onehot_input(test_input)
+			test_output = onehot_input(test_output)
 			comparable_output = sess.run(output, feed_dict={training_input: test_input, training_output: test_output, keep_prob: 1})
 			comparable_output = sess.run(tf.argmax(comparable_output, 0))
-			if comparable_output <= 200:
-				comparable_output = -1
-			elif comparable_output > 200:
-				comparable_output = 1
-			if print_counter % 50 == 0:
+			print(comparable_output)
+			comparable_output = get_winner_from_output(comparable_output, False)
+			print_counter = print_counter + 1
+			if print_counter % 10 == 0:
 				print("output: " + str(comparable_output) + ", winner: " + str(testing_data[i][j][1]))
 			if comparable_output == testing_data[i][j][1]:
 				correct += 1
@@ -291,8 +254,8 @@ def network():
             sess.run(train_step, feed_dict={input: batch_input, correct: batch_output})
             print("********************************")
             print("Output from network:")
-            printable_output = sess.run(model, feed_dict={input: batch_input, correct: batch_output})
-            print(printable_output[0])
+            printableOuput = sess.run(model, feed_dict={input: batch_input, correct: batch_output})
+            print(printableOuput[0][0])
             print("Output from training data:")
             print(transform_training_output_for_tf(training_data[i][j][1])[0][0])
             print("********************************")
@@ -300,42 +263,27 @@ def network():
 
 #Tensorflow cannot output a different shape than its input (which is a 20x20 board)
 #so we have to do this so we can compare the actual training ouput with the tensorflow output
-'''
-	I've altered this method so that the bottom 200 tiles are filled to signify player 1 winning
-	and the top 200 rows filled to signify -1 winning.
-
-	This is done so we can compare out output with argmax in tensorflow. 
-	Argmax will return the max index in the 0 dimension (which is the only dimension since our input is hotfooted).
-	If this index is 200 or after it means it thinks player 1 will win if it's below 200 then player -1
-
-	^^^This doesn't actually work and neither does filling the first and second element to represent the winner 
-	(because most the time they're 0 but the output data seems to just have random elements in the 400 long array flash on and off
-	 ...but most of the elements are 0)
-
-	 TODO: we need to think of a stratgy for making our output training data meaningful to our tensorflow program.
-	 It'll probably be smart to talk to Radu about this.
-'''
-def transform_training_output_for_tf(actual_training_output):
+def transform_training_output_for_tf(actualTrainingOutput):
 	output = []
-	count = 0
 	for i in range(BOARD_SIZE):
 		output.append([])
 		for j in range(BOARD_SIZE):
-			count += 1
-			if count > 200 and actual_training_output == 1:
+			if i % 2 == 0 and actualTrainingOutput == -1:
 				output[i].append(1)
-			elif count <= 200 and actual_training_output == -1:
+			elif i % 2 == 1 and actualTrainingOutput == 1:
 				output[i].append(1)
 			else:
 				output[i].append(0)
+	print(output)
+	print(actualTrainingOutput)
 	return output
 
-def hotfoot(input):
-	output = []
-	for i in input:
-		for j in i:
-			output.append(j)
-	return output
+def onehot_input(inpuut):
+	input = []
+	for row in input:
+		for move in row:
+			input.append(move)
+	return input
 
 if __name__ == '__main__':
     conv_network()
