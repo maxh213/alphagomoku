@@ -11,11 +11,11 @@ def parse_args(args: str) -> ArgsStruct:
 	'''
 	Responsible for parsing args into the form of the ArgsStruct.
 	'''
-	should_save = False
+	should_use_save = False
 	for arg in args:
 		if arg.lower() == 'true':
-			should_save = True
-	return should_save
+			should_use_save = True
+	return should_use_save
 
 
 def main():

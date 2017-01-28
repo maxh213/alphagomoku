@@ -8,10 +8,6 @@ def print_winning_message(winner: int, winning_moves: list) -> None:
 		print("(" + str(move[0] + 1) + ", " + str(move[1] + 1) + ")")
 
 
-def is_winner(winner: int) -> bool:
-	return winner != 0
-
-
 class Gomoku:
 	board = Board()
 
@@ -22,8 +18,11 @@ class Gomoku:
 		return False
 
 	def check_for_winner(self) -> bool:
-		winner, winning_moves = self.board.decide_winner()
-		if is_winner(winner):
-			print_winning_message(winner, winning_moves)
-			return True
-		return False
+		winning_data = self.board.decide_winner()
+
+		if winning_data is None:
+			return False
+
+		winner, winning_moves = winning_data
+		print_winning_message(winner, winning_moves)
+		return True

@@ -12,11 +12,15 @@ class _Network:
 	def __init__(self):
 		self.first_use = True
 
-	def nn(self, board:BoardStruct) -> float:
-		if self.first_use:
-			self.first_use = False
-			return use_network(board, True)
-		return use_network(board, False)
+	def nn(self, board:Board) -> float:
+		last_move = board.get_last_move()
+		if last_move is None:
+			return 0
+		x, y = board.get_last_move()
+		# Mock nn that favours moves further to the right of the board.
+		v = (x - 10) / 20 + (y-10) / 20
+		print("%d,%d= %f" % (x, y, v))
+		return v
 
 
 class Node:
@@ -35,7 +39,7 @@ class Node:
 			net = _Network()
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = 1 if board.decide_winner() is not None else net.nn(board.get_board())
+		self.value = 1 if board.decide_winner() is not None else net.nn(board)
 
 	def get_value(self) -> int:
 		return self.value

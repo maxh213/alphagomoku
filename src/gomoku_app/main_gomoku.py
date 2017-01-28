@@ -14,7 +14,8 @@ The type function is the function that should be called in order to get a move f
 COMPUTER = computer.Computer()
 PLAYER_TYPES = {
 	'c': ('A computer', COMPUTER.make_move),
-	'h': ('Manual input from (supposedly) a human', human.make_move)
+	'h': ('Manual input from (supposedly) a human', human.make_move),
+	't': ('Terrible tree', computer.make_move)
 }
 
 ENUMERATE_TYPE_MESSAGE = '\r\nTypes include %s: ' % [(k, PLAYER_TYPES[k][0]) for k in PLAYER_TYPES]
@@ -38,7 +39,7 @@ def prompt_player_type(player: int) -> Callable:
 	:return: 'c' for 'computer', or 'h' for 'human'
 	"""
 	player_type = input(PLAYER_TYPE_PROMPT_INITIAL % player)
-	while player_type is not 'c' and player_type is not 'h':
+	while player_type not in PLAYER_TYPES:
 		player_type = input(PLAYER_TYPE_PROMPT_REPEAT % player_type)
 	return PLAYER_TYPES[player_type][1]
 
