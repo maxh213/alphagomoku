@@ -1,7 +1,10 @@
 from typing import List
 
+import os
+import sys
 import numpy
 import tensorflow as tf
+from tensorflow import Session
 import math
 import random
 from random import randrange
@@ -122,20 +125,36 @@ def conv2d(image, weights):
 def pool2x2(conv_image):
 	return tf.nn.avg_pool(conv_image, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
-def neural_network_train(should_use_save_data):
-	print("Convolutional Neural Network training beginning...")
+def restore(sess: Session, file_path: str):
+	saver = tf.train.Saver()
 
-	print("Loading training data...")
-	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
-	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
-	print("Training data loaded!")
+	try:
+		saver.restore(sess, file_path)
+	except NotFoundError as e:
+		print('Could not load a TensorFlow model from \'%s\' because none was found.' % file_path, file=sys.stderr)
+		print('Current dir: %s' % os.path.abspath('.'), file=sys.stderr)
+		raise e
 
-	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
-	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
-	heuristic = tf.placeholder(tf.float32, [None, HEURISTIC_SIZE])
-	keep_prob = tf.placeholder(tf.float32)
-	global_step = tf.Variable(0, trainable=False)
 
+def save(sess: Session, file_path: str, overwrite: bool=False) -> bool:
+
+	file_exists = os.path.exists(file_path)
+
+	if file_exists and not overwrite:
+		return True
+
+	if not file_exists:
+		dir_path = os.path.dirname(file_path)
+		dir_exists = os.path.exists(dir_path)
+		if not dir_exists:
+			os.makedirs(dir_path)
+
+	saver = tf.train.Saver()
+
+	save_path = saver.save(sess, file_path)
+	print('TensorFlow model saved in file: %s' % save_path)
+
+def network_layers(training_input, heuristic, keep_prob):
 	conv_weights1 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_INPUT_CHANNELS, CONV_WEIGHT_1_FEATURES])
 	conv_bias1 = get_bias_variable([CONV_WEIGHT_1_FEATURES])
 
@@ -156,7 +175,6 @@ def neural_network_train(should_use_save_data):
 	pool2_flat = tf.reshape(pool2, [-1, CONV_2_OUTPUT_SIZE])
 	fully_connected_output1 = tf.nn.tanh(tf.matmul(pool2_flat, fully_connected_weights1) + fully_connected_bias1)
 
-	keep_prob = tf.placeholder(tf.float32)
 	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
 
 	heuristic_layer_weights = get_weight_variable([HEURISTIC_SIZE, FC_LAYER_1_WEIGHTS])
@@ -170,6 +188,24 @@ def neural_network_train(should_use_save_data):
 
 	fully_connected_drop_output_with_heuristic = tf.concat(1, [fully_connected1_drop, heuristic_layer_output])
 	tf_output = tf.nn.softmax(tf.matmul(fully_connected_drop_output_with_heuristic, fully_connected_weights2) + fully_connected_bias2)
+	return tf_output, convolution1, convolution2, pool2
+
+
+def neural_network_train(should_use_save_data):
+	print("Convolutional Neural Network training beginning...")
+
+	print("Loading training data...")
+	training_data = get_training_data(TRAINING_DATA_FILE_COUNT)
+	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
+	print("Training data loaded!")
+
+	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
+	heuristic = tf.placeholder(tf.float32, [None, HEURISTIC_SIZE])
+	keep_prob = tf.placeholder(tf.float32)
+	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
+	global_step = tf.Variable(0, trainable=False)
+
+	tf_output, convolution1, convolution2, pool2 = network_layers(training_input, heuristic, keep_prob)
 
 	cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(tf_output, training_output))
 
@@ -180,31 +216,22 @@ def neural_network_train(should_use_save_data):
 	correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(tf_output),1), tf.argmax(training_output,1))
 	
 	accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-	# Allows saving the state of all tf variables
-	saver = tf.train.Saver()
 	
 	sess = tf.Session()
 
 	#This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
 	try:
 		sess.run(tf.global_variables_initializer())
-	except AttributeError as error:
+	except AttributeError:
 		sess.run(tf.initialize_all_variables())
 
 	print("---")
 	if should_use_save_data:
-		#Try load the weights and biases from when the network was last run
-		try:
-			saver.restore(sess, MODEL_SAVE_FILE_PATH)
-			print("TensorFlow model loaded from last session.")
-		except NotFoundError as e:
-			print("Could not load a TensorFlow model from the last session because none was found.")
-			raise e
+		restore(sess, MODEL_SAVE_FILE_PATH)
+		print("TensorFlow model loaded from last session.")
 	else:
 		print("Previous save data not loaded! If you wish to load the previous save data run: python3 main.py True")
 	print("---")
-	
 	print("Setting up variables and heuristics...")
 	train_input_batch, train_output_batch, train_heuristics = convert_training_to_batch(training_data, NUMBER_OF_BATCHES)
 	test_input_batch, test_output_batch, test_heuristics = convert_training_to_batch(testing_data, NUMBER_OF_BATCHES)
@@ -252,8 +279,7 @@ def neural_network_train(should_use_save_data):
 	testing_average = sum(testing_accuracy)/len(testing_accuracy)
 	print_accuracy_percentage(training_average, testing_average)
 
-	save_path = saver.save(sess, MODEL_SAVE_FILE_PATH)
-	print("TensorFlow model saved in file: %s" % save_path)
+	save(sess, MODEL_SAVE_FILE_PATH, True)
 
 	print("Run the following command to see the graphs produced from this training:")
 	print("tensorboard --logdir=" + GRAPH_LOGS_SAVE_FILE_PATH)
@@ -429,38 +455,12 @@ def count_in_a_row_diagonally(move, player):
 
 def use_network(input):
 	training_input = tf.placeholder(tf.float32, [None, INPUT_SIZE])
-	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
+	heuristic = tf.placeholder(tf.float32, [None, HEURISTIC_SIZE])
 	keep_prob = tf.placeholder(tf.float32)
+	training_output = tf.placeholder(tf.float32, [None, OUTPUT_SIZE])
 	global_step = tf.Variable(0, trainable=False)
 
-	conv_weights1 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_INPUT_CHANNELS, CONV_WEIGHT_1_FEATURES])
-	conv_bias1 = get_bias_variable([CONV_WEIGHT_1_FEATURES])
-
-	input_image = tf.reshape(training_input, [-1, BOARD_SIZE, BOARD_SIZE, COLOUR_CHANNELS_USED])
-
-	convolution1 = tf.nn.tanh(conv2d(input_image, conv_weights1) + conv_bias1)
-
-	conv_weights2 = get_weight_variable([CONV_SIZE, CONV_SIZE, CONV_WEIGHT_1_FEATURES, CONV_WEIGHT_2_FEATURES])
-	conv_bias2 = get_bias_variable([CONV_WEIGHT_2_FEATURES])
-
-	convolution2 = tf.nn.tanh(conv2d(convolution1, conv_weights2) + conv_bias2)
-
-	fully_connected_weights1 = get_weight_variable([CONV_2_OUTPUT_SIZE, FC_LAYER_1_WEIGHTS])
-	fully_connected_bias1 = get_bias_variable([FC_LAYER_1_WEIGHTS])
-
-	conv2_flat = tf.reshape(convolution2, [-1, CONV_2_OUTPUT_SIZE])
-	fully_connected_output1 = tf.nn.tanh(tf.matmul(conv2_flat, fully_connected_weights1) + fully_connected_bias1)
-
-	keep_prob = tf.placeholder(tf.float32)
-	fully_connected1_drop = tf.nn.dropout(fully_connected_output1, keep_prob)
-
-	fully_connected_weights2 = get_weight_variable([FC_LAYER_1_WEIGHTS, OUTPUT_SIZE])
-	fully_connected_bias2 = get_bias_variable([OUTPUT_SIZE])
-
-	tf_output = tf.matmul(fully_connected1_drop, fully_connected_weights2) + fully_connected_bias2
-
-	# Allows saving the state of all tf variables
-	saver = tf.train.Saver()
+	tf_output, _, _, _ = network_layers(training_input, heuristic, keep_prob)
 
 	sess = tf.Session()
 
@@ -470,21 +470,19 @@ def use_network(input):
 	except AttributeError as error:
 		sess.run(tf.initialize_all_variables())
 
-	saver.restore(sess, MODEL_SAVE_FILE_PATH)
+	restore(sess, MODEL_SAVE_FILE_PATH)
 
 	test_input = []
 	test_input.append(input)
 	test_input_batch = one_hot_input_batch(test_input)
-	feed_dict_test = {training_input: test_input_batch, keep_prob: KEEP_ALL_PROBABILITY}
+	heuristic_ = get_number_in_a_row_heuristic_for_move(input)
+	feed_dict_test = {training_input: test_input_batch, keep_prob: KEEP_ALL_PROBABILITY, heuristic: [[heuristic_]]}
 
 	output = sess.run(tf.nn.softmax(tf_output), feed_dict=feed_dict_test)
 	#print (output[0])
 	winner = get_winner(output[0])
 	#print (winner)
 	get_use_output(winner, output[0])
-	#difference = get_difference(output[0])
-	#print (difference)
-	#scale_difference(difference)
 
 
 if __name__ == '__main__':
