@@ -11,8 +11,9 @@ User input char: What we expect the user to input in order to tell us what type 
 Type description: A simple description of what kind of player this type represents.
 The type function is the function that should be called in order to get a move from the player.
 """
+COMPUTER = computer.Computer()
 PLAYER_TYPES = {
-	'c': ('A computer', computer.make_move),
+	'c': ('A computer', COMPUTER.make_move),
 	'h': ('Manual input from (supposedly) a human', human.make_move)
 }
 

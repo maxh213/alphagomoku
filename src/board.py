@@ -67,6 +67,8 @@ class Board:
 		print()
 
 	def decide_winner(self):
+		if self._winner == 0:
+			return None
 		return self._winner, self._winning_moves
 
 	def _decide_winner_line(self, x: int, y: int, dx: int, dy: int) -> Tuple[int, MovesStruct or None]:
@@ -139,6 +141,8 @@ class Board:
 		return x, y, p
 
 	def get_last_move(self) -> Tuple[int, int, int]:
+		if len(self._moves) == 0:
+			return None
 		return self._moves[-1]
 
 	def get_next_player(self) -> int:

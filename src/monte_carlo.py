@@ -1,5 +1,70 @@
-from board import Board, BoardStruct
+from board import Board, BoardStruct, MoveStruct
 from datetime import datetime, timedelta
+
+from neural_network import use_network
+
+class _Network:
+	"""
+	Todo: turn NN into a class so that this is unnecessary.
+	Holds the state of the use_network function.
+	"""
+
+	def __init__(self):
+		self.first_use = True
+
+	def nn(self, board:BoardStruct) -> float:
+		if self.first_use:
+			self.first_use = False
+			return use_network(board, True)
+		return use_network(board, False)
+
+
+class Node:
+
+	DEFAULT_DEPTH = 20
+
+	"""
+	Represents a move that can be made, how good that move is, and what moves can be made after it.
+	"""
+
+	def __init__(self, move: MoveStruct, board: Board, net: _Network=None):
+		self.children = []
+		self.x, self.y = move
+		self._board = board
+		if net is None:
+			net = _Network()
+
+		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
+		self.value = 1 if board.decide_winner() is not None else net.nn(board.get_board())
+
+	def get_value(self) -> int:
+		return self.value
+
+	def get_move(self) -> MoveStruct:
+		return self.x, self.y
+
+	def explore(self):
+		p = self._board.get_next_player()
+
+		moves = self._board.get_possible_moves()
+
+		print("Exploring %r,%r: %r" % (self.x, self.y, moves))
+		for x, y in moves:
+			valid = self._board.move(x, y, p)
+			assert valid
+			child = Node((x, y), self._board)
+			self.children.append(child)
+			reversed_move = self._board.reverse_move()
+			assert reversed_move == (x, y, p), "%r vs %r" % (reversed_move, (x, y, p))
+
+		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
+
+	def select(self, depth: int = DEFAULT_DEPTH) -> "Node":
+		if len(self.children) == 0:
+			self.explore()
+
+		return self.children[0]
+
 
 
 class MonteCarlo:

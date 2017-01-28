@@ -7,10 +7,15 @@ from typing import List, Tuple
 from neural_network import use_network
 from board import Board
 
+called_first = True
 
 def nn(board) -> float:
+	global called_first
 	# Will return value between -1 and 1. Needs to hook up with the neural network when it's ready.
-	return use_network(board)
+	if called_first:
+		called_first = False
+		return use_network(board, True)
+	return use_network(board, False)
 
 
 def moves(board: Board) -> List[Tuple[int, int]]:
@@ -35,7 +40,14 @@ def winning_moves(board: Board, depth: int, should_print: bool=False) -> List[Tu
 	if depth == 0:
 		# Returns a list of moves that have a higher than 0.7 probability of being in our favour,
 		# Or will literally win the game.
-		return [c for c in cs if nn(c) > 0.7 or board.decide_winner() != 0]
+		good_moves = []
+		for move in cs:
+			board.move(move[0], move[1], board.get_next_player())
+			raw_board = board.get_board()
+			if nn(raw_board) > 0.7 or board.decide_winner() != 0:
+				good_moves.append(move)
+			board.reverse_move()
+		return good_moves
 
 	rs = []
 	"""
