@@ -4,18 +4,20 @@ moves : Board -> list[Board]
 moves(b) = [] Person to move last.
 """
 from typing import List, Tuple
-from neural_network import use_network
+from neural_network import use_network, setup_network
 from board import Board
 
-called_first = True
+training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess = setup_network()
+
+#called_first = True
 
 def nn(board) -> float:
-	global called_first
+	#global called_first
 	# Will return value between -1 and 1. Needs to hook up with the neural network when it's ready.
-	if called_first:
-		called_first = False
-		return use_network(board, True)
-	return use_network(board, False)
+	#if called_first:
+		#called_first = False
+		#return use_network(board, True)
+	return use_network(board, training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess)
 
 
 def moves(board: Board) -> List[Tuple[int, int]]:

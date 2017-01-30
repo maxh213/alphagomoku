@@ -504,16 +504,14 @@ def get_failed_predictions():
 			file_handler.write("{}\n".format(prediction))
 
 
-def use_network(input, first_use):
+def setup_network():
 	training_input, heuristic, keep_prob, training_output, global_step = init_nn_variables_and_placeholders()
-
 	tf_output, _, _, _ = network_layers(training_input, heuristic, keep_prob)
-
 	sess = init_sess_and_variables()
+	restore(sess, MODEL_SAVE_FILE_PATH)
+	return training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess
 
-	if first_use:
-		restore(sess, MODEL_SAVE_FILE_PATH)
-
+def use_network(input, training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess):
 	test_input = [input]
 	test_input_batch = one_hot_input_batch(test_input)
 	heuristic_ = get_number_in_a_row_heuristic_for_move(input)
