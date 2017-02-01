@@ -486,15 +486,14 @@ def print_use_output(winner, output):
 
 def get_failed_predictions():
 	print("Checking Neural Network for Failed Predictions:")
+	training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess = setup_network()
 	failed_predictions = []
-	first_use = True
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 	for game in testing_data:
 		winner_of_game = game[0][1]
 		for move in game:
 			print(move[0])
-			winner_from_network = use_network(move[0], first_use)
-			first_use = False
+			winner_from_network = use_network(move[0], training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess)
 			if winner_from_network != winner_of_game:
 				failed_predictions.append(move)
 	print("Failed Predictions:")
