@@ -486,14 +486,14 @@ def print_use_output(winner, output):
 
 def get_failed_predictions():
 	print("Checking Neural Network for Failed Predictions:")
-	training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess = setup_network()
+	training_input, heuristic, keep_prob, tf_output, sess = setup_network()
 	failed_predictions = []
 	testing_data = get_test_data(TEST_DATA_FILE_COUNT)
 	for game in testing_data:
 		winner_of_game = game[0][1]
 		for move in game:
 			print(move[0])
-			winner_from_network = use_network(move[0], training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess)
+			winner_from_network = use_network(move[0], training_input, heuristic, keep_prob, tf_output, sess)
 			if winner_from_network != winner_of_game:
 				failed_predictions.append(move)
 	print("Failed Predictions:")
@@ -504,13 +504,13 @@ def get_failed_predictions():
 
 
 def setup_network():
-	training_input, heuristic, keep_prob, training_output, global_step = init_nn_variables_and_placeholders()
+	training_input, heuristic, keep_prob, _, _ = init_nn_variables_and_placeholders()
 	tf_output, _, _, _ = network_layers(training_input, heuristic, keep_prob)
 	sess = init_sess_and_variables()
 	restore(sess, MODEL_SAVE_FILE_PATH)
-	return training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess
+	return training_input, heuristic, keep_prob, tf_output, sess
 
-def use_network(input, training_input, heuristic, keep_prob, training_output, global_step, tf_output, sess):
+def use_network(input, training_input, heuristic, keep_prob, tf_output, sess):
 	test_input = [input]
 	test_input_batch = one_hot_input_batch(test_input)
 	heuristic_ = get_number_in_a_row_heuristic_for_move(input)
