@@ -15,21 +15,17 @@ TrainingDataStruct = Tuple[List[BoardStruct], int]
 All files from freestyle 1 and 3, and only the first 500 from freestyle 2.
 _TEST_DATA_FILES uses the rest of freestyle2.
 """
-_TRAINING_DATA_FILES = glob.glob("../resources/training/freestyle/fast_training_data/*.psq")[:3700]
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/2016-12-29/*")[:2000]
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle1/*.psq")
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle3/*.psq")
-#_TRAINING_DATA_FILES += glob.glob("../resources/training/freestyle/new_training_data/*.psq")[:2467] #2467 * 2 is the number of files in the folder
-
+_TRAINING_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[:3700]
+_TRAINING_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[:2800]
+_TRAINING_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[:4000]
 
 """
 All but the first 500 files from freestyle 2.
 _TRAINING_DATA_FILES uses the other 500.
 """
-_TEST_DATA_FILES = glob.glob("../resources/training/freestyle/fast_training_data/*.psq")[-2500:]
-#_TEST_DATA_FILES += glob.glob("../resources/training/2016-12-29/*")[-500:]
-#_TEST_DATA_FILES += glob.glob("../resources/training/freestyle/freestyle2/*.psq")
-#_TEST_DATA_FILES += glob.glob("../resources/training/freestyle/new_training_data/*.psq")[-2467:]
+_TEST_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[-2500:]
+_TEST_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[-1400:]
+_TEST_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[-2000:]
 
 _TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
 _TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"

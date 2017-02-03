@@ -25,10 +25,10 @@ DEBUG_PRINT_SIZE = 5
 	Decrease NUMBER_OF_BATCHES_TO_TRAIN_ON if you don't wish to train on every batch. 
 	NUMBER_OF_BATCHES_TO_TRAIN_ON should be no larger than NUMBER_OF_BATCHES
 '''
-NUMBER_OF_BATCHES = 5
+NUMBER_OF_BATCHES = 100
 NUMBER_OF_BATCHES_TO_TRAIN_ON = NUMBER_OF_BATCHES
 #This is how many times each batch will be trained on
-TRAINING_ITERATIONS = 20
+TRAINING_ITERATIONS = 1
 
 MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
@@ -41,8 +41,8 @@ KEEP_SOME_PROBABILITY = 0.6
 KEEP_ALL_PROBABILITY = 1.0
 
 #Setting the below to None means load all of them
-TRAINING_DATA_FILE_COUNT = 100
-TEST_DATA_FILE_COUNT = 50
+TRAINING_DATA_FILE_COUNT = None
+TEST_DATA_FILE_COUNT = None
 
 #--- LAYER/WEIGHT/BIAS CONSTANTS---
 INPUT_SIZE = BOARD_SIZE ** 2
