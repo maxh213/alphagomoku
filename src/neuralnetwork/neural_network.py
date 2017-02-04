@@ -27,8 +27,8 @@ NUMBER_OF_BATCHES_TO_TRAIN_ON = NUMBER_OF_BATCHES
 # This is how many times each batch will be trained on
 TRAINING_ITERATIONS = 1
 
-MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
-GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
+MODEL_SAVE_FILE_PATH = "../save_data/models/model.ckpt"
+GRAPH_LOGS_SAVE_FILE_PATH = "../save_data/logs/"
 
 # ---HYPER PARAMETERS ---
 LEARNING_RATE = 0.03
