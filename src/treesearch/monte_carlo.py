@@ -12,26 +12,25 @@ class _Network:
 	def __init__(self):
 		self.first_use = True
 
-	def nn(self, board:Board) -> float:
+	def nn(self, board: Board) -> float:
 		last_move = board.get_last_move()
 		if last_move is None:
 			return 0
 		x, y = board.get_last_move()
 		# Mock nn that favours moves further to the right of the board.
-		v = (x - 10) / 20 + (y-10) / 20
+		v = (x - 10) / 20 + (y - 10) / 20
 		print("%d,%d= %f" % (x, y, v))
 		return v
 
 
 class Node:
-
 	DEFAULT_DEPTH = 20
 
 	"""
 	Represents a move that can be made, how good that move is, and what moves can be made after it.
 	"""
 
-	def __init__(self, move: MoveStruct, board: Board, net: _Network=None):
+	def __init__(self, move: MoveStruct, board: Board, net: _Network = None):
 		self.children = []
 		self.x, self.y = move
 		self._board = board
@@ -70,7 +69,6 @@ class Node:
 		return self.children[0]
 
 
-
 class MonteCarlo:
 	"""
 	Built on work by Jeff Bradberry: https://jeffbradberry.com/posts/2015/09/intro-to-monte-carlo-tree-search
@@ -82,8 +80,7 @@ class MonteCarlo:
 
 	DEFAULT_MAX_MOVES = 100
 
-	def __init__(self, board: Board, exploration: float=DEFAULT_EXPLORATION, min_time: int=DEFAULT_TIME,
-				 max_moves: int=DEFAULT_MAX_MOVES):
+	def __init__(self, board: Board, exploration: float = DEFAULT_EXPLORATION, min_time: int = DEFAULT_TIME, max_moves: int = DEFAULT_MAX_MOVES):
 		self.board = board
 		self.exploration = exploration
 		self.calculation_time = timedelta(seconds=min_time)

@@ -10,14 +10,9 @@ from neuralnetwork.neural_network import use_network, setup_network
 
 training_input, heuristic, keep_prob, tf_output, sess = setup_network()
 
-#called_first = True
 
 def nn(board) -> float:
-	#global called_first
 	# Will return value between -1 and 1. Needs to hook up with the neural network when it's ready.
-	#if called_first:
-		#called_first = False
-		#return use_network(board, True)
 	return use_network(board, training_input, heuristic, keep_prob, tf_output, sess)
 
 
@@ -28,7 +23,7 @@ def moves(board: Board) -> List[Tuple[int, int]]:
 	return board.get_possible_moves()
 
 
-def winning_moves(board: Board, depth: int, should_print: bool=False) -> List[Tuple[int, int]]:
+def winning_moves(board: Board, depth: int, should_print: bool = False) -> List[Tuple[int, int]]:
 	"""
 	Searches the board for winning moves to the given depth.
 	Total number of moves checked = reduce(lambda x, y: x + len(moves) - i, range(i+1))

@@ -1,4 +1,3 @@
-#! /usr/bin/env python3
 import glob
 import pickle
 from os.path import isfile
@@ -23,8 +22,10 @@ _TEST_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_dat
 _TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
 _TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
 
+
 def check_source(lines):
 	return len(lines[0]) > 6
+
 
 def parse_training_file(path: str) -> MovesStruct:
 	with open(path) as f:
@@ -76,18 +77,21 @@ def process_training_data(paths: List[str], should_print=False):
 		except ValueError as error:
 			print("Warning: Training data not interpretable: %s. Error: %s" % (path, error))
 			continue
-		if path_data == []:
+		if not path_data:
 			# TODO: make it so if the winner is not determined this message changes
 			print("Can't read/find file ", path)
 		else:
 			training_data.append(path_data)
 	return training_data
 
+
 def split_list_into_n_lists(list, n):
 	return [list[i::n] for i in range(n)]
 
+
 def merge_lists_into_one_list(list_one, list_two):
 	return [j for i in zip(list_one, list_two) for j in i]
+
 
 def _save_data(file_path: str, data: List[TrainingDataStruct]) -> None:
 	"""
@@ -124,7 +128,7 @@ def _load_data(file_path: str) -> List[TrainingDataStruct]:
 	return data
 
 
-def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int=None) -> List[TrainingDataStruct]:
+def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int = None) -> List[TrainingDataStruct]:
 	"""
 	If the given save path already exists, attempts to extract a list of training data from it.
 	Otherwise, the parse paths are used to generate data, which is stored at the given save path, and then returned.
@@ -148,11 +152,11 @@ def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int=
 	return data[:file_count]
 
 
-def get_training_data(file_count: int=None):
+def get_training_data(file_count: int = None):
 	return _load_or_parse_data(_TRAINING_DATA_FILES, _TRAINING_DATA_SAVE_PATH, file_count)
 
 
-def get_test_data(file_count: int=None):
+def get_test_data(file_count: int = None):
 	return _load_or_parse_data(_TEST_DATA_FILES, _TESTING_DATA_SAVE_PATH, file_count)
 
 

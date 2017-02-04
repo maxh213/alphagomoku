@@ -13,6 +13,7 @@ def make_move(brd: Board) -> MoveStruct:
 	x, y = ts.winning_moves(brd, TREE_SEARCH_DEPTH)[0]
 	return x, y
 
+
 class Computer:
 	def __init__(self):
 		self.board = Board()

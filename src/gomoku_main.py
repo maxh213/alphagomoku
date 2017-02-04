@@ -31,6 +31,7 @@ Format string for any repeat console prompts for a player type.
 """
 PLAYER_TYPE_PROMPT_REPEAT = "'%s' is not a valid opponent." + ENUMERATE_TYPE_MESSAGE
 
+
 def prompt_player_type(player: int) -> Callable:
 	"""
 	Prompts the console for the given player type.
@@ -45,7 +46,6 @@ def prompt_player_type(player: int) -> Callable:
 
 
 def play_game() -> None:
-
 	players = {
 		-1: prompt_player_type(1),
 		1: prompt_player_type(2)

@@ -163,7 +163,7 @@ class Board:
 			return []
 
 		if len(self._moves) == 0:
-			return [(x, y) for y in range(ceil(BOARD_SIZE/2)) for x in range(ceil(BOARD_SIZE/2))]
+			return [(x, y) for y in range(ceil(BOARD_SIZE / 2)) for x in range(ceil(BOARD_SIZE / 2))]
 
 		moves = [(x, y) for y in range(BOARD_SIZE) for x in range(BOARD_SIZE) if self._board[x][y] == 0]
 		return moves
