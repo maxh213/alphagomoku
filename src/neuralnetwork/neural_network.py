@@ -9,8 +9,8 @@ import tensorflow as tf
 from tensorflow import Session
 from tensorflow.python.framework.errors import NotFoundError
 
-from board import BOARD_SIZE
-from training_data import get_training_data, get_test_data
+from gomokuapp.board import BOARD_SIZE
+from neuralnetwork.training_data import get_training_data, get_test_data
 
 # ---FILE BASED CONSTANTS---
 DEBUG_PRINT_SIZE = 5
@@ -229,7 +229,7 @@ def restore_session_if_needed(sess, should_use_save_data):
 		restore(sess, MODEL_SAVE_FILE_PATH)
 		print("TensorFlow model loaded from last session.")
 	else:
-		print("Previous save data not loaded! If you wish to load the previous save data run: python3 main.py True")
+		print("Previous save data not loaded! If you wish to load the previous save data run: python3 neural_network_main.py True")
 	print("---")
 
 

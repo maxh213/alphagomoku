@@ -1,7 +1,7 @@
 from sys import argv
 from typing import Tuple
 
-from neural_network import neural_network_train
+from neuralnetwork.neural_network import neural_network_train
 
 ShouldSaveStruct = bool
 ArgsStruct = Tuple[ShouldSaveStruct]

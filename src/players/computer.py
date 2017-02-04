@@ -2,10 +2,9 @@
 Contains the logic required to run the bot against a board, and make a move.
 """
 
-import tree_search as ts
-import monte_carlo as mc
-from board import Board, MoveStruct
-
+import treesearch as ts
+from gomokuapp.board import Board, MoveStruct
+from treesearch import monte_carlo as mc
 
 TREE_SEARCH_DEPTH = 2
 

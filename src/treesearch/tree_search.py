@@ -4,8 +4,9 @@ moves : Board -> list[Board]
 moves(b) = [] Person to move last.
 """
 from typing import List, Tuple
-from neural_network import use_network, setup_network
-from board import Board
+
+from gomokuapp.board import Board
+from neuralnetwork.neural_network import use_network, setup_network
 
 training_input, heuristic, keep_prob, tf_output, sess = setup_network()
 

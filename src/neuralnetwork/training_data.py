@@ -1,10 +1,11 @@
 #! /usr/bin/env python3
 import glob
 import pickle
-from sys import argv
-from typing import List, Tuple, Any
-from board import Board, BoardStruct, MovesStruct
 from os.path import isfile
+from sys import argv
+from typing import List, Tuple
+
+from gomokuapp.board import Board, BoardStruct, MovesStruct
 
 """
 Training data is represented as a list of moves/boards, and the winner for that game.

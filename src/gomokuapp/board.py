@@ -1,9 +1,9 @@
 from copy import deepcopy
+from math import ceil
 from sys import stdout
 from typing import List, Tuple
-from math import ceil
 
-import player
+from players import player
 
 """
 A row consists of a list of players.

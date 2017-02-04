@@ -1,5 +1,5 @@
-import player
-from board import Board
+from gomokuapp.board import Board
+from players import player
 
 
 def print_winning_message(winner: int, winning_moves: list) -> None:

@@ -1,10 +1,10 @@
 """
 Contains the logic to get the next move from the user.
 """
-from player import get_player_string
 import re
 
-from board import Board
+from gomokuapp.board import Board
+from players.player import get_player_string
 
 
 def validate_input(move: str) -> bool:

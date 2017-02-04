@@ -1,7 +1,7 @@
 from typing import Callable
 
+from gomokuapp.gomoku import Gomoku
 from players import human, computer
-from gomoku_app.gomoku import Gomoku
 
 """
 Represents the different types of player we can have as a tuple.

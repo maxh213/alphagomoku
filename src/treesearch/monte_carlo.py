@@ -1,7 +1,7 @@
-from board import Board, BoardStruct, MoveStruct
 from datetime import datetime, timedelta
 
-from neural_network import use_network
+from gomokuapp.board import Board, BoardStruct, MoveStruct
+
 
 class _Network:
 	"""
