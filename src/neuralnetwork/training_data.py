@@ -19,8 +19,8 @@ _TEST_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[-
 _TEST_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[-1400:]
 _TEST_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[-2000:]
 
-_TRAINING_DATA_SAVE_PATH = "../save_data/training_data.pckl"
-_TESTING_DATA_SAVE_PATH = "../save_data/testing_data.pckl"
+_TRAINING_DATA_SAVE_PATH = "save_data/training_data.pckl"
+_TESTING_DATA_SAVE_PATH = "save_data/testing_data.pckl"
 
 
 def check_source(lines):
