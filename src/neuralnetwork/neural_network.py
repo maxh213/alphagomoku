@@ -27,8 +27,8 @@ NUMBER_OF_BATCHES_TO_TRAIN_ON = NUMBER_OF_BATCHES
 # This is how many times each batch will be trained on
 TRAINING_ITERATIONS = 1
 
-MODEL_SAVE_FILE_PATH = "save_data/models/model.ckpt"
-GRAPH_LOGS_SAVE_FILE_PATH = "save_data/logs/"
+MODEL_SAVE_FILE_PATH = "neuralnetwork/save_data/models/model.ckpt"
+GRAPH_LOGS_SAVE_FILE_PATH = "neuralnetwork/save_data/logs/"
 
 # ---HYPER PARAMETERS ---
 LEARNING_RATE = 0.03
@@ -549,7 +549,7 @@ def use_network(input, training_input, heuristic, keep_prob, tf_output, sess):
 	# print (output[0])
 	winner = get_winner(output[0])
 	# print (winner)
-	print_use_output(winner, output[0])
+	#print_use_output(winner, output[0])
 	return winner
 
 

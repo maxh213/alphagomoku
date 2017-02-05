@@ -1,4 +1,4 @@
 # Ignore python compilation files.
 __pycache__
 .idea
-src/save_data/
+src/neuralnetwork/save_data/

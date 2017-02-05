@@ -26,7 +26,7 @@ class Node:
 		self.neural_network = neural_network
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = 1 if board.decide_winner() is not None else self.neural_network.nn(board)
+		self.value = 1 if board.decide_winner() is not None else self.neural_network.nn(board.get_board())
 
 	def get_value(self) -> int:
 		return self.value
@@ -39,7 +39,7 @@ class Node:
 
 		moves = self._board.get_possible_moves()
 
-		print("Exploring %r,%r: %r" % (self.x, self.y, moves))
+		#print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			valid = self._board.move(x, y, p)
 			assert valid
