@@ -1,26 +1,15 @@
 from datetime import datetime, timedelta
 
 from gomokuapp.board import Board, BoardStruct, MoveStruct
-
+from gomokuapp.neuralnetwork import setup_network, use_network
 
 class _Network:
-	"""
-	Todo: turn NN into a class so that this is unnecessary.
-	Holds the state of the use_network function.
-	"""
-
+	
 	def __init__(self):
-		self.first_use = True
+		self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess = setup_network()
 
 	def nn(self, board: Board) -> float:
-		last_move = board.get_last_move()
-		if last_move is None:
-			return 0
-		x, y = board.get_last_move()
-		# Mock nn that favours moves further to the right of the board.
-		v = (x - 10) / 20 + (y - 10) / 20
-		print("%d,%d= %f" % (x, y, v))
-		return v
+		return use_network(board, self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess)
 
 
 class Node:
