@@ -31,4 +31,6 @@ class Computer:
 			self.board.move(x, y, self.board.get_next_player())
 
 		self.node = self.node.select()
-		return self.node.get_move()
+		x, y = self.node.get_move()
+		self.board.move(x, y, self.board.get_next_player())
+		return x, y

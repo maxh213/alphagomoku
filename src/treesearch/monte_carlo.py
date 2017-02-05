@@ -9,7 +9,7 @@ class Neural_Network:
 		self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess = setup_network()
 
 	def nn(self, board: Board) -> float:
-		return use_network(board, self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess)
+		return use_network(board.get_board(), self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess)
 
 
 class Node:
@@ -26,7 +26,7 @@ class Node:
 		self.neural_network = neural_network
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = 1 if board.decide_winner() is not None else self.neural_network.nn(board.get_board())
+		self.value = 1 if board.decide_winner() is not None else self.neural_network.nn(board)
 
 	def get_value(self) -> int:
 		return self.value
