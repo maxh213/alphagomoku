@@ -14,10 +14,14 @@ TrainingDataStruct = Tuple[List[BoardStruct], int]
 _TRAINING_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[:3700]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[:2800]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[:4000]
+_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_max/*.psq")[:10000]
+
 
 _TEST_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[-2500:]
 _TEST_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[-1400:]
 _TEST_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[-2000:]
+_TEST_DATA_FILES += glob.glob("../resources/training/training_data_harry/*.psq")[:10000]
+
 
 _TRAINING_DATA_SAVE_PATH = "neuralnetwork/save_data/training_data.pckl"
 _TESTING_DATA_SAVE_PATH = "neuralnetwork/save_data/testing_data.pckl"
@@ -57,7 +61,7 @@ def simulate(moves: MovesStruct, should_print: bool = False) -> TrainingDataStru
 		all_boards.append(board.get_board())
 		if should_print:
 			board.print_board()
-		winner, _ = board.decide_winner()
+		winner = board.decide_winner()
 		if winner != 0:
 			return all_boards, winner
 		p = -p
@@ -78,7 +82,6 @@ def process_training_data(paths: List[str], should_print=False):
 			print("Warning: Training data not interpretable: %s. Error: %s" % (path, error))
 			continue
 		if not path_data:
-			# TODO: make it so if the winner is not determined this message changes
 			print("Can't read/find file ", path)
 		else:
 			training_data.append(path_data)
