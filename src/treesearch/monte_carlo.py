@@ -37,17 +37,18 @@ class Node:
 		return self.x, self.y
 
 	def explore(self):
+		player = self._board.get_next_player()
 		moves = self._board.get_possible_moves()
 		#print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			#print(x,y,self.player)
-			valid = self._board.move(x, y, self.player)
+			valid = self._board.move(x, y, player)
 			if valid:
 				child = Node((x, y), self._board, self.neural_network)
 				self.debug_nn_outputs.append({x,y,child.get_value()})
 				self.children.append(child)
 				reversed_move = self._board.reverse_move()
-				assert reversed_move == (x, y, self.player), "%r vs %r" % (reversed_move, (x, y, self.player))
+				assert reversed_move == (x, y, player), "%r vs %r" % (reversed_move, (x, y, player))
 		#print(self.debug_nn_outputs)
 
 		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)

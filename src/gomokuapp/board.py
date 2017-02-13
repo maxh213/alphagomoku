@@ -117,7 +117,12 @@ class Board:
 		if self._winner != 0 or self._board[x][y] != 0:
 			return False
 
-		if not player.is_valid(p):
+		'''
+		p == self._next_player is needed because:
+			* The next_player isn't being updated correctly. 
+			* Somewhere the move method is being called with an incorrect player
+		'''	
+		if not (player.is_valid(p) and p == self._next_player):
 			return False
 
 		self._next_player = -p
