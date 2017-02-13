@@ -42,11 +42,11 @@ class Node:
 		#print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			valid = self._board.move(x, y, p)
-			assert valid
-			child = Node((x, y), self._board, self.neural_network)
-			self.children.append(child)
-			reversed_move = self._board.reverse_move()
-			assert reversed_move == (x, y, p), "%r vs %r" % (reversed_move, (x, y, p))
+			if valid:
+				child = Node((x, y), self._board, self.neural_network)
+				self.children.append(child)
+				reversed_move = self._board.reverse_move()
+				assert reversed_move == (x, y, p), "%r vs %r" % (reversed_move, (x, y, p))
 
 		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
 
