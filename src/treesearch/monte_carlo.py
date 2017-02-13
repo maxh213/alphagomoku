@@ -8,8 +8,8 @@ class Neural_Network:
 	def __init__(self):
 		self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess = setup_network()
 
-	def nn(self, board: Board) -> float:
-		return use_network(board.get_board(), self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess)
+	def nn(self, board: Board, player) -> float:
+		return use_network(board.get_board(), self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess, player)
 
 
 class Node:
@@ -24,9 +24,11 @@ class Node:
 		self.x, self.y = move
 		self._board = board
 		self.neural_network = neural_network
+		self.debug_nn_outputs = []
+		self.player = self._board.get_next_player()
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = 1 if board.decide_winner() is not None else self.neural_network.nn(board)
+		self.value = 1 if board.decide_winner() is not None else self.neural_network.nn(board, self.player)
 
 	def get_value(self) -> int:
 		return self.value
@@ -35,18 +37,18 @@ class Node:
 		return self.x, self.y
 
 	def explore(self):
-		p = self._board.get_next_player()
-
 		moves = self._board.get_possible_moves()
-
 		#print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
-			valid = self._board.move(x, y, p)
+			#print(x,y,self.player)
+			valid = self._board.move(x, y, self.player)
 			if valid:
 				child = Node((x, y), self._board, self.neural_network)
+				self.debug_nn_outputs.append({x,y,child.get_value()})
 				self.children.append(child)
 				reversed_move = self._board.reverse_move()
-				assert reversed_move == (x, y, p), "%r vs %r" % (reversed_move, (x, y, p))
+				assert reversed_move == (x, y, self.player), "%r vs %r" % (reversed_move, (x, y, self.player))
+		#print(self.debug_nn_outputs)
 
 		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
 
@@ -88,7 +90,7 @@ class MonteCarlo:
 			self.run_simulation()
 
 	def run_simulation(self):
-		states_copy = self.states[:] #{:] creates a copy of the list
+		states_copy = self.states[:] #[:] creates a copy of the list
 		state = states_copy[-1] #gets the last element in the states_copy list
 
 		for _ in range(self.max_moves):
@@ -97,7 +99,7 @@ class MonteCarlo:
 			assert self.board.move(x, y, self.board.get_next_player())
 			state = self.board.get_board()
 			states_copy.append(state)
-			#Change the below to _winner instead of decide_winner cause we want 0 if no winner not none
+			#Changed the below to _winner instead of decide_winner cause we want 0 if no winner not none
 			winner = self.board._winner
 			if winner is not 0: #0 means there is no winner -1, or 1 are the possible winners
 				break

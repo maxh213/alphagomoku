@@ -117,7 +117,7 @@ class Board:
 		if self._winner != 0 or self._board[x][y] != 0:
 			return False
 
-		if not (player.is_valid(p) and p == self._next_player):
+		if not player.is_valid(p):
 			return False
 
 		self._next_player = -p

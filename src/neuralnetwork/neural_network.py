@@ -539,18 +539,22 @@ def setup_network():
 	return training_input, heuristic, keep_prob, tf_output, sess
 
 
-def use_network(input, training_input, heuristic, keep_prob, tf_output, sess):
+def use_network(input, training_input, heuristic, keep_prob, tf_output, sess, player):
 	test_input = [input]
 	test_input_batch = one_hot_input_batch(test_input)
 	heuristic_ = get_number_in_a_row_heuristic_for_move(input)
 	feed_dict_test = {training_input: test_input_batch, keep_prob: KEEP_ALL_PROBABILITY, heuristic: [[heuristic_]]}
 
 	output = sess.run(tf.nn.softmax(tf_output), feed_dict=feed_dict_test)
-	# print (output[0])
+
 	winner = get_winner(output[0])
-	# print (winner)
+
 	#print_use_output(winner, output[0])
-	return winner
+
+	if winner != player:
+		return 1 - max(output[0])
+	else:
+		return max(output[0])
 
 
 if __name__ == '__main__':
