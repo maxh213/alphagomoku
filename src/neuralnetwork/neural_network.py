@@ -3,6 +3,7 @@ import random
 import sys
 from random import randrange
 from typing import List
+from datetime import datetime, timedelta
 
 import numpy
 import tensorflow as tf
@@ -212,7 +213,7 @@ def evaluate_network_layers(tf_output, training_output, global_step):
 
 
 def init_sess_and_variables():
-	sess = tf.Session()
+	sess = tf.InteractiveSession()
 
 	# This is necessary to ensure compatibility with two different versions of tensorflow (windows and ubuntu)
 	try:
@@ -531,6 +532,9 @@ def get_failed_predictions():
 			file_handler.write("{}\n".format(prediction))
 
 
+def reset_default_graph():
+	tf.reset_default_graph()
+
 def setup_network():
 	training_input, heuristic, keep_prob, _, _ = init_nn_variables_and_placeholders()
 	tf_output, _, _, _ = network_layers(training_input, heuristic, keep_prob)
@@ -540,21 +544,23 @@ def setup_network():
 
 
 def use_network(input, training_input, heuristic, keep_prob, tf_output, sess, player):
+	#begin = datetime.utcnow()
 	test_input = [input]
 	test_input_batch = one_hot_input_batch(test_input)
 	heuristic_ = get_number_in_a_row_heuristic_for_move(input)
 	feed_dict_test = {training_input: test_input_batch, keep_prob: KEEP_ALL_PROBABILITY, heuristic: [[heuristic_]]}
-
 	output = sess.run(tf.nn.softmax(tf_output), feed_dict=feed_dict_test)
-
 	winner = get_winner(output[0])
 
 	#print_use_output(winner, output[0])
 
+	#end = datetime.utcnow()
+	#print(end - begin)
 	if winner != player:
 		return 1 - max(output[0])
 	else:
 		return max(output[0])
+
 
 
 if __name__ == '__main__':

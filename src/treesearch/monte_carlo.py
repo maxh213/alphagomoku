@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from gomokuapp.board import Board, BoardStruct, MoveStruct
-from neuralnetwork.neural_network import setup_network, use_network
+from neuralnetwork.neural_network import setup_network, use_network, reset_default_graph
 
 class Neural_Network:
 
@@ -10,6 +10,18 @@ class Neural_Network:
 
 	def nn(self, board: Board, player) -> float:
 		return use_network(board.get_board(), self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess, player)
+
+	'''
+		This resets the tensorflow graph and keeps it running at 0.01 seconds per use.
+
+		If this isn't called after at least every 200 calls the time per use for the nn will increase with each call.
+	'''
+	def clear_garbage_from_nn(self):
+		reset_default_graph()
+		self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess = setup_network()
+
+
+
 
 
 class Node:
@@ -37,11 +49,20 @@ class Node:
 		return self.x, self.y
 
 	def explore(self):
+		self.neural_network.clear_garbage_from_nn()
 		player = self._board.get_next_player()
 		moves = self._board.get_possible_moves()
 		#print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			#print(x,y,self.player)
+			if (x == 10 and y == 10):
+				'''
+					This will need changing when we change the tree search to only look at specific moves on the board.
+					However, it probably wont be needed then. 
+
+					Time each version and see which is better when the time comes.
+				'''
+				self.neural_network.clear_garbage_from_nn()
 			valid = self._board.move(x, y, player)
 			if valid:
 				child = Node((x, y), self._board, self.neural_network)
