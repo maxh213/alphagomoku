@@ -61,7 +61,7 @@ def simulate(moves: MovesStruct, should_print: bool = False) -> TrainingDataStru
 		all_boards.append(board.get_board())
 		if should_print:
 			board.print_board()
-		winner = board.decide_winner()
+		winner, _ = board.decide_winner()
 		if winner != 0:
 			return all_boards, winner
 		p = -p
