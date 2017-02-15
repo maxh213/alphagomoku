@@ -40,7 +40,7 @@ class Node:
 		self.player = self._board.get_next_player()
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = 1 if board.decide_winner() is not None else self.neural_network.nn(board, self.player)
+		self.value = 1 if board.decide_winner() is not 0 else self.neural_network.nn(board, self.player)
 
 	def get_value(self) -> int:
 		return self.value
@@ -121,8 +121,7 @@ class MonteCarlo:
 			assert self.board.move(x, y, self.board.get_next_player())
 			state = self.board.get_board()
 			states_copy.append(state)
-			#Changed the below to _winner instead of decide_winner cause we want 0 if no winner not none
-			winner = self.board._winner
+			winner = self.decide_winner()
 			if winner is not 0: #0 means there is no winner -1, or 1 are the possible winners
 				break
 

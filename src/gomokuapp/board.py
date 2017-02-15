@@ -68,8 +68,6 @@ class Board:
 		print()
 
 	def decide_winner(self):
-		if self._winner == 0:
-			return None
 		return self._winner, self._winning_moves
 
 	def _decide_winner_line(self, x: int, y: int, dx: int, dy: int) -> Tuple[int, MovesStruct or None]:
