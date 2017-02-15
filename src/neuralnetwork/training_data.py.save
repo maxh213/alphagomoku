@@ -14,14 +14,13 @@ TrainingDataStruct = Tuple[List[BoardStruct], int]
 _TRAINING_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[:3700]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[:2800]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[:4000]
-_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_max/*.psq")[:33000]
-_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_harry/*.psq")[-27000:]
-_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_mcmc/*.pqs")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_max/*.psq")[:10000]
+
 
 _TEST_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[-2500:]
 _TEST_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[-1400:]
 _TEST_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[-2000:]
-_TEST_DATA_FILES += glob.glob("../resources/training/training_data_harry/*.psq")[:5000]
+_TEST_DATA_FILES += glob.glob("../resources/training/training_data_harry/*.psq")[:3000]
 
 
 _TRAINING_DATA_SAVE_PATH = "neuralnetwork/save_data/training_data.pckl"
@@ -71,11 +70,7 @@ def simulate(moves: MovesStruct, should_print: bool = False) -> TrainingDataStru
 
 def process_training_data(paths: List[str], should_print=False):
 	training_data = []
-	training_data_processed_count = 0
 	for path in paths:
-		training_data_processed_count = training_data_processed_count + 1
-		if training_data_processed_count % 500 == 0:
-			print ("Processed " + str(training_data_processed_count) + "/" + str(len(paths)))
 		path_data = []
 		if should_print:
 			print('processing file', path)
@@ -149,8 +144,7 @@ def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int 
 	:param file_count: The amount of training data to return.
 	:return: Parsed training data, one way or another.
 	"""
-	running_on_raptor = false
-	if isfile(save_path) or not running_on_raptor:
+	if isfile(save_path):
 		data = _load_data(save_path)
 	else:
 		data = process_training_data(parse_paths)
