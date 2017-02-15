@@ -1,5 +1,5 @@
 # Ignore python compilation files.
 __pycache__
 .idea
-src/neuralnetwork/save_data/
+src/neuralnetwork/save_data/*.p*
 resources/training/*
