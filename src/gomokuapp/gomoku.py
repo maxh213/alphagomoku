@@ -20,7 +20,7 @@ class Gomoku:
 	def check_for_winner(self) -> bool:
 		winning_data = self.board.decide_winner()
 
-		if winning_data is None:
+		if winning_data[1] is None:
 			return False
 
 		winner, winning_moves = winning_data

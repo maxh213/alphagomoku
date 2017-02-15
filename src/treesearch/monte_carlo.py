@@ -40,7 +40,7 @@ class Node:
 		self.player = self._board.get_next_player()
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = 1 if board.decide_winner() is not 0 else self.neural_network.nn(board, self.player)
+		self.value = 1 if board.decide_winner()[0] is not 0 else self.neural_network.nn(board, self.player)
 
 	def get_value(self) -> int:
 		return self.value

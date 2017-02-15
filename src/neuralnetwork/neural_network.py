@@ -56,6 +56,9 @@ CONV_2_OUTPUT_SIZE = POOL_MULTIPLICATION_SIZE * POOL_MULTIPLICATION_SIZE * CONV_
 FC_LAYER_1_WEIGHTS = CONV_WEIGHT_2_FEATURES * 16
 STRIDE_SIZE = 1  # this probably won't need changing
 COLOUR_CHANNELS_USED = 1  # We are not feeding our network a colour image so this is always 1
+HEURISTIC_2_IN_A_ROW_MULTIPLIER = 3
+HEURISTIC_3_IN_A_ROW_MULTIPLIER = 15
+HEURISTIC_4_IN_A_ROW_MULTIPLIER = 50
 
 
 def get_weight_variable(shape):
@@ -91,11 +94,7 @@ def convert_training_to_batch(training_data, number_of_batches):
 	train_input = []
 	train_output = []
 	heuristics = []
-	data_batched_count = 0
 	for i in range(len(training_data)):
-		data_batched_count = data_batched_count + 1
-		if data_batched_count % 500 == 0:
-			print(str(data_batched_count) + "/" + str(len(training_data)) + " games batched so far")
 		for j in range(len(training_data[i])):
 			# if the move number is less than 5 and the game lasts more than 5 moves don't bother
 			if not (j < 5 < len(training_data[i])):
@@ -394,12 +393,12 @@ def get_number_in_a_row_heuristic_for_move(move):
 			player_counts[p] = [x + y for x, y in zip(player_counts[p], tplayer_count)]
 
 	sum_heuristic = 0
-	sum_heuristic -= player_counts[0][0]
-	sum_heuristic -= player_counts[0][1] * 2
-	sum_heuristic -= player_counts[0][2] * 10
-	sum_heuristic += player_counts[1][0]
-	sum_heuristic += player_counts[1][1] * 2
-	sum_heuristic += player_counts[1][2] * 10
+	sum_heuristic -= player_counts[0][0] * HEURISTIC_2_IN_A_ROW_MULTIPLIER
+	sum_heuristic -= player_counts[0][1] * HEURISTIC_3_IN_A_ROW_MULTIPLIER
+	sum_heuristic -= player_counts[0][2] * HEURISTIC_4_IN_A_ROW_MULTIPLIER
+	sum_heuristic += player_counts[1][0] * HEURISTIC_2_IN_A_ROW_MULTIPLIER
+	sum_heuristic += player_counts[1][1] * HEURISTIC_3_IN_A_ROW_MULTIPLIER
+	sum_heuristic += player_counts[1][2] * HEURISTIC_4_IN_A_ROW_MULTIPLIER
 	return sum_heuristic
 
 

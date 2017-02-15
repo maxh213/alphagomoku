@@ -50,7 +50,6 @@ def play_game() -> None:
 		-1: prompt_player_type(1),
 		1: prompt_player_type(2)
 	}
-
 	player = -1
 	won = False
 	while not won:
