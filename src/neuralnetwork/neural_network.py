@@ -95,7 +95,7 @@ def convert_training_to_batch(training_data, number_of_batches):
 	for i in range(len(training_data)):
 		data_batched_count = data_batched_count + 1
 		if data_batched_count % 500 == 0:
-			print(str(data_batched_count) + " games batched so far")
+			print(str(data_batched_count) + "/" + str(len(training_data)) + " games batched so far")
 		for j in range(len(training_data[i])):
 			# if the move number is less than 5 and the game lasts more than 5 moves don't bother
 			if not (j < 5 < len(training_data[i])):
