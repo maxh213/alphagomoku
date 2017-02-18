@@ -1,27 +1,28 @@
+import random
 from datetime import datetime, timedelta
 
+from gomokuapp.board import BOARD_SIZE
 from gomokuapp.board import Board, BoardStruct, MoveStruct
 from neuralnetwork.neural_network import setup_network, use_network, reset_default_graph
 
-class Neural_Network:
 
+class Neural_Network:
 	def __init__(self):
 		self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess = setup_network()
 
 	def nn(self, board: Board, player) -> float:
-		return use_network(board.get_board(), self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess, player)
+		return use_network(board.get_board(), self.training_input, self.heuristic, self.keep_prob, self.tf_output,
+		                   self.sess, player)
 
 	'''
 		This resets the tensorflow graph and keeps it running at 0.01 seconds per use.
 
 		If this isn't called after at least every 200 calls the time per use for the nn will increase with each call.
 	'''
+
 	def clear_garbage_from_nn(self):
 		reset_default_graph()
 		self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess = setup_network()
-
-
-
 
 
 class Node:
@@ -51,10 +52,16 @@ class Node:
 	def explore(self):
 		self.neural_network.clear_garbage_from_nn()
 		player = self._board.get_next_player()
-		moves = self._board.get_possible_moves()
-		#print("Exploring %r,%r: %r" % (self.x, self.y, moves))
+		played_moves = self._board.get_played_moves()
+		if len(played_moves) > 0:
+			moves = self.get_adjacent_moves(played_moves)
+		else:
+			# Computer goes first so try from 10 random moves. Will most likely want to change at some point
+			moves = self.pick_from_random()
+		# moves = self._board.get_possible_moves()
+		# print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
-			#print(x,y,self.player)
+			# print(x,y,self.player)
 			if (x == 10 and y == 10):
 				'''
 					This will need changing when we change the tree search to only look at specific moves on the board.
@@ -66,11 +73,11 @@ class Node:
 			valid = self._board.move(x, y, player)
 			if valid:
 				child = Node((x, y), self._board, self.neural_network)
-				self.debug_nn_outputs.append({x,y,child.get_value()})
+				self.debug_nn_outputs.append({x, y, child.get_value()})
 				self.children.append(child)
 				reversed_move = self._board.reverse_move()
 				assert reversed_move == (x, y, player), "%r vs %r" % (reversed_move, (x, y, player))
-		#print(self.debug_nn_outputs)
+		# print(self.debug_nn_outputs)
 
 		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
 
@@ -79,6 +86,32 @@ class Node:
 			self.explore()
 
 		return self.children[0]
+
+	def get_adjacent_moves(self, played_moves):
+		adjacent_moves = []
+		for move in played_moves:
+			x = move[0]
+			y = move[1]
+			go_up = (x, y - 1)
+			go_down = (x, y + 1)
+			go_left = (x + 1, y)
+			go_right = (x - 1, y)
+			adjacent_moves.extend((go_up, go_down, go_left, go_right))
+		adjacent_moves = filter(lambda move: move not in played_moves and self.valid_coordinate(move), adjacent_moves)
+		return adjacent_moves
+
+	def valid_coordinate(self, move):
+		x = move[0]
+		y = move[1]
+		return 0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE
+
+	def pick_from_random(self):
+		random_moves = []
+		for i in range(0, 10):
+			x = random.randint(0, BOARD_SIZE - 1)
+			y = random.randint(0, BOARD_SIZE - 1)
+			random_moves.append((x, y))
+		return random_moves
 
 
 class MonteCarlo:
@@ -92,7 +125,8 @@ class MonteCarlo:
 
 	DEFAULT_MAX_MOVES = 100
 
-	def __init__(self, board: Board, exploration: float = DEFAULT_EXPLORATION, min_time: int = DEFAULT_TIME, max_moves: int = DEFAULT_MAX_MOVES):
+	def __init__(self, board: Board, exploration: float = DEFAULT_EXPLORATION, min_time: int = DEFAULT_TIME,
+	             max_moves: int = DEFAULT_MAX_MOVES):
 		self.board = board
 		self.exploration = exploration
 		self.calculation_time = timedelta(seconds=min_time)
@@ -112,8 +146,8 @@ class MonteCarlo:
 			self.run_simulation()
 
 	def run_simulation(self):
-		states_copy = self.states[:] #[:] creates a copy of the list
-		state = states_copy[-1] #gets the last element in the states_copy list
+		states_copy = self.states[:]  # [:] creates a copy of the list
+		state = states_copy[-1]  # gets the last element in the states_copy list
 
 		for _ in range(self.max_moves):
 			legal = self.board.get_possible_moves()
@@ -122,7 +156,7 @@ class MonteCarlo:
 			state = self.board.get_board()
 			states_copy.append(state)
 			winner = self.decide_winner()
-			if winner is not 0: #0 means there is no winner -1, or 1 are the possible winners
+			if winner is not 0:  # 0 means there is no winner -1, or 1 are the possible winners
 				break
 
 	def choice(self, legal_moves):

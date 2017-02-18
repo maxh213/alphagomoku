@@ -119,7 +119,7 @@ class Board:
 		p == self._next_player is needed because:
 			* The next_player isn't being updated correctly. 
 			* Somewhere the move method is being called with an incorrect player
-		'''	
+		'''
 		if not (player.is_valid(p) and p == self._next_player):
 			return False
 
@@ -151,6 +151,9 @@ class Board:
 
 	def get_next_player(self) -> int:
 		return self._next_player
+
+	def get_played_moves(self) -> list:
+		return self._moves
 
 	def get_board(self) -> BoardStruct:
 		"""
