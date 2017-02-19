@@ -87,7 +87,7 @@ class Node:
 
 		return self.children[0]
 
-	def get_adjacent_moves(self, played_moves):
+	def get_adjacent_moves(self, played_moves: list) -> list:
 		adjacent_moves = []
 		for move in played_moves:
 			x = move[0]
@@ -106,12 +106,12 @@ class Node:
 			filter(lambda move: move not in played_moves and self.valid_coordinate(move), adjacent_moves))
 		return adjacent_moves
 
-	def valid_coordinate(self, move):
+	def valid_coordinate(self, move: MoveStruct) -> bool:
 		x = move[0]
 		y = move[1]
 		return 0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE
 
-	def pick_from_random(self):
+	def pick_from_random(self) -> list:
 		random_moves = []
 		for i in range(0, 10):
 			x = random.randint(0, BOARD_SIZE - 1)
