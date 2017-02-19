@@ -53,7 +53,6 @@ class Node:
 		return self.x, self.y
 
 	def explore(self):
-		self.neural_network.clear_garbage_from_nn()
 		player = self._board.get_next_player()
 		played_moves = self._board.get_played_moves()
 		if len(played_moves) > 0:
@@ -65,14 +64,6 @@ class Node:
 		# print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			# print(x,y,self.player)
-			# if (x == 10 and y == 10):
-			# 	'''
-			# 		This will need changing when we change the tree search to only look at specific moves on the board.
-			# 		However, it probably wont be needed then.
-			#
-			# 		Time each version and see which is better when the time comes.
-			# 	'''
-			# 	self.neural_network.clear_garbage_from_nn()
 			valid = self._board.move(x, y, player)
 			if valid:
 				next_board = deepcopy(self._board)

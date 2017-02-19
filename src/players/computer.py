@@ -23,6 +23,7 @@ class Computer:
 		self.player_int = 0
 
 	def make_move(self, brd: Board) -> MoveStruct:
+		self.neural_network.clear_garbage_from_nn()
 		if self.node is None:
 			board = deepcopy(brd)
 			if board.get_last_move() is None:
