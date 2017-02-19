@@ -1,5 +1,3 @@
-__author__ = "Jan Stránský (https://github.com/stranskyjan/pbrain-pyrandom), Modified for AlphaGomoku"
-
 # functions and variables for pipe AI and functions that communicate with manager through pipes
 # don't modify this file
 
@@ -10,6 +8,8 @@ import win32event
 import win32process
 
 import pywintypes
+
+__author__ = "Jan Stránský (https://github.com/stranskyjan/pbrain-pyrandom), Modified for AlphaGomoku"
 
 DEBUG = False
 ABOUT_FUNC = True

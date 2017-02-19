@@ -1,10 +1,9 @@
-__author__ = "Jan Stránský (https://github.com/stranskyjan/pbrain-pyrandom), Modified for AlphaGomoku"
-
 import pisqpipe as pp
-from pisqpipe import DEBUG_EVAL
-
 from gomokuapp.board import Board
+from pisqpipe import DEBUG_EVAL
 from players import computer
+
+__author__ = "Jan Stránský (https://github.com/stranskyjan/pbrain-pyrandom), Modified for AlphaGomoku"
 
 pp.infotext = 'name="pbrain-alphagomoku", ' \
               'author="Matthew Boakes, Harry Clarke, Matthew Clayton, Max Harris, and Jamie Pont", ' \
