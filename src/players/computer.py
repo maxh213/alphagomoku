@@ -1,6 +1,7 @@
 """
 Contains the logic required to run the bot against a board, and make a move.
 """
+from copy import deepcopy
 
 import treesearch as ts
 from gomokuapp.board import Board, MoveStruct
@@ -17,20 +18,31 @@ def make_move(brd: Board) -> MoveStruct:
 
 class Computer:
 	def __init__(self):
-		self.board = Board()
 		self.neural_network = Neural_Network()
-		# Todo: Come up with a better way to start the nodes off.
-		self.node = mc.Node((None, None), self.board, self.neural_network)
-		
+		self.node = None
+		self.player_int = 0
 
 	def make_move(self, brd: Board) -> MoveStruct:
-		last_move = brd.get_last_move()
-
-		if last_move is not None:
-			x, y = last_move
-			self.board.move(x, y, self.board.get_next_player())
+		if self.node is None:
+			board = deepcopy(brd)
+			if board.get_last_move() is None:
+				self.player_int = -1
+			else:
+				self.player_int = 1
+			self.node = mc.Node((None, None), board, self.neural_network, self.player_int)
+		else:
+			last_move = brd.get_last_move()
+			if last_move is not None:
+				node_found = False
+				for child in self.node.children:
+					if child.get_move() == last_move:
+						node_found = True
+						self.node = child
+						break
+				if not node_found:
+					board = deepcopy(brd)
+					self.node = mc.Node(last_move, board, self.neural_network, self.player_int)
 
 		self.node = self.node.select()
 		x, y = self.node.get_move()
-		self.board.move(x, y, self.board.get_next_player())
 		return x, y

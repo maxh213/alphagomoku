@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 from datetime import datetime, timedelta
 
 from gomokuapp.board import BOARD_SIZE
@@ -26,22 +27,24 @@ class Neural_Network:
 
 
 class Node:
-	DEFAULT_DEPTH = 20
+	DEFAULT_DEPTH = 3
+	DEFAULT_BREADTH = 2
 
 	"""
 	Represents a move that can be made, how good that move is, and what moves can be made after it.
 	"""
 
-	def __init__(self, move: MoveStruct, board: Board, neural_network: Neural_Network):
+	def __init__(self, move: MoveStruct, board: Board, neural_network: Neural_Network, player_for_computer: int):
 		self.children = []
 		self.x, self.y = move
 		self._board = board
 		self.neural_network = neural_network
 		self.debug_nn_outputs = []
-		self.player = self._board.get_next_player()
+		self.player = self._board.get_next_player() * -1
+		self.player_for_computer = player_for_computer
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = 1 if board.decide_winner()[0] is not 0 else self.neural_network.nn(board, self.player)
+		self.value = 10 if board.decide_winner()[0] is not 0 else self.neural_network.nn(board, self.player)
 
 	def get_value(self) -> int:
 		return self.value
@@ -62,17 +65,18 @@ class Node:
 		# print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			# print(x,y,self.player)
-			if (x == 10 and y == 10):
-				'''
-					This will need changing when we change the tree search to only look at specific moves on the board.
-					However, it probably wont be needed then. 
-
-					Time each version and see which is better when the time comes.
-				'''
-				self.neural_network.clear_garbage_from_nn()
+			# if (x == 10 and y == 10):
+			# 	'''
+			# 		This will need changing when we change the tree search to only look at specific moves on the board.
+			# 		However, it probably wont be needed then.
+			#
+			# 		Time each version and see which is better when the time comes.
+			# 	'''
+			# 	self.neural_network.clear_garbage_from_nn()
 			valid = self._board.move(x, y, player)
 			if valid:
-				child = Node((x, y), self._board, self.neural_network)
+				next_board = deepcopy(self._board)
+				child = Node((x, y), next_board, self.neural_network, self.player_for_computer)
 				self.debug_nn_outputs.append({x, y, child.get_value()})
 				self.children.append(child)
 				reversed_move = self._board.reverse_move()
@@ -84,8 +88,23 @@ class Node:
 	def select(self, depth: int = DEFAULT_DEPTH) -> "Node":
 		if len(self.children) == 0:
 			self.explore()
+			if self.player != self.player_for_computer:
+				self.value = 1 - self.value
+			depth -= 1
 
-		return self.children[0]
+		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
+		children_to_explore = self.children[:self.DEFAULT_BREADTH]
+
+		if depth > 0:
+			for child in children_to_explore:
+				child.select(depth)
+
+		for child in self.children:
+			self.value += child.get_value()
+
+		children_to_explore = sorted(children_to_explore, key=lambda child: child.get_value(), reverse=True)
+
+		return children_to_explore[0] if children_to_explore else None
 
 	def get_adjacent_moves(self, played_moves: list) -> list:
 		adjacent_moves = []
