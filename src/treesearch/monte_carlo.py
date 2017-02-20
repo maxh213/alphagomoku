@@ -72,7 +72,7 @@ class Node:
 				self.children.append(child)
 				reversed_move = self._board.reverse_move()
 				assert reversed_move == (x, y, player), "%r vs %r" % (reversed_move, (x, y, player))
-		print(self.debug_nn_outputs)
+		# print(self.debug_nn_outputs)
 
 		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
 
@@ -80,8 +80,12 @@ class Node:
 		if len(self.children) == 0:
 			self.explore()
 			if self.player != self.player_for_computer:
-				self.value = 1 - self.value
+				self.value = -self.value
 			depth -= 1
+
+		winning_node = self.check_for_winning_node()
+		if winning_node is not None:
+			return winning_node
 
 		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
 		children_to_explore = self.children[:self.DEFAULT_BREADTH]
@@ -97,7 +101,13 @@ class Node:
 
 		return children_to_explore[0] if children_to_explore else None
 
-	def get_adjacent_moves(self, played_moves: list) -> list:
+	def check_for_winning_node(self):
+		for child in self.children:
+			if child.get_value() == 10:
+				return child
+		return None
+
+	def get_adjacent_moves(self, played_moves: list) -> set:
 		adjacent_moves = []
 		for move in played_moves:
 			x = move[0]
