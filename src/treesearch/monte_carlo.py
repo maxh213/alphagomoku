@@ -72,7 +72,7 @@ class Node:
 				self.children.append(child)
 				reversed_move = self._board.reverse_move()
 				assert reversed_move == (x, y, player), "%r vs %r" % (reversed_move, (x, y, player))
-		# print(self.debug_nn_outputs)
+		print(self.debug_nn_outputs)
 
 		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
 
