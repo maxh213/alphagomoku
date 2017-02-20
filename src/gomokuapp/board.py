@@ -140,7 +140,7 @@ class Board:
 		self._board[x][y] = 0
 		self._next_player = p
 		if self._winner != 0:
-			self._winner == 0
+			self._winner = 0
 			self._winning_moves = None
 		return x, y, p
 
