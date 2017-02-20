@@ -112,8 +112,8 @@ class Node:
 			go_up_left = (x + 1, y - 1)
 			adjacent_moves.extend(
 				(go_up, go_up_right, go_right, go_down_right, go_down, go_down_left, go_left, go_up_left))
-		adjacent_moves = list(
-			filter(lambda move: move not in played_moves and self.valid_coordinate(move), adjacent_moves))
+		adjacent_moves = filter(lambda move: move not in played_moves and self.valid_coordinate(move), adjacent_moves)
+		adjacent_moves = set(adjacent_moves)
 		return adjacent_moves
 
 	def valid_coordinate(self, move: MoveStruct) -> bool:
