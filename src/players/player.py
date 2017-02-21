@@ -11,6 +11,10 @@ CHAR_PLAYER_2 = 'Y'
 CHAR_NEUTRAL = '-'
 PLAYER_CODES = [CHAR_PLAYER_1, CHAR_NEUTRAL, CHAR_PLAYER_2]
 
+# TODO: Think about incorporating the use of these constants more throughout the project.
+INT_PLAYER_1 = -1
+INT_PLAYER_2 = 1
+
 
 def is_valid(player: int) -> bool:
 	"""

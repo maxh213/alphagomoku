@@ -4,3 +4,9 @@ __pycache__
 src/neuralnetwork/save_data/*.p*
 src/neuralnetwork/save_data/logs
 resources/training/*
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
