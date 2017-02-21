@@ -32,10 +32,10 @@ MODEL_SAVE_FILE_PATH = "neuralnetwork/save_data/models/model.ckpt"
 GRAPH_LOGS_SAVE_FILE_PATH = "neuralnetwork/save_data/logs/"
 
 # ---HYPER PARAMETERS ---
-LEARNING_RATE = 0.03
+LEARNING_RATE = 0.01
 
 # The rate at which neurons are kept after learning
-KEEP_SOME_PROBABILITY = 0.6
+KEEP_SOME_PROBABILITY = 0.5
 KEEP_ALL_PROBABILITY = 1.0
 
 # Setting the below to None means load all of them
@@ -46,10 +46,10 @@ TEST_DATA_FILE_COUNT = None
 INPUT_SIZE = BOARD_SIZE ** 2
 OUTPUT_SIZE = 2
 HEURISTIC_SIZE = 1
-CONV_SIZE = 5
+CONV_SIZE = 14
 CONV_WEIGHT_1_INPUT_CHANNELS = 1
-CONV_WEIGHT_1_FEATURES = 4
-CONV_WEIGHT_2_FEATURES = 4
+CONV_WEIGHT_1_FEATURES = 12
+CONV_WEIGHT_2_FEATURES = 14
 # POOL MULTIPLICATION SIZE = 5 BECAUSE IT REPRESENTS BOARD_SIZE / 4 CAUSE WE DO 2x2 POOLING
 POOL_MULTIPLICATION_SIZE = 5
 CONV_2_OUTPUT_SIZE = POOL_MULTIPLICATION_SIZE * POOL_MULTIPLICATION_SIZE * CONV_WEIGHT_2_FEATURES
@@ -94,7 +94,11 @@ def convert_training_to_batch(training_data, number_of_batches):
 	train_input = []
 	train_output = []
 	heuristics = []
+	batched_count = 0
 	for i in range(len(training_data)):
+		batched_count = batched_count + 1
+		if i % 500 == 0:
+			print(str(batched_count) + "/" + str(len(training_data)) + " batched so far")
 		for j in range(len(training_data[i])):
 			# if the move number is less than 5 and the game lasts more than 5 moves don't bother
 			if not (j < 5 < len(training_data[i])):
