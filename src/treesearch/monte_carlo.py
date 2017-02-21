@@ -45,7 +45,13 @@ class Node:
 		self.player_for_computer = player_for_computer
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = self.WIN_VALUE if board.decide_winner()[0] is not 0 else self.neural_network.nn(board, self.player)
+		self.value = self.set_default_value()
+
+	def set_default_value(self):
+		return self.WIN_VALUE if self.is_winning_move() else self.neural_network.nn(self._board, self.player)
+
+	def is_winning_move(self) -> bool:
+		return self._board.decide_winner()[0] is not 0
 
 	def get_player_of_node(self) -> int:
 		# - because the board will have the player which is about to move not the player for which this node belongs
@@ -108,6 +114,8 @@ class Node:
 			child.select(depth)
 
 	def add_child_scores_to_value(self):
+		self.value = self.set_default_value()
+		self.negate_score_for_opponent_node()
 		for child in self.children:
 			self.value += child.get_value()
 
