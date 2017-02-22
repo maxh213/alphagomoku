@@ -44,28 +44,11 @@ def gather_outputs(board, network):
 		else:
 			nn_outputs.append(0)
 
-	# Ensure there is some value for every cell on the board
-	#if len(nn_outputs) < 400:
-	#	for i in range(len(nn_outputs), 400):
-	#		nn_outputs.append(0)
-
-	# Debugging print
-	for output in nn_outputs:
-		print(output)
-
 	return nn_outputs
 
 # Draw the heatmap
-# Code inspired by http://matplotlib.org/examples/pylab_examples/pcolor_demo.html
-# ! - Above deprecated, see below - !
-# Code inspired by http://stackoverflow.com/questions/2369492/generate-a-heatmap-in-matplotlib-using-a-scatter-data-set
-# ---
-# Code inspired by http://stackoverflow.com/questions/36393929/python-matplotlib-making-heat-map-out-of-tuples-x-y-value
 def draw_graph(outputs):
-	# Generate some test data
-	# x = np.random.randn(8873)
-	# y = np.random.randn(8873)
-	# Generate board's edges
+	# Generate the coordinates
 	x = []
 	y = []
 	for i in range(1, 21):
@@ -73,22 +56,11 @@ def draw_graph(outputs):
 			x.append(j)
 			y.append(i)
 
-	print(x)
-	print(y)
-
-
 	heatmap, _, _ = np.histogram2d(x, y, weights=outputs, bins = 20)
 
 	plt.clf()
 	plt.imshow(heatmap)
 	plt.show()
-
-	# heatmap, xedges, yedges = np.histogram2d(x, y, bins=20)
-	# extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-
-	# plt.clf()
-	# plt.imshow(heatmap.T, extent=extent, origin='lower')
-	# plt.show()
 
 if __name__ == "__main__":
     main()
