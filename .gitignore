@@ -3,6 +3,8 @@ __pycache__
 .idea
 src/neuralnetwork/save_data/*.p*
 src/neuralnetwork/save_data/logs
+src/neuralnetwork/save_data/model/*.ck*
+src/neuralnetwork/save_data/checkpoint
 resources/training/*
 
 # PyInstaller
