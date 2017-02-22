@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.random
 
 from neuralnetwork.training_data import parse_training_file, simulate
 from gomokuapp.board import Board
@@ -20,49 +21,74 @@ def main():
 	instance = inp[0][30]
 	b = Board(instance)
 	outputs = gather_outputs(b, network)
+	b.print_board()
 	draw_graph(outputs)
+
 
 # For a given board, determine the network's output for all adjacent states
 def gather_outputs(board, network):
 	nn_outputs = []
 	moves = board.get_possible_moves()
-	for move in moves:
-		new_board = deepcopy(board)
-		valid = new_board.move(move[0], move[1], board.get_next_player())
-		if valid:
-			nn_outputs.append(network.nn(new_board, new_board.get_next_player()))
+	played = board.get_played_moves()
+	total = moves + played
+	neww = sorted(total)
+	for move in neww:
+		if move not in played:
+			new_board = deepcopy(board)
+			valid = new_board.move(move[0], move[1], board.get_next_player())
+			if valid:
+				nn_outputs.append(network.nn(new_board, new_board.get_next_player()))
+			else:
+				# This should never happen
+				assert False
 		else:
-			# This should never happen
-			assert False
+			nn_outputs.append(0)
+
+	# Ensure there is some value for every cell on the board
+	#if len(nn_outputs) < 400:
+	#	for i in range(len(nn_outputs), 400):
+	#		nn_outputs.append(0)
+
+	# Debugging print
 	for output in nn_outputs:
 		print(output)
 
+	return nn_outputs
+
 # Draw the heatmap
 # Code inspired by http://matplotlib.org/examples/pylab_examples/pcolor_demo.html
+# ! - Above deprecated, see below - !
+# Code inspired by http://stackoverflow.com/questions/2369492/generate-a-heatmap-in-matplotlib-using-a-scatter-data-set
+# ---
+# Code inspired by http://stackoverflow.com/questions/36393929/python-matplotlib-making-heat-map-out-of-tuples-x-y-value
 def draw_graph(outputs):
-	dx, dy = 0.15, 0.05
-	# generate 2 2d grids for the x & y bounds
-	y, x = np.mgrid[slice(-3, 3 + dy, dy),
-	                slice(-3, 3 + dx, dx)]
-	z = (1 - x / 2. + x ** 5 + y ** 3) * np.exp(-x ** 2 - y ** 2)
-	# x and y are bounds, so z should be the value *inside* those bounds.
-	# Therefore, remove the last value from the z array.
-	z = z[:-1, :-1]
-	z_min, z_max = -np.abs(z).max(), np.abs(z).max()
+	# Generate some test data
+	# x = np.random.randn(8873)
+	# y = np.random.randn(8873)
+	# Generate board's edges
+	x = []
+	y = []
+	for i in range(1, 21):
+		for j in range(1, 21):
+			x.append(j)
+			y.append(i)
 
-	plt.subplot(2, 2, 1)
-	plt.pcolor(x, y, z, cmap='RdBu', vmin=z_min, vmax=z_max)
-	plt.title('pcolor')
-	# set the limits of the plot to the limits of the data
-	plt.axis([x.min(), x.max(), y.min(), y.max()])
-	plt.colorbar()
+	print(x)
+	print(y)
 
 
+	heatmap, _, _ = np.histogram2d(x, y, weights=outputs, bins = 20)
 
-
-	plt.subplots_adjust(wspace=0.5, hspace=0.5)
-
+	plt.clf()
+	plt.imshow(heatmap)
 	plt.show()
+
+	# heatmap, xedges, yedges = np.histogram2d(x, y, bins=20)
+	# extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+
+	# plt.clf()
+	# plt.imshow(heatmap.T, extent=extent, origin='lower')
+	# plt.show()
 
 if __name__ == "__main__":
     main()
