@@ -57,8 +57,8 @@ def draw_graph(outputs, should_save=True):
 	# Generate the coordinates
 	x = []
 	y = []
-	for i in range(1, 21):
-		for j in range(1, 21):
+	for i in range(0, 20):
+		for j in range(0, 20):
 			x.append(j)
 			y.append(i)
 
@@ -67,8 +67,19 @@ def draw_graph(outputs, should_save=True):
 	f = plt.figure()
 
 	plt.clf()
-	plt.title("Heatmap of Neural Network Output")
 	plt.imshow(heatmap)
+
+	# Style
+	plt.set_cmap("hot")
+	plt.title("Heatmap of Neural Network Output")
+	plt.xlabel("X Coordinate on Board")
+	plt.ylabel("Y Coordinate on Board")
+	plt.colorbar().set_label("Neural Network Output")
+
+	# Bespoke config
+	plt.gca().invert_yaxis()
+	plt.xticks(np.arange(min(x), max(x)+1, 2.0))
+	plt.yticks(np.arange(min(y), max(y)+1, 2.0))
 	plt.show()
 
 	if should_save:
