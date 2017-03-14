@@ -114,7 +114,7 @@ class Node:
 		if len(self.children) == 0:
 			self.explore()
 			self.negate_score_for_opponent_node()
-			depth -= 1
+
 
 		winning_node = self.check_for_winning_node()
 		if winning_node is not None:
@@ -123,7 +123,7 @@ class Node:
 		children_to_explore = self.children[:breadth]
 		if depth > 0:
 			for child in children_to_explore:
-				child.select(depth)
+				child.select(depth - 1)
 
 		self.add_child_scores_to_value()
 
