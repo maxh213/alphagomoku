@@ -2,7 +2,7 @@ import random
 from copy import deepcopy
 from datetime import datetime, timedelta
 from typing import Tuple, List
-
+from numpy.random import choice
 import math
 
 from gomokuapp.board import BOARD_SIZE
@@ -97,18 +97,8 @@ class Node:
 		total_count = sum(c._explore_count for c in self.children)
 		return value + (2 * math.log(total_count) / node_count) ** 0.5
 
-# Todo: Improve efficiency, if possible.
 	def _select_child(self, children: List["Node"], count: int):
-		chosen = []
-		while len(chosen) < count:
-			count = sum(c._explore_count for c in children)
-			rand = random.randint(0,count)
-			value = 0
-			for c in children:
-				value += self._monte_carlo_score(c)
-				if value >= rand:
-					chosen += c
-					children.remove(c)
+		return choice(children, count, False, [self._monte_carlo_score(c) for c in children])
 
 	def select(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH) -> "Node":
 		if len(self.children) == 0:
