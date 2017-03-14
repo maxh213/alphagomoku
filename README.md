@@ -4,7 +4,7 @@
 ### How to install (Linux)
 * clone the directory from git
 * install python3
-* pip install tensorflow
+* pip install -I tensorflow==0.12.1
 * run sudo sh ./setup.sh
 
 ### How to install (Windows)
