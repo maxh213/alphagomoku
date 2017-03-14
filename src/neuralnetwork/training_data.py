@@ -17,6 +17,7 @@ _TRAINING_DATA_FILES += glob.glob("../resources/training/even_more_fast_training
 _TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_max/*.psq")[:33000]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_harry/*.psq")[-27000:]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_mcmc/*.pqs")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_march/*.pqs")
 
 _TEST_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[-2500:]
 _TEST_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[-1400:]
