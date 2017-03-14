@@ -128,10 +128,9 @@ class Node:
 			child.select(depth)
 
 	def add_child_scores_to_value(self):
-		self.value = self.set_default_value()
-		self.negate_score_for_opponent_node()
-		for child in self.children:
-			self.value += child.get_value()
+		self.value = sum(c.value for c in self.children) / len(self.children)
+		if self.value < 0:
+			self.value += 1
 
 	def check_for_winning_node(self) -> "Node":
 		for child in self.children:
