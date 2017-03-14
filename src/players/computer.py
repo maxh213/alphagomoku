@@ -24,7 +24,6 @@ class Computer:
 		self.player_int = 0
 
 	def make_move(self, brd: Board) -> MoveStruct:
-		self.neural_network.clear_garbage_from_nn()
 		if self.is_new_game():
 			self.create_node(brd)
 			self.set_player_number_for_computer(brd)
@@ -35,7 +34,7 @@ class Computer:
 			if not node_found:
 				self.create_node(brd, last_move)
 
-		self.node = self.node.select()
+		self.node = self.node.get_play()
 		x, y = self.node.get_move()
 		return x, y
 

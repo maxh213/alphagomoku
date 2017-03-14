@@ -32,6 +32,7 @@ class Neural_Network:
 class Node:
 	DEFAULT_DEPTH = 3
 	DEFAULT_BREADTH = 2
+	DEFAULT_TIME_SECONDS = 5
 	WIN_VALUE = 10
 
 	"""
@@ -39,7 +40,7 @@ class Node:
 	"""
 
 	def __init__(self, move: MoveStruct, board: Board, neural_network: Neural_Network, player_for_computer: int):
-		self._explore_count = 0
+		self._explore_count = 1
 		self.children = []
 		self.x, self.y = move
 		self._board = board
@@ -97,8 +98,17 @@ class Node:
 		total_count = sum(c._explore_count for c in self.children)
 		return value + (2 * math.log(total_count) / node_count) ** 0.5
 
-	def _select_child(self, children: List["Node"], count: int):
+	def _select_children(self, children: List["Node"], count: int = 1) -> List["Node"]:
 		return choice(children, count, False, [self._monte_carlo_score(c) for c in children])
+
+	def get_play(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH, time_seconds: int = DEFAULT_TIME_SECONDS) -> "Node":
+		start_time = datetime.utcnow()
+		while (datetime.utcnow() - start_time) < timedelta(seconds=time_seconds):
+			self.neural_network.clear_garbage_from_nn()
+			child = self.select(depth, breadth)
+			print(child)
+			print(datetime.utcnow() - start_time)
+		return child
 
 	def select(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH) -> "Node":
 		if len(self.children) == 0:
@@ -112,7 +122,8 @@ class Node:
 
 		children_to_explore = self.children[:breadth]
 		if depth > 0:
-			self.explore_children(children_to_explore, depth)
+			for child in children_to_explore:
+				child.select(depth)
 
 		self.add_child_scores_to_value()
 
@@ -122,10 +133,6 @@ class Node:
 	def negate_score_for_opponent_node(self):
 		if self.player != self.player_for_computer:
 			self.value = -self.value
-
-	def explore_children(self, children_to_explore: list, depth: int):
-		for child in children_to_explore:
-			child.select(depth)
 
 	def add_child_scores_to_value(self):
 		self.value = sum(c.value for c in self.children) / len(self.children)
