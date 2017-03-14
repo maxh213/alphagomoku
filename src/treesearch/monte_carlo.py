@@ -1,6 +1,9 @@
 import random
 from copy import deepcopy
 from datetime import datetime, timedelta
+from typing import Tuple, List
+
+import math
 
 from gomokuapp.board import BOARD_SIZE
 from gomokuapp.board import Board, BoardStruct, MoveStruct
@@ -36,6 +39,7 @@ class Node:
 	"""
 
 	def __init__(self, move: MoveStruct, board: Board, neural_network: Neural_Network, player_for_computer: int):
+		self._explore_count = 0
 		self.children = []
 		self.x, self.y = move
 		self._board = board
@@ -64,6 +68,7 @@ class Node:
 		return self.x, self.y
 
 	def explore(self):
+		self._explore_count += 1
 		player_to_move = self._board.get_next_player()
 		played_moves = self._board.get_played_moves()
 		moves = self.get_playable_moves(played_moves)
@@ -85,6 +90,25 @@ class Node:
 		next_board = deepcopy(self._board)
 		child = Node((x, y), next_board, self.neural_network, self.player_for_computer)
 		return child
+
+	def _monte_carlo_score(self, child: "Node") -> float:
+		value = child.value
+		node_count = child._explore_count
+		total_count = sum(c._explore_count for c in self.children)
+		return value + (2 * math.log(total_count) / node_count) ** 0.5
+
+# Todo: Improve efficiency, if possible.
+	def _select_child(self, children: List["Node"], count: int):
+		chosen = []
+		while len(chosen) < count:
+			count = sum(c._explore_count for c in children)
+			rand = random.randint(0,count)
+			value = 0
+			for c in children:
+				value += self._monte_carlo_score(c)
+				if value >= rand:
+					chosen += c
+					children.remove(c)
 
 	def select(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH) -> "Node":
 		if len(self.children) == 0:
@@ -128,6 +152,7 @@ class Node:
 		if len(played_moves) > 0:
 			moves = self.get_adjacent_moves(played_moves)
 		else:
+			# Todo: Replace with a better selection method.
 			# Computer goes first so try from 10 random moves. Will most likely want to change at some point
 			moves = self.pick_from_random()
 		return moves
@@ -152,9 +177,7 @@ class Node:
 		return adjacent_moves
 
 	def valid_coordinate(self, move: MoveStruct) -> bool:
-		x = move[0]
-		y = move[1]
-		return 0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE
+		return all(map(lambda x: 0 <= x < BOARD_SIZE, move))
 
 	def pick_from_random(self) -> list:
 		random_moves = []
