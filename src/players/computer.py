@@ -9,14 +9,6 @@ from players.player import INT_PLAYER_1, INT_PLAYER_2
 from treesearch import monte_carlo as mc
 from treesearch.monte_carlo import Neural_Network
 
-TREE_SEARCH_DEPTH = 2
-
-
-def make_move(brd: Board) -> MoveStruct:
-	x, y = ts.winning_moves(brd, TREE_SEARCH_DEPTH)[0]
-	return x, y
-
-
 class Computer:
 	def __init__(self):
 		self.neural_network = Neural_Network()

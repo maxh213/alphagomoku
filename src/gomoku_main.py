@@ -15,7 +15,6 @@ COMPUTER = computer.Computer()
 PLAYER_TYPES = {
 	'c': ('A computer', COMPUTER.make_move),
 	'h': ('Manual input from (supposedly) a human', human.make_move),
-	't': ('Terrible tree', computer.make_move)
 }
 
 ENUMERATE_TYPE_MESSAGE = '\r\nTypes include %s: ' % [(k, PLAYER_TYPES[k][0]) for k in PLAYER_TYPES]
