@@ -16,8 +16,8 @@ _TRAINING_DATA_FILES += glob.glob("../resources/training/more_fast_training_data
 _TRAINING_DATA_FILES += glob.glob("../resources/training/even_more_fast_training_data/*.psq")[:4000]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_max/*.psq")[:33000]
 _TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_harry/*.psq")[-27000:]
-_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_mcmc/*.pqs")
-_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_march/*.pqs")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_mcmc/*.psq")
+_TRAINING_DATA_FILES += glob.glob("../resources/training/training_data_march/*.psq")
 
 _TEST_DATA_FILES = glob.glob("../resources/training/fast_training_data/*.psq")[-2500:]
 _TEST_DATA_FILES += glob.glob("../resources/training/more_fast_training_data/*.psq")[-1400:]
@@ -150,7 +150,7 @@ def _load_or_parse_data(parse_paths: List[str], save_path: str, file_count: int 
 	:param file_count: The amount of training data to return.
 	:return: Parsed training data, one way or another.
 	"""
-	running_on_raptor = False
+	running_on_raptor = True
 	if isfile(save_path) or not running_on_raptor:
 		data = _load_data(save_path)
 	else:
