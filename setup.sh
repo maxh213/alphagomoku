@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 mkdir resources
 cd resources
-mkdir training
-#TODO: PULL THE TRAINING_DATA FROM SOMEONES RAPTOR DIRECTORY AND UNZIP IT...
+wget raptor.kent.ac.uk/~jp486/CO600/training.zip
+unzip training.zip -d .
