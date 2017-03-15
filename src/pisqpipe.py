@@ -189,6 +189,7 @@ def stop():
 
 
 def start():
+	global start_time
 	start_time = win32api.GetTickCount()
 	stop()
 	global width, height

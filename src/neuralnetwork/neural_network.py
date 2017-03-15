@@ -549,9 +549,11 @@ def setup_network():
 	restore(sess, MODEL_SAVE_FILE_PATH)
 	return training_input, heuristic, keep_prob, tf_output, sess
 
+#This will convert x from a value between 0 and 1 to a value between -1 and 1
+def change_range(x):
+	return (((x - 0) / (1 - 0)) * (1 - -1)) + -1
 
 def use_network(input, training_input, heuristic, keep_prob, tf_output, sess, player):
-	#begin = datetime.utcnow()
 	test_input = [input]
 	test_input_batch = one_hot_input_batch(test_input)
 	heuristic_ = get_number_in_a_row_heuristic_for_move(input)
@@ -559,14 +561,10 @@ def use_network(input, training_input, heuristic, keep_prob, tf_output, sess, pl
 	output = sess.run(tf.nn.softmax(tf_output), feed_dict=feed_dict_test)
 	winner = get_winner(output[0])
 
-	#print_use_output(winner, output[0])
-
-	#end = datetime.utcnow()
-	#print(end - begin)
-	if winner != player:
-		return 1 - max(output[0])
+	if winner == player:
+		return change_range(max(output[0]))
 	else:
-		return max(output[0])
+		return change_range(min(output[0]))
 
 
 

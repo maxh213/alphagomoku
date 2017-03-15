@@ -1,12 +1,13 @@
+import math
 import random
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import Tuple, List
+from typing import List
+
 from numpy.random import choice
-import math
 
 from gomokuapp.board import BOARD_SIZE
-from gomokuapp.board import Board, BoardStruct, MoveStruct
+from gomokuapp.board import Board, MoveStruct
 from neuralnetwork.neural_network import setup_network, use_network, reset_default_graph
 
 
