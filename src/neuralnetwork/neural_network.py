@@ -505,17 +505,6 @@ def count_in_a_row_diagonally(move, player):
 
 	return count_in_a_row_horizontally(all_diagonals_in_move, player)
 
-
-def get_winner(output):
-	max_value = max(output)
-	winner = numpy.where(output == max_value)
-	# Verify why [0][0] is required
-	if winner[0][0] == 0:
-		return -1
-	else:
-		return 1
-
-
 def print_use_output(winner, output):
 	print([winner, max(output)])
 
@@ -549,23 +538,15 @@ def setup_network():
 	restore(sess, MODEL_SAVE_FILE_PATH)
 	return training_input, heuristic, keep_prob, tf_output, sess
 
-#This will convert x from a value between 0 and 1 to a value between -1 and 1
-def change_range(x):
-	return (((x - 0) / (1 - 0)) * (1 - -1)) + -1
 
 def use_network(input, training_input, heuristic, keep_prob, tf_output, sess, player):
 	test_input = [input]
 	test_input_batch = one_hot_input_batch(test_input)
 	heuristic_ = get_number_in_a_row_heuristic_for_move(input)
 	feed_dict_test = {training_input: test_input_batch, keep_prob: KEEP_ALL_PROBABILITY, heuristic: [[heuristic_]]}
-	output = sess.run(tf.nn.softmax(tf_output), feed_dict=feed_dict_test)
-	winner = get_winner(output[0])
+	output = sess.run(tf.nn.softmax(tf_output), feed_dict=feed_dict_test)[0]
 
-	if winner == player:
-		return change_range(max(output[0]))
-	else:
-		return change_range(min(output[0]))
-
+	return output[int((player + 1)/2)]
 
 
 if __name__ == '__main__':
