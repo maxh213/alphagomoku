@@ -3,18 +3,10 @@ Contains the logic required to run the bot against a board, and make a move.
 """
 from copy import deepcopy
 
-import treesearch as ts
 from gomokuapp.board import Board, MoveStruct
 from players.player import INT_PLAYER_1, INT_PLAYER_2
 from treesearch import monte_carlo as mc
 from treesearch.monte_carlo import Neural_Network
-
-TREE_SEARCH_DEPTH = 2
-
-
-def make_move(brd: Board) -> MoveStruct:
-	x, y = ts.winning_moves(brd, TREE_SEARCH_DEPTH)[0]
-	return x, y
 
 
 class Computer:
@@ -24,7 +16,6 @@ class Computer:
 		self.player_int = 0
 
 	def make_move(self, brd: Board) -> MoveStruct:
-		self.neural_network.clear_garbage_from_nn()
 		if self.is_new_game():
 			self.create_node(brd)
 			self.set_player_number_for_computer(brd)
@@ -35,7 +26,7 @@ class Computer:
 			if not node_found:
 				self.create_node(brd, last_move)
 
-		self.node = self.node.select()
+		self.node = self.node.get_play()
 		x, y = self.node.get_move()
 		return x, y
 

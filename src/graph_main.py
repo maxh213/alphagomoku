@@ -1,18 +1,16 @@
+import sys
+from copy import deepcopy
+import glob
+
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-
 import numpy as np
-import numpy.random
 
-from neuralnetwork.training_data import parse_training_file, simulate
 from gomokuapp.board import Board
+from neuralnetwork.training_data import parse_training_file, simulate
 from treesearch.monte_carlo import Neural_Network
 
-from copy import deepcopy
-
-import sys
-
 FILE_LOCATION = "resources/training/training_data_max/2x1-31(98).psq"
+
 
 # Generate network input, determine network output, create heatmap
 def main(file_path=FILE_LOCATION, game_number=16):
@@ -20,7 +18,7 @@ def main(file_path=FILE_LOCATION, game_number=16):
 
 	board = parse_training_file(file_path)
 	inp = simulate(board)
-	instance = inp[0][int(game_number)] # Some move within a game
+	instance = inp[0][int(game_number)]  # Some move within a game
 	b = Board(instance)
 
 	# Gather neural network outputs for each possible move on board
@@ -37,8 +35,8 @@ def gather_outputs(board, network):
 	moves = board.get_possible_moves()
 	played = board.get_played_moves()
 	total = moves + played
-	neww = sorted(total)
-	for move in neww:
+	new = sorted(total)
+	for move in new:
 		if move not in played:
 			new_board = deepcopy(board)
 			valid = new_board.move(move[0], move[1], board.get_next_player())
@@ -52,6 +50,7 @@ def gather_outputs(board, network):
 
 	return nn_outputs
 
+
 # Draw the heatmap
 def draw_graph(outputs, should_save=True):
 	# Generate the coordinates
@@ -62,7 +61,7 @@ def draw_graph(outputs, should_save=True):
 			x.append(j)
 			y.append(i)
 
-	heatmap, _, _ = np.histogram2d(x, y, weights=outputs, bins = 20)
+	heatmap, _, _ = np.histogram2d(x, y, weights=outputs, bins=20)
 
 	f = plt.figure()
 
@@ -78,12 +77,14 @@ def draw_graph(outputs, should_save=True):
 
 	# Bespoke config
 	plt.gca().invert_yaxis()
-	plt.xticks(np.arange(min(x), max(x)+1, 2.0))
-	plt.yticks(np.arange(min(y), max(y)+1, 2.0))
+	plt.xticks(np.arange(min(x), max(x) + 1, 2.0))
+	plt.yticks(np.arange(min(y), max(y) + 1, 2.0))
 	plt.show()
 
 	if should_save:
-		f.savefig("resources/heatmaps/heatmap.pdf")
+		pdf_list = glob.glob("resources/heatmaps/*.pdf")
+		pdf_count = len(pdf_list)
+		f.savefig("resources/heatmaps/heatmap%s.pdf" % (pdf_count))
 
 
 if __name__ == "__main__":
@@ -95,7 +96,7 @@ if __name__ == "__main__":
 		try:
 			main(path, game)
 		except IOError as fnf:
-			print("%s is not a valid file location." % (path))
+			print("%s is not a valid file location." % path)
 		except Exception as e:
 			print("Please enter a valid game count.")
 			print(e)
