@@ -1,5 +1,6 @@
 import sys
 from copy import deepcopy
+import glob
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -81,7 +82,9 @@ def draw_graph(outputs, should_save=True):
 	plt.show()
 
 	if should_save:
-		f.savefig("resources/heatmaps/heatmap.pdf")
+		pdf_list = glob.glob("resources/heatmaps/*.pdf")
+		pdf_count = len(pdf_list)
+		f.savefig("resources/heatmaps/heatmap%s.pdf" % (pdf_count))
 
 
 if __name__ == "__main__":
