@@ -29,17 +29,21 @@ class Neural_Network:
 		self.training_input, self.heuristic, self.keep_prob, self.tf_output, self.sess = setup_network()
 
 
+nodes_created = 0
+
 class Node:
-	DEFAULT_DEPTH = 3
-	DEFAULT_BREADTH = 2
+	DEFAULT_DEPTH = 1
+	DEFAULT_BREADTH = 1
 	DEFAULT_TIME_SECONDS = 5
-	WIN_VALUE = 10
+	WIN_VALUE = 1
 
 	"""
 	Represents a move that can be made, how good that move is, and what moves can be made after it.
 	"""
 
 	def __init__(self, move: MoveStruct, board: Board, neural_network: Neural_Network, player_for_computer: int):
+		global nodes_created
+		nodes_created += 1
 		self._explore_count = 1
 		self.children = []
 		self.x, self.y = move
@@ -50,10 +54,7 @@ class Node:
 		self.player_for_computer = player_for_computer
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
-		self.value = self.set_default_value()
-
-	def set_default_value(self):
-		return self.WIN_VALUE if self.is_winning_move() else self.neural_network.nn(self._board, self.player)
+		self.value = self.WIN_VALUE if self.is_winning_move() else self.neural_network.nn(self._board, self.player)
 
 	def is_winning_move(self) -> bool:
 		return self._board.decide_winner()[0] is not 0
@@ -61,9 +62,6 @@ class Node:
 	def get_player_of_node(self) -> int:
 		# - because the board will have the player which is about to move not the player for which this node belongs
 		return -self._board.get_next_player()
-
-	def get_value(self) -> int:
-		return self.value
 
 	def get_move(self) -> MoveStruct:
 		return self.x, self.y
@@ -79,13 +77,13 @@ class Node:
 			valid = self._board.move(x, y, player_to_move)
 			if valid:
 				child = self.create_child_node(x, y)
-				self.debug_nn_outputs.append({x, y, child.get_value()})
+				self.debug_nn_outputs.append({x, y, child.value})
 				self.children.append(child)
 				reversed_move = self._board.reverse_move()
 				assert reversed_move == (x, y, player_to_move), "%r vs %r" % (reversed_move, (x, y, player_to_move))
 		# print(self.debug_nn_outputs)
 
-		self.children = sorted(self.children, key=lambda child: child.get_value(), reverse=True)
+		self.children = sorted(self.children, key=lambda child: child.value, reverse=True)
 
 	def create_child_node(self, x: int, y: int) -> "Node":
 		next_board = deepcopy(self._board)
@@ -96,38 +94,44 @@ class Node:
 		value = child.value
 		node_count = child._explore_count
 		total_count = sum(c._explore_count for c in self.children)
-		return value + (2 * math.log(total_count) / node_count) ** 0.5
+		score = value + (2 * math.log(total_count) / node_count) ** 0.5
+		# print("Monte carlo score: (%r) (%r)" % (child, score))
+		return score
 
-	def _select_children(self, children: List["Node"], count: int = 1) -> List["Node"]:
-		return choice(children, count, False, [self._monte_carlo_score(c) for c in children])
+	def _select_children(self, children: List["Node"]) -> List["Node"]:
+		return sorted(children, key=self._monte_carlo_score, reverse=True)
 
 	def get_play(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH, time_seconds: int = DEFAULT_TIME_SECONDS) -> "Node":
+		global nodes_created
 		start_time = datetime.utcnow()
 		while (datetime.utcnow() - start_time) < timedelta(seconds=time_seconds):
+			nodes_created = 0
 			self.neural_network.clear_garbage_from_nn()
-			child = self.select(depth, breadth)
-			print(child)
-			print(datetime.utcnow() - start_time)
-		return child
+			self.select(depth, breadth)
+			winning = sorted(self.children, key=lambda c:c.value)[-1]
+			print("%r, Time: %ds, Nodes: %r" % (winning._board.get_last_move(), (datetime.utcnow() - start_time).seconds, nodes_created))
+			print()
+		print("Making move %r: %ds" % (winning._board.get_last_move(), (datetime.utcnow() - start_time).seconds))
+		return winning
 
 	def select(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH) -> "Node":
 		if len(self.children) == 0:
+			breadth -= 1
 			self.explore()
 			self.negate_score_for_opponent_node()
-
 
 		winning_node = self.check_for_winning_node()
 		if winning_node is not None:
 			return winning_node
 
-		children_to_explore = self.children[:breadth]
+		children_to_explore = self._select_children(self.children)[:breadth]
 		if depth > 0:
 			for child in children_to_explore:
-				child.select(depth - 1)
+				child.select(depth)
 
 		self.add_child_scores_to_value()
 
-		children_to_explore = sorted(children_to_explore, key=lambda child: child.get_value(), reverse=True)
+		children_to_explore = sorted(children_to_explore, key=lambda child: child.value, reverse=True)
 		return children_to_explore[0] if children_to_explore else None
 
 	def negate_score_for_opponent_node(self):
@@ -141,7 +145,7 @@ class Node:
 
 	def check_for_winning_node(self) -> "Node":
 		for child in self.children:
-			if child.get_value() == self.WIN_VALUE:
+			if child.value == self.WIN_VALUE:
 				return child
 
 	def get_playable_moves(self, played_moves: list) -> list:
