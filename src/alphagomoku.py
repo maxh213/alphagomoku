@@ -28,9 +28,8 @@ def brain_init():
 
 
 def brain_restart():
-	for x in range(pp.width):
-		for y in range(pp.height):
-			board.get_board()[x][y] = 0
+	global board
+	board = Board()
 	pp.pipeOut("OK")
 
 
@@ -40,28 +39,28 @@ def isFree(x, y):
 
 def brain_my(x, y):
 	if isFree(x, y):
-		board.get_board()[x][y] = 1
+		board.move(x, y, board.get_next_player())
 	else:
 		pp.pipeOut("ERROR my move [{},{}]".format(x, y))
 
 
 def brain_opponents(x, y):
 	if isFree(x, y):
-		board.get_board()[x][y] = 2
+		board.move(x, y, board.get_next_player())
 	else:
 		pp.pipeOut("ERROR opponents's move [{},{}]".format(x, y))
 
 
 def brain_block(x, y):
 	if isFree(x, y):
-		board.get_board()[x][y] = 3
+		board.move(x, y, board.get_next_player())
 	else:
 		pp.pipeOut("ERROR winning move [{},{}]".format(x, y))
 
 
 def brain_takeback(x, y):
 	if x >= 0 and pp.width > 0 <= y < pp.height and board.get_board()[x][y] != 0:
-		board.get_board()[x][y] = 0
+		board.reverse_move()
 		return 0
 	return 2
 
@@ -71,8 +70,6 @@ def brain_turn():
 		return
 	i = 0
 	while True:
-		# x = random.randint(0, pp.width)
-		# y = random.randint(0, pp.height)
 		x, y = COMPUTER.make_move(board)
 		i += 1
 		if pp.terminateAI:

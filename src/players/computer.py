@@ -3,11 +3,11 @@ Contains the logic required to run the bot against a board, and make a move.
 """
 from copy import deepcopy
 
-import treesearch as ts
 from gomokuapp.board import Board, MoveStruct
 from players.player import INT_PLAYER_1, INT_PLAYER_2
 from treesearch import monte_carlo as mc
 from treesearch.monte_carlo import Neural_Network
+
 
 class Computer:
 	def __init__(self):

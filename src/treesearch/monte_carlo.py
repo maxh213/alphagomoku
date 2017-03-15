@@ -1,12 +1,13 @@
+import math
 import random
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import Tuple, List
+from typing import List
+
 from numpy.random import choice
-import math
 
 from gomokuapp.board import BOARD_SIZE
-from gomokuapp.board import Board, BoardStruct, MoveStruct
+from gomokuapp.board import Board, MoveStruct
 from neuralnetwork.neural_network import setup_network, use_network, reset_default_graph
 
 
@@ -106,15 +107,14 @@ class Node:
 		while (datetime.utcnow() - start_time) < timedelta(seconds=time_seconds):
 			self.neural_network.clear_garbage_from_nn()
 			child = self.select(depth, breadth)
-			print(child)
-			print(datetime.utcnow() - start_time)
+		# print(child)
+		# print(datetime.utcnow() - start_time)
 		return child
 
 	def select(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH) -> "Node":
 		if len(self.children) == 0:
 			self.explore()
 			self.negate_score_for_opponent_node()
-
 
 		winning_node = self.check_for_winning_node()
 		if winning_node is not None:
