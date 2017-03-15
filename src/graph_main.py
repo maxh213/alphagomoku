@@ -28,6 +28,12 @@ def main(file_path=FILE_LOCATION, game_number=16):
 	# Call with additional parameter False to prevent PDF output
 	draw_graph(outputs)
 
+# Allow the graph generation code to be called elsewhere within the application,
+# enabling graphs to be generated as a game plays out
+def use_graph_gen(board, network):
+	b = deepcopy(board)
+	outputs = gather_outputs(b, network)
+	draw_graph(outputs)
 
 # For a given board, determine the network's output for all adjacent states
 def gather_outputs(board, network):
@@ -46,7 +52,7 @@ def gather_outputs(board, network):
 				# This should never happen
 				assert False
 		else:
-			nn_outputs.append(0)
+			nn_outputs.append(-1)
 
 	return nn_outputs
 
@@ -79,7 +85,8 @@ def draw_graph(outputs, should_save=True):
 	plt.gca().invert_yaxis()
 	plt.xticks(np.arange(min(x), max(x) + 1, 2.0))
 	plt.yticks(np.arange(min(y), max(y) + 1, 2.0))
-	plt.show()
+	# Uncomment to have the graph displayed on-screen when generated
+	# plt.show()
 
 	if should_save:
 		pdf_list = glob.glob("resources/heatmaps/*.pdf")
