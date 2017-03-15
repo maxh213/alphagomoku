@@ -8,15 +8,17 @@ from players.player import INT_PLAYER_1, INT_PLAYER_2
 from treesearch import monte_carlo as mc
 from treesearch.monte_carlo import Neural_Network
 
-from graph_main import use_graph_gen
+# Change to True to produce heatmap PDFs
+GEN_GRAPH = False
+
+if GEN_GRAPH:
+	from graph_main import use_graph_gen
 
 class Computer:
 	def __init__(self):
 		self.neural_network = Neural_Network()
 		self.node = None
 		self.player_int = 0
-		# Change to True to produce heatmap PDFs
-		self.should_graph = False
 
 	def make_move(self, brd: Board) -> MoveStruct:
 		if self.is_new_game():
@@ -29,7 +31,7 @@ class Computer:
 			if not node_found:
 				self.create_node(brd, last_move)
 
-		if self.should_graph:
+		if GEN_GRAPH:
 			use_graph_gen(self.node._board, self.neural_network)
 
 		self.node = self.node.get_play()
