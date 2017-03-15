@@ -135,9 +135,9 @@ class Node:
 			self.value = -self.value
 
 	def add_child_scores_to_value(self):
-		self.value = sum(c.value for c in self.children) / len(self.children)
-		if self.value < 0:
-			self.value += 1
+		self.value = self.set_default_value()
+		self.value = (self.value + sum(c.value for c in self.children)) / (len(self.children) + 1)
+		self.negate_score_for_opponent_node()
 
 	def check_for_winning_node(self) -> "Node":
 		for child in self.children:
