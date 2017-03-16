@@ -28,8 +28,9 @@ def brain_init():
 
 
 def brain_restart():
-	global board
+	global board, COMPUTER
 	board = Board()
+	COMPUTER = computer.Computer()
 	pp.pipeOut("OK")
 
 
