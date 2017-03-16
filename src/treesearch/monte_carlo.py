@@ -31,8 +31,8 @@ class Neural_Network:
 
 
 class Node:
-	DEFAULT_DEPTH = 3
-	DEFAULT_BREADTH = 2
+	DEFAULT_DEPTH = 2
+	DEFAULT_BREADTH = 4
 	DEFAULT_TIME_SECONDS = 5
 	WIN_VALUE = 10
 
@@ -107,7 +107,14 @@ class Node:
 		while (datetime.utcnow() - start_time) < timedelta(seconds=time_seconds):
 			self.neural_network.clear_garbage_from_nn()
 			child = self.select(depth, breadth)
-		# print(child)
+		for kid in self.children:
+			print(kid.value)
+			print(kid.x)
+			print(kid.y)
+			print("-")
+		print(child.value)
+		print(child.x)
+		print(child.y)
 		# print(datetime.utcnow() - start_time)
 		return child
 
@@ -136,7 +143,7 @@ class Node:
 
 	def add_child_scores_to_value(self):
 		self.value = self.set_default_value()
-		self.value = (self.value + sum(c.value for c in self.children)) / (len(self.children) + 1)
+		self.value = ((self.value * 0.5) + (sum(c.value for c in self.children) * 0.5)) / (len(self.children) + 1)
 		self.negate_score_for_opponent_node()
 
 	def check_for_winning_node(self) -> "Node":
@@ -145,6 +152,7 @@ class Node:
 				return child
 
 	def get_playable_moves(self, played_moves: list) -> list:
+		print(played_moves)
 		if len(played_moves) > 0:
 			moves = self.get_adjacent_moves(played_moves)
 		else:

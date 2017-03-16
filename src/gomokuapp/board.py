@@ -38,6 +38,8 @@ class Board:
 		self._winner = 0
 		self._winning_moves = None
 		self._moves = []
+		self.player_minus_one_moves = []
+		self.player_one_moves = []
 
 	def _init_from_board_struct(self, board_struct: BoardStruct):
 		"""
@@ -124,6 +126,10 @@ class Board:
 			return False
 
 		self._next_player = -p
+		if p == 1:
+			self.player_one_moves.append((x,y))
+		elif p == -1:
+			self.player_minus_one_moves.append((x,y))
 		self._moves.append((x, y))
 		self._board[x][y] = p
 		self._decide_winner(x, y)
@@ -154,6 +160,12 @@ class Board:
 
 	def get_played_moves(self) -> list:
 		return self._moves
+
+	#def get_played_moves(self, player):
+	#	if player == -1:
+	#		return self.player_minus_one_moves
+	#	elif player == 1:
+	#		return self.player_one_moves
 
 	def get_board(self) -> BoardStruct:
 		"""
