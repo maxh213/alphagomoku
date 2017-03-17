@@ -22,8 +22,8 @@ class Computer:
 
 	def make_move(self, brd: Board) -> MoveStruct:
 		if self.is_new_game():
-			self.create_node(brd)
 			self.set_player_number_for_computer(brd)
+			self.create_node(brd)
 		else:
 			last_move = brd.get_last_move()
 			assert last_move is not None, "Expected to have received a move but was None"
