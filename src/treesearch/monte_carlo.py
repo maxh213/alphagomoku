@@ -31,7 +31,7 @@ class Neural_Network:
 
 
 class Node:
-	DEFAULT_DEPTH = 2
+	DEFAULT_DEPTH = 0
 	DEFAULT_BREADTH = 4
 	DEFAULT_TIME_SECONDS = 5
 	WIN_VALUE = 10
@@ -135,6 +135,13 @@ class Node:
 		self.add_child_scores_to_value()
 
 		children_to_explore = sorted(children_to_explore, key=lambda child: child.get_value(), reverse=True)
+		print("whores")
+		print(self.x)
+		print(self.y)
+		print("[")
+		for kid in children_to_explore:
+			print(kid.value)
+		print("]")
 		return children_to_explore[0] if children_to_explore else None
 
 	def negate_score_for_opponent_node(self):
