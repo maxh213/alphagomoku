@@ -50,12 +50,12 @@ class Node:
 		self.x, self.y = move
 		self._board = board
 		self.neural_network = neural_network
-		self.debug_nn_outputs = []
 		self.player = self.get_player_of_node()
 		self.player_for_computer = player_for_computer
 
 		# Value between -1 and 1, where 1 means we've won, and -1 means we've lost.
 		self._default_value = self.WIN_VALUE if self.is_winning_move() else self.neural_network.nn(self._board, self.player)
+		self._default_value = self.negate_score_for_opponent_node(self._default_value)
 		self.value = self._default_value
 
 	def is_winning_move(self) -> bool:
@@ -76,13 +76,8 @@ class Node:
 		# print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			# print(x,y,self.player_to_move)
-			valid = self._board.move(x, y, player_to_move)
-			if valid:
-				child = self.create_child_node(x, y)
-				self.debug_nn_outputs.append({x, y, child.value})
-				self.children.append(child)
-				reversed_move = self._board.reverse_move()
-				assert reversed_move == (x, y, player_to_move), "%r vs %r" % (reversed_move, (x, y, player_to_move))
+			child = self.create_child_node(x, y)
+			self.children.append(child)
 		# print(self.debug_nn_outputs)
 
 		self.children = sorted(self.children, key=lambda child: child.value, reverse=True)
@@ -118,9 +113,8 @@ class Node:
 
 	def select(self, depth: int = DEFAULT_DEPTH, breadth: int = DEFAULT_BREADTH) -> "Node":
 		if len(self.children) == 0:
-			breadth -= 1
+			depth -= 1
 			self.explore()
-			self.negate_score_for_opponent_node()
 
 		winning_node = self.check_for_winning_node()
 		if winning_node is not None:
@@ -136,14 +130,14 @@ class Node:
 		children_to_explore = sorted(children_to_explore, key=lambda child: child.value, reverse=True)
 		return children_to_explore[0] if children_to_explore else None
 
-	def negate_score_for_opponent_node(self):
+	def negate_score_for_opponent_node(self, v: int) -> int:
 		if self.player != self.player_for_computer:
-			self.value = -self.value
+			return -v
+		return v
 
 	def add_child_scores_to_value(self):
-		self.value = self._default_value
-		self.value = (self.value + sum(c.value for c in self.children)) / (len(self.children) + 1)
-		self.negate_score_for_opponent_node()
+		self.value = (self._default_value + sum(c.value for c in self.children)) / (len(self.children) + 1)
+		self.value = self.negate_score_for_opponent_node(self.value)
 
 	def check_for_winning_node(self) -> "Node":
 		for child in self.children:
@@ -188,3 +182,6 @@ class Node:
 			y = random.randint(0, BOARD_SIZE - 1)
 			random_moves.append((x, y))
 		return random_moves
+
+	def __str__(self):
+		return (self.x, self.y).__str__()
