@@ -76,8 +76,11 @@ class Node:
 		# print("Exploring %r,%r: %r" % (self.x, self.y, moves))
 		for x, y in moves:
 			# print(x,y,self.player_to_move)
+			assert self._board.move(x, y, player_to_move)
 			child = self.create_child_node(x, y)
 			self.children.append(child)
+			reversed_move = self._board.reverse_move()
+			assert reversed_move == (x, y, player_to_move), "%r vs %r" % (reversed_move, (x, y, player_to_move))
 		# print(self.debug_nn_outputs)
 
 		self.children = sorted(self.children, key=lambda child: child.value, reverse=True)
